@@ -1,0 +1,17 @@
+---
+version: "2.4"
+
+services:
+  database:
+    image: postgres:11
+    cpu_count: 1
+    cpu_percent: 30
+    cpus: 0.3
+    mem_limit: 512M
+    memswap_limit: 512M
+    ports:
+      - "5454:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: endless
