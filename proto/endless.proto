@@ -1,0 +1,80 @@
+syntax = "proto3";
+package backend.grpc;
+option go_package = "github.com/seanhagen/endless_stream/backend/grpc";
+
+import "google/api/annotations.proto";
+
+
+message CharSelect {
+  enum Selected {
+    Unknown = 0;
+    Fighter = 1;
+    Wizard = 2;
+    Cleric = 3;
+    Ranger = 4;
+  }
+  Selected choice = 1;
+}
+
+message GameStart {}
+
+message UseSkill {
+  string skill_id = 1;
+  string target_id = 2;
+}
+
+message UseItem {
+  string item_id = 1;
+}
+
+message Move {
+  enum Dir {
+    Left = 0;
+    Right = 1;
+  }
+
+  Dir dir = 1;
+}
+
+message Input {
+  string id = 1;
+  string player_id = 2;
+  oneof input {
+    CharSelect char_select = 3;
+    GameStart game_start = 4;
+    UseSkill skill = 5;
+    UseItem item = 6;
+    Move move = 7;
+  }
+}
+
+message Monster {
+  string id = 1;
+  string name = 2;
+  int32 hp = 3;
+  string type = 4;
+}
+
+message EventMessage {
+  string msg = 1;
+}
+
+message GameReady {}
+message CharacterSelected {}
+message CurrentState {
+  repeated Monster monsters = 1;
+}
+
+
+message Update {
+
+}
+
+
+message CreateGame {}
+message GameCreated {}
+
+service GameServer {
+  rpc Create(CreateGame) returns (GameCreated) {}
+  rpc State(stream Input) returns (stream Update){}
+}
