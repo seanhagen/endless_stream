@@ -1,0 +1,155 @@
+syntax = "proto3";
+package endless.stream.v1;
+option go_package = "github.com/seanhagen/endless_stream/backend/grpc";
+
+import "google/protobuf/wrappers.proto";
+import "util.proto";
+
+// Skill represents a player skill that can be used during battle.
+message Skill {
+  enum Target {
+    Self = 0;
+    Melee = 1;
+    Ranged = 2;
+    AOE = 3;
+  }
+
+  string id = 1;
+  string name = 2;
+  int32 level = 3;
+  Target target = 4;
+  int32 cost = 5;
+  int32 cooldown = 6;
+
+  int32 cooldown_left = 7;
+}
+
+// Creature is the base stats shared by characters and monsters
+message Creature {
+  string id = 1;
+  string name = 2;
+  int32 max_hp = 3;
+  int32 cur_hp = 4;
+
+  int32 position = 5;
+
+  repeated StatusEffect statuses = 6;
+}
+
+// Player represents a user or AI controlled character
+message Player {
+  Creature base = 1;
+  Class character = 2;
+
+  bool is_ai = 3;
+  int32 level = 4;
+
+  repeated Skill skills = 5;
+
+  int32 strength = 20;
+  int32 vitality = 21;
+  int32 combat_damage_base = 22;
+  int32 vitality_regen = 23;
+
+  int32 intelligence = 30;
+  int32 focus = 31;
+  int32 willpower = 32;
+  int32 focus_regen = 33;
+
+  int32 agility = 40;
+  int32 evasion = 41;
+  int32 accuracy = 42;
+  int32 initiative = 43;
+
+  int64 gold = 50;
+  int64 xp = 51;
+}
+
+// Monster represents an enemy the characters are fighting
+message Monster {
+  Creature base = 1;
+  Type type = 3;
+  bool is_flying = 4;
+  bool is_boss = 5;
+}
+
+message PlayerRegistered {
+  string id = 1;
+}
+
+// EventMessage is used when the game needs to display a message in the UI
+message EventMessage {
+  // MsgId is the id of the message
+  int32 msg_id = 1;
+
+  // Msg contains the message content
+  string msg = 2;
+
+  // IsError is true if the message is about an error that has occured
+  bool is_error = 3;
+
+  // IsAlert is true if the message is an alert, and only has an "Ok" button.
+  // False means it's a confirmation, which has an "Yes" & "No" button
+  bool is_alert = 4;
+
+  // PlayerId is set only if the message is for a specific player.
+  google.protobuf.StringValue player_id = 5;
+
+  // LogOnly is a boolean that if true, messages go into the player log without
+  // getting any kind of notification
+  bool log_only = 6;
+}
+
+// CharacterSelected is sent by the game when someone selects a character
+// on the character selection screen. This is used to disable that character in the UI
+// so nobody else can select it.
+message CharacterSelected {
+  map<string, Class> selected = 1;
+}
+
+// Wave has some basic information about the wave
+message Wave {
+  int32 num = 1;
+  bool has_boss = 2;
+  Level level = 3;
+}
+
+// CurrentState is sent after something has happened to change the state.
+message CurrentState {
+  // Monsters holds an array of the monsters in the current wave
+  repeated Monster monsters = 1;
+
+  // Players contains a list of id->Player of who's in the game currently
+  map<string, Player> players = 2;
+
+  google.protobuf.StringValue current_player = 3;
+
+  // Display indicates what screen every client should be on.
+  Display display = 4;
+
+  // CurrentWave is used to indicate what the current wave is
+  Wave current_wave = 5;
+
+  // UpcomingWaves is used to show an "upcoming waves" tracker on the shared info screen
+  map<int32, Wave> upcoming_waves = 6;
+
+  int32 audience_count = 7;
+}
+
+// Tick is a message that's sent out on a set schedule
+// that informs things like countdown timers and whatnot
+message Tick {}
+
+message JoinedGame {
+  bool is_player = 1;
+  string id = 2;
+}
+
+message Output {
+  CurrentState state = 1;
+  oneof data {
+    JoinedGame joined = 2;
+    Tick tick = 3;
+    EventMessage msg = 4;
+  }
+}

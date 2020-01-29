@@ -1,0 +1,48 @@
+syntax = "proto3";
+package endless.stream.v1;
+option go_package = "github.com/seanhagen/endless_stream/backend/grpc";
+
+import "util.proto";
+
+message Register {
+  string code = 1;
+  string name = 2;
+}
+
+message CharSelect {
+  string player_id =1;
+  Class choice = 2;
+}
+
+message GameStart {}
+
+message UseSkill {
+  string skill_id = 1;
+  string target_id = 2;
+}
+
+message UseItem {
+  string item_id = 1;
+}
+
+message Move {
+  enum Dir {
+    Left = 0;
+    Right = 1;
+  }
+
+  Dir dir = 1;
+}
+
+message Input {
+  string id = 1;
+  string player_id = 2;
+  oneof input {
+    Register register = 10;
+    CharSelect char_select = 20;
+    GameStart game_start = 30;
+    UseSkill skill = 40;
+    UseItem item = 50;
+    Move move = 60;
+  }
+}
