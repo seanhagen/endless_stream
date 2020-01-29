@@ -5,8 +5,10 @@ option go_package = "github.com/seanhagen/endless_stream/backend/grpc";
 import "util.proto";
 
 message Register {
-  string code = 1;
-  string name = 2;
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  bool as_audience = 4;
 }
 
 message CharSelect {
@@ -35,8 +37,7 @@ message Move {
 }
 
 message Input {
-  string id = 1;
-  string player_id = 2;
+  string player_id = 1;
   oneof input {
     Register register = 10;
     CharSelect char_select = 20;

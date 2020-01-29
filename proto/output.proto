@@ -75,6 +75,7 @@ message Monster {
 
 message PlayerRegistered {
   string id = 1;
+  bool is_player = 2;
 }
 
 // EventMessage is used when the game needs to display a message in the UI
@@ -141,13 +142,13 @@ message CurrentState {
 message Tick {}
 
 message JoinedGame {
-  bool is_player = 1;
-  string id = 2;
+  string id = 1;
+  bool as_audience = 2;
 }
 
 message Output {
-  CurrentState state = 1;
   oneof data {
+    CurrentState state = 1;
     JoinedGame joined = 2;
     Tick tick = 3;
     EventMessage msg = 4;
