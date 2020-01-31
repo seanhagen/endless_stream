@@ -1,15 +1,18 @@
 package game
 
 import (
+	"context"
 	"log"
 	"sync"
 	"time"
 
 	"github.com/gofrs/uuid"
-	"github.com/seanhagen/endless_stream/backend/grpc"
+	"github.com/golang/protobuf/ptypes"
+	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
-const tickLen = time.Second * 5
+const tickLen = time.Second * 1
+const stateLen = tickLen * 30
 
 type player struct{}
 
@@ -20,6 +23,8 @@ type monster interface {
 type creature interface{}
 
 type gameState struct {
+	code string
+
 	current_initiative int
 
 	players map[string]player
@@ -29,27 +34,29 @@ type gameState struct {
 
 // tick ...
 func (gs *gameState) tick(t time.Time) error {
-	log.Printf("game state ticking onwards")
+	log.Printf("game state %v ticking onwards", gs.code)
 	return nil
 }
 
 type output struct {
 	id       string
-	out      chan *grpc.Output
+	out      chan *endless.Output
 	isPlayer bool
 }
 
 type input struct {
-	in       *grpc.Input
+	in       *endless.Input
 	isPlayer bool
 }
 
 type Game struct {
+	ctx context.Context
+
 	code string
 
 	// when output needs to be sent to the clients, it's sent to this channel
 	// and a listener will take care of sending the output to all connected clients
-	output chan *grpc.Output
+	output chan *endless.Output
 
 	// input from any player will be sent into this channel
 	input chan input
@@ -66,16 +73,24 @@ type Game struct {
 	newClients     chan output
 
 	lock *sync.Mutex
+
+	idleTime int
 }
 
-func createGame(id string) (*Game, error) {
+func createGame(ctx context.Context, id string) (*Game, error) {
 	g := &Game{
+		ctx: ctx,
+
 		code: id,
 
-		output: make(chan *grpc.Output, 1),
-		input:  make(chan input, 1),
+		output: make(chan *endless.Output, 10),
+		input:  make(chan input, 100),
 
-		state: &gameState{},
+		state: &gameState{
+			code:     id,
+			players:  map[string]player{},
+			monsters: map[string]monster{},
+		},
 
 		players:     map[output]bool{},
 		playerIds:   map[string]bool{},
@@ -90,33 +105,60 @@ func createGame(id string) (*Game, error) {
 // listen ...
 func (g *Game) listen() {
 	ticker := time.NewTicker(tickLen)
+	stateTick := time.NewTicker(stateLen)
 
 	for {
 		select {
 		case newClient := <-g.newClients:
+			log.Printf("client connected: %v", newClient.id)
 			g.players[newClient] = true
 
 		case clientLeft := <-g.closingClients:
+			log.Printf("client disconnected: %v", clientLeft.id)
 			delete(g.players, clientLeft)
 
 		case update := <-g.output:
-			log.Printf("sending output to players")
-			for c := range g.players {
-				log.Printf("player '%v' (isPlayer: %v)", c.id, c.isPlayer)
-				c.out <- update
+			if len(g.players) > 0 {
+				log.Printf("sending output to players")
+				for c := range g.players {
+					log.Printf("player '%v' (isPlayer: %v)", c.id, c.isPlayer)
+					c.out <- update
+				}
 			}
 
 		case input := <-g.input:
 			log.Printf("got player input: %v", input)
 
 		case tick := <-ticker.C:
+			log.Printf("game tick")
 			g.state.tick(tick)
+			ts, _ := ptypes.TimestampProto(tick)
+
+			g.output <- &endless.Output{
+				Data: &endless.Output_Tick{
+					Tick: &endless.Tick{Time: ts},
+				},
+			}
+
+		case <-stateTick.C:
+			log.Printf("sending state")
+			g.output <- &endless.Output{
+				Data: &endless.Output_State{
+					State: &endless.CurrentState{},
+				},
+			}
+
+		case <-g.ctx.Done():
+			log.Printf("game context signaled done!")
+			goto finished
 		}
 	}
+finished:
+	log.Printf("game done")
 }
 
 // registerClient ...
-func (g *Game) registerClient(stream grpc.GameServer_StateServer) error {
+func (g *Game) registerClient(stream endless.Game_StateServer) error {
 	id, err := uuid.NewV4()
 	if err != nil {
 		return err
@@ -133,11 +175,11 @@ func (g *Game) registerClient(stream grpc.GameServer_StateServer) error {
 		g.audienceIds[id.String()] = true
 	}
 
-	out := &grpc.Output{
-		Data: &grpc.Output_Joined{
-			Joined: &grpc.JoinedGame{
-				Id:       id.String(),
-				IsPlayer: isPlayer,
+	out := &endless.Output{
+		Data: &endless.Output_Joined{
+			Joined: &endless.JoinedGame{
+				Id:         id.String(),
+				AsAudience: !isPlayer,
 			},
 		},
 	}
@@ -145,7 +187,7 @@ func (g *Game) registerClient(stream grpc.GameServer_StateServer) error {
 
 	output := output{
 		id:       id.String(),
-		out:      make(chan *grpc.Output),
+		out:      make(chan *endless.Output),
 		isPlayer: isPlayer,
 	}
 	g.newClients <- output
@@ -159,7 +201,7 @@ func (g *Game) registerClient(stream grpc.GameServer_StateServer) error {
 		for {
 			select {
 			case _ = <-stream.Context().Done():
-				log.Printf("Game %v stream context done", g.code)
+				log.Printf("Game %v stream client context done", g.code)
 				erCh <- nil
 			}
 		}
@@ -168,13 +210,14 @@ func (g *Game) registerClient(stream grpc.GameServer_StateServer) error {
 	go func() {
 		// handle incoming messages
 		for {
+
 			msg, err := stream.Recv()
 			if err != nil {
 				log.Printf("Game %v unable to receive message from client: %v", g.code, err)
 				erCh <- err
 				break
 			}
-			msg.Id = id.String()
+			msg.PlayerId = id.String()
 			g.input <- input{in: msg, isPlayer: isPlayer}
 		}
 	}()
@@ -185,7 +228,7 @@ func (g *Game) registerClient(stream grpc.GameServer_StateServer) error {
 			out := <-output.out
 			err := stream.Send(out)
 			if err != nil {
-				log.Printf("Game %v unable to send message to client: %v", g.code)
+				log.Printf("Game %v unable to send message to client: %v", g.code, err)
 				erCh <- err
 				break
 			}

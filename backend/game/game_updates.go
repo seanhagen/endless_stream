@@ -7,7 +7,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/seanhagen/endless_stream/backend/grpc"
+	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
 const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -15,7 +15,8 @@ const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 type Srv struct {
-	games map[string]*Game
+	games   map[string]*Game
+	cancels map[string]context.CancelFunc
 }
 
 func getGameId() string {
@@ -27,27 +28,31 @@ func getGameId() string {
 }
 
 // Create ...
-func (s *Srv) Create(ctx context.Context, in *grpc.CreateGame) (*grpc.GameCreated, error) {
+func (s *Srv) Create(ctx context.Context, in *endless.CreateGame) (*endless.GameCreated, error) {
 	var id string
 	for {
 		id = getGameId()
 		if _, ok := s.games[id]; ok {
 			continue
 		}
-
-		g, err := createGame(id)
+		ctx := context.Background()
+		ctx, cancel := context.WithCancel(ctx)
+		g, err := createGame(ctx, id)
 		if err != nil {
+			cancel()
 			return nil, err
 		}
+		go g.listen()
+		s.cancels[id] = cancel
 		s.games[id] = g
 		break
 	}
 
-	return &grpc.GameCreated{Code: id}, nil
+	return &endless.GameCreated{Code: id}, nil
 }
 
 // State ...
-func (s *Srv) State(stream grpc.GameServer_StateServer) error {
+func (s *Srv) State(stream endless.Game_StateServer) error {
 	var game *Game
 	for {
 		msg, err := stream.Recv()
@@ -58,9 +63,9 @@ func (s *Srv) State(stream grpc.GameServer_StateServer) error {
 
 		r := msg.GetRegister()
 		if r == nil {
-			out := &grpc.Output{
-				Data: &grpc.Output_Msg{
-					Msg: &grpc.EventMessage{
+			out := &endless.Output{
+				Data: &endless.Output_Msg{
+					Msg: &endless.EventMessage{
 						Msg:     "You must register your client first",
 						IsError: true,
 					},
@@ -73,9 +78,9 @@ func (s *Srv) State(stream grpc.GameServer_StateServer) error {
 		c := r.GetCode()
 		g, ok := s.games[c]
 		if !ok {
-			out := &grpc.Output{
-				Data: &grpc.Output_Msg{
-					Msg: &grpc.EventMessage{
+			out := &endless.Output{
+				Data: &endless.Output_Msg{
+					Msg: &endless.EventMessage{
 						Msg:     fmt.Sprintf("No game with code '%v'", c),
 						IsError: true,
 					},

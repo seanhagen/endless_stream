@@ -4,7 +4,7 @@ PROTOCMD=protoc
 IMPORTS=-I"./${PROTO_DIR}/" -I"./vendor"
 PROTOC=$(PROTOCMD) $(IMPORTS)
 
-GO_TARGET_DIR=backend/grpc
+GO_TARGET_DIR=backend/endless
 
 PROTO_IN=$(shell find "$(PROTO_DIR)" -name '*.proto')
 VALID_FILES_IN=$(shell find "$(PROTO_DIR)" -name '*.proto' | grep -vE "endless")
@@ -50,7 +50,7 @@ desc: $(GRPC_DESCRIPTOR)
 
 proto: pb gw srv desc
 	@echo "Fixing imports"
-	@find backend/grpc -name '*.go' -type f -exec sed -i 's/org\/\/gen/org\/gen/g' {} \;
+	@find $(GO_TARGET_DIR) -name '*.go' -type f -exec sed -i 's/org\/\/gen/org\/gen/g' {} \;
 
 clean:
 	rm -rf backend/grpc
