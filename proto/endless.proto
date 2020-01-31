@@ -1,6 +1,6 @@
 syntax = "proto3";
 package endless.stream.v1;
-option go_package = "github.com/seanhagen/endless_stream/backend/grpc";
+option go_package = "github.com/seanhagen/endless_stream/backend/endless";
 
 import "google/api/annotations.proto";
 import "input.proto";
@@ -12,11 +12,7 @@ message GameCreated {
   string code = 1;
 }
 
-service GameServer {
-  rpc Create(CreateGame) returns (GameCreated) {
-    option (google.api.http) = {
-      get: "/v1/create"
-    };
-  }
+service Game {
+  rpc Create(CreateGame) returns (GameCreated) {}
   rpc State(stream Input) returns (stream Output){}
 }

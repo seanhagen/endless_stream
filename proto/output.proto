@@ -1,8 +1,9 @@
 syntax = "proto3";
 package endless.stream.v1;
-option go_package = "github.com/seanhagen/endless_stream/backend/grpc";
+option go_package = "github.com/seanhagen/endless_stream/backend/endless";
 
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
 import "util.proto";
 
 // Skill represents a player skill that can be used during battle.
@@ -73,11 +74,6 @@ message Monster {
   bool is_boss = 5;
 }
 
-message PlayerRegistered {
-  string id = 1;
-  bool is_player = 2;
-}
-
 // EventMessage is used when the game needs to display a message in the UI
 message EventMessage {
   // MsgId is the id of the message
@@ -135,15 +131,25 @@ message CurrentState {
   map<int32, Wave> upcoming_waves = 6;
 
   int32 audience_count = 7;
+
+  string current_state = 8;
 }
 
 // Tick is a message that's sent out on a set schedule
 // that informs things like countdown timers and whatnot
-message Tick {}
+message Tick {
+  google.protobuf.Timestamp time = 1;
+}
 
 message JoinedGame {
+  // Id is the UUID of the player
   string id = 1;
+  // AsAudience lets the client know if the player has joined as one of the four main or if they
+  // have joined as part of the audience
   bool as_audience = 2;
+  // IsVIP is to indicate if the player is "player 1", ie, they're the player
+  // that gets to make decisions like when to start the game
+  bool is_vip = 3;
 }
 
 message Output {

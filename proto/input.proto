@@ -1,6 +1,6 @@
 syntax = "proto3";
 package endless.stream.v1;
-option go_package = "github.com/seanhagen/endless_stream/backend/grpc";
+option go_package = "github.com/seanhagen/endless_stream/backend/endless";
 
 import "util.proto";
 
