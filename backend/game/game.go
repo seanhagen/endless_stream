@@ -73,6 +73,8 @@ type Game struct {
 	lock *sync.Mutex
 
 	idleTime int
+
+	running bool
 }
 
 func createGame(ctx context.Context, id string) (*Game, error) {
@@ -96,6 +98,9 @@ func createGame(ctx context.Context, id string) (*Game, error) {
 
 		closingClients: make(chan output),
 		newClients:     make(chan output),
+
+		idleTime: 0,
+		running:  true,
 	}
 	return g, nil
 }

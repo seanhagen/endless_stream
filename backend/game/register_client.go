@@ -21,11 +21,13 @@ func (g *Game) registerClient(stream endless.Game_StateServer) error {
 		isPlayer = false
 	}
 
+	g.lock.Lock()
 	if isPlayer {
 		g.playerIds[id.String()] = true
 	} else {
 		g.audienceIds[id.String()] = true
 	}
+	g.lock.Unlock()
 
 	out := &endless.Output{
 		Data: &endless.Output_Joined{

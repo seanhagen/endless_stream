@@ -4,27 +4,31 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"math/rand"
 	"time"
 
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
-
-const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 type Srv struct {
 	games   map[string]*Game
 	cancels map[string]context.CancelFunc
 }
 
-func getGameId() string {
-	b := make([]byte, 4)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
+// cleanup ...
+func (s *Srv) cleanup() {
+	tick := time.NewTicker(time.Second * 10)
+	// on a timer, cleanup games that aren't running any more
+	for {
+		select {
+		case <-tick.C:
+			for id, g := range s.games {
+				if !g.running {
+					g = nil
+					delete(s.games, id)
+				}
+			}
+		}
 	}
-	return string(b)
 }
 
 // Create ...
