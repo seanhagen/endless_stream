@@ -5,42 +5,19 @@ import (
 	"log"
 	"sync"
 
-	"github.com/gofrs/uuid"
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
 // registerClient ...
-func (g *Game) registerClient(stream endless.Game_StateServer) error {
-	id, err := uuid.NewV4()
+func (g *Game) registerClient(id string, stream endless.Game_StateServer) error {
+	out, isPlayer, err := g.registerHuman(id)
 	if err != nil {
 		return err
-	}
-
-	isPlayer := true
-	if len(g.players) == 4 {
-		isPlayer = false
-	}
-
-	g.lock.Lock()
-	if isPlayer {
-		g.playerIds[id.String()] = true
-	} else {
-		g.audienceIds[id.String()] = true
-	}
-	g.lock.Unlock()
-
-	out := &endless.Output{
-		Data: &endless.Output_Joined{
-			Joined: &endless.JoinedGame{
-				Id:         id.String(),
-				AsAudience: !isPlayer,
-			},
-		},
 	}
 	stream.Send(out)
 
 	output := output{
-		id:       id.String(),
+		id:       id,
 		out:      make(chan *endless.Output),
 		isPlayer: isPlayer,
 	}
@@ -97,7 +74,7 @@ func (g *Game) registerClient(stream endless.Game_StateServer) error {
 					break
 				}
 
-				msg.PlayerId = id.String()
+				msg.PlayerId = id
 				g.input <- input{in: msg, isPlayer: isPlayer}
 			}
 

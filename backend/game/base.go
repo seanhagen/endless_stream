@@ -2,6 +2,7 @@ package game
 
 import (
 	"context"
+	"sync"
 
 	"github.com/seanhagen/endless_stream/backend/endless"
 	"github.com/seanhagen/endless_stream/backend/server"
@@ -17,6 +18,7 @@ func Setup(ctx context.Context, srv *server.Base) error {
 	svc := &Srv{
 		games:   map[string]*Game{},
 		cancels: map[string]context.CancelFunc{},
+		l:       &sync.Mutex{},
 	}
 
 	srv.RegisterHandler(func(s *grpc.Server) {
