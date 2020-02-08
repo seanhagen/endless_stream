@@ -66,6 +66,8 @@ type Game struct {
 	// idleTime how long the game has been waiting for input, ticks up on each game tick
 	idleTime int
 
+	msgId int32
+
 	// running is true if the game is running, or false if it's not
 	// if a game isn't running, when a client connects it should
 	//   - send the state
@@ -76,9 +78,9 @@ type Game struct {
 
 func createGame(ctx context.Context, id string) (*Game, error) {
 	g := &Game{
-		ctx: ctx,
-
-		code: id,
+		ctx:   ctx,
+		code:  id,
+		msgId: 0,
 
 		output: make(chan *endless.Output, 10),
 		input:  make(chan input, 100),
@@ -104,8 +106,11 @@ func createGame(ctx context.Context, id string) (*Game, error) {
 // tick ...
 func (g *Game) tick(t time.Time) error {
 	g.lock.Lock()
-	g.idleTime++
-	g.lock.Unlock()
+	defer g.lock.Unlock()
+
+	if len(g.players) == 0 {
+		g.idleTime++
+	}
 
 	err := g.state.tick(t)
 	if err != nil {

@@ -2,7 +2,6 @@ package game
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/seanhagen/endless_stream/backend/endless"
@@ -43,7 +42,7 @@ func newState(ctx context.Context, id string) *gameState {
 
 // tick ...
 func (gs *gameState) tick(t time.Time) error {
-	log.Printf("game state %v ticking onwards", gs.code)
+	// log.Printf("game state %v ticking onwards", gs.code)
 	return nil
 }
 

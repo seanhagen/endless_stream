@@ -78,6 +78,8 @@ func (ba *Base) setupLogger() {
 	if ba.IsProd() {
 		level = logrus.ErrorLevel
 	}
+	// WARNING: remove before deploying
+	level = logrus.FatalLevel
 
 	logrusLogger := logrus.New()
 	logrusLogger.SetLevel(level)

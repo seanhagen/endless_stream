@@ -10,7 +10,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/seanhagen/endless_stream/backend/endless"
 	"google.golang.org/grpc"
 )
@@ -27,7 +26,7 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		fmt.Printf("What would you like to do?\n\n\t1) Create new game\n\t2) Join game\n\t3) Re-join game\n\nEnter number:")
+		fmt.Printf("What would you like to do?\n\n\t1) Create new game\n\t2) Join game\n\t3) Re-join game\n\t4) Join as audience\n\nEnter number:")
 		txt, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Printf("Unable to read input: %v\n", err)
@@ -50,7 +49,7 @@ func main() {
 			}
 
 			fmt.Printf("Game created, code: %v\nJoining game!\n\n", resp.GetCode())
-			handleStreamInput(ctx, ec, resp.GetCode())
+			handleStreamInput(ctx, ec, resp.GetCode(), "")
 			goto complete
 		case 2:
 			fmt.Printf("\nEnter game code:")
@@ -60,7 +59,7 @@ func main() {
 				os.Exit(1)
 			}
 			txt = strings.TrimSpace(txt)
-			handleStreamInput(ctx, ec, txt)
+			handleStreamInput(ctx, ec, txt, "")
 			goto complete
 		case 3:
 			fmt.Printf("\nEnter game code:")
@@ -71,6 +70,7 @@ func main() {
 			}
 			code = strings.TrimSpace(code)
 
+			fmt.Printf("\nEnter Player ID:")
 			id, err := reader.ReadString('\n')
 			if err != nil {
 				fmt.Printf("\nUnable to read input: %v\n\n", err)
@@ -78,6 +78,12 @@ func main() {
 			}
 			id = strings.TrimSpace(id)
 
+			handleStreamInput(ctx, ec, code, id)
+			goto complete
+
+		case 4:
+			fmt.Printf("need audience code")
+			goto complete
 		default:
 			fmt.Printf("Please enter 1 or 2.\n\n")
 			continue
@@ -86,7 +92,7 @@ func main() {
 complete:
 }
 
-func handleStreamInput(ctx context.Context, client endless.GameClient, code string) {
+func handleStreamInput(ctx context.Context, client endless.GameClient, code, id string) {
 	strm, err := client.State(ctx)
 	if err != nil {
 		log.Printf("error connecting to game state: %v", err)
@@ -99,10 +105,49 @@ func handleStreamInput(ctx context.Context, client endless.GameClient, code stri
 		for {
 			msg, err := strm.Recv()
 			if err != nil {
-				log.Printf("error recieved: %v", err)
+				log.Printf("Error recieved: %v", err)
 				break
 			} else {
-				log.Printf("recieved message from game: %v", spew.Sdump(msg))
+				switch t := msg.GetData().(type) {
+				case *endless.Output_Tick:
+					//ti := msg.GetTick()
+
+				case *endless.Output_State:
+					//s := msg.GetState()
+
+				case *endless.Output_Msg:
+					m := msg.GetMsg()
+					o := fmt.Sprintf("MSG[%v] ", m.GetMsgId())
+
+					if pid := m.GetPlayerId(); pid != nil {
+						o = fmt.Sprintf("%v Player[%v] ", o, pid.GetValue())
+					}
+
+					if m.GetIsError() {
+						o = fmt.Sprintf("%v Error occured: %v", o, m.GetMsg())
+					} else {
+						if m.GetLogOnly() {
+							o = fmt.Sprintf("%v LogOnly ", o)
+						}
+
+						if m.GetIsAlert() {
+							o = fmt.Sprintf("%v ALERT ", o)
+						}
+
+						o = fmt.Sprintf("%v Message: %v", o, m.GetMsg())
+					}
+
+					log.Print(o)
+
+				case *endless.Output_Joined:
+					j := msg.GetJoined()
+					log.Printf(
+						"Joined game:\n\tPlayer ID: %v\n\tVIP? %v\n\tAudience? %v",
+						j.GetId(), j.GetIsVip(), j.GetAsAudience())
+
+				default:
+					log.Printf("Unknown message type: %T", t)
+				}
 			}
 		}
 		wg.Done()
@@ -113,13 +158,14 @@ func handleStreamInput(ctx context.Context, client endless.GameClient, code stri
 			Register: &endless.Register{
 				Code: code,
 				Name: "client 1",
+				Id:   id,
 			},
 		},
 	})
-
 	if err != nil {
 		log.Printf("Unable to send message: %v", err)
 	}
+
 	wg.Wait()
 	fmt.Printf("Game done.\n\n")
 }

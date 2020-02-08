@@ -2,12 +2,10 @@ package game
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
@@ -28,15 +26,13 @@ func (g *Game) listen() {
 
 		case clientLeft := <-g.closingClients:
 			log.Printf("client disconnected: %v", clientLeft.id)
-			g.lock.Lock()
-			delete(g.players, clientLeft)
-			g.lock.Unlock()
+			g.unregisterHuman(clientLeft)
 
 		case update := <-g.output:
 			if len(g.players) > 0 {
-				log.Printf("sending output to players")
+				// log.Printf("sending output to players")
 				for c := range g.players {
-					log.Printf("player '%v' (isPlayer: %v)", c.id, c.isPlayer)
+					// log.Printf("player '%v' (isPlayer: %v)", c.id, c.isPlayer)
 					c.out <- update
 				}
 			}
@@ -44,25 +40,11 @@ func (g *Game) listen() {
 		case input := <-g.input:
 			log.Printf("got player input: %v", input)
 			ctx, cancel := context.WithTimeout(g.ctx, time.Second)
-			err := g.state.handleInput(ctx, input)
-			if err != nil {
-				g.output <- &endless.Output{
-					Data: &endless.Output_Msg{
-						Msg: &endless.EventMessage{
-							MsgId: int32(msgId),
-							// TODO: error -> json string? need error messages that make sense to the players?
-							Msg:      fmt.Sprintf("Unable to handle input: %v", err),
-							IsError:  true,
-							PlayerId: &wrappers.StringValue{Value: input.in.GetPlayerId()},
-						},
-					},
-				}
-				msgId++
-			}
+			err = g.handleInput(ctx, input)
 			cancel()
 
 		case t := <-ticker.C:
-			log.Printf("game tick")
+			// log.Printf("game tick")
 			err := g.tick(t)
 			if err != nil {
 				log.Printf("unable to to tick: %v", err)
@@ -76,7 +58,7 @@ func (g *Game) listen() {
 			}
 
 		case <-stateTick.C:
-			log.Printf("sending state")
+			// log.Printf("sending state")
 			g.output <- &endless.Output{
 				Data: &endless.Output_State{
 					State: &endless.CurrentState{},

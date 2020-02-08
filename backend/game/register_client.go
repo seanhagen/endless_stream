@@ -10,35 +10,18 @@ import (
 
 // registerClient ...
 func (g *Game) registerClient(id string, stream endless.Game_StateServer) error {
-	out, isPlayer, isVip, err := g.registerHuman(id)
+	msg, out, err := g.registerHuman(id)
 	if err != nil {
 		return err
 	}
-	stream.Send(out)
+	stream.Send(msg)
 
-	output := output{
-		id:       id,
-		out:      make(chan *endless.Output),
-		isPlayer: isPlayer,
-	}
-	g.newClients <- output
-
-	stream.Send(&endless.Output{
-		Data: &endless.Output_Joined{
-			Joined: &endless.JoinedGame{
-				Id:         id,
-				AsAudience: !isPlayer,
-				IsVip:      isVip,
-			},
-		},
-	})
-
+	g.newClients <- out
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
-
 	defer func() {
 		cancel()
-		g.closingClients <- output
+		g.closingClients <- out
 	}()
 
 	wg := &sync.WaitGroup{}
@@ -85,7 +68,7 @@ func (g *Game) registerClient(id string, stream endless.Game_StateServer) error 
 				}
 
 				msg.PlayerId = id
-				g.input <- input{in: msg, isPlayer: isPlayer}
+				g.input <- input{in: msg, isPlayer: out.isPlayer}
 			}
 
 			if finished {
@@ -105,7 +88,7 @@ func (g *Game) registerClient(id string, stream endless.Game_StateServer) error 
 			select {
 			case <-ctx.Done():
 				finished = true
-			case out := <-output.out:
+			case out := <-out.out:
 				if stream.Context().Err() != nil {
 					finished = true
 					break
