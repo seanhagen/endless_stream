@@ -106,7 +106,10 @@ func (g *Game) tick(t time.Time) error {
 	g.idleTime++
 	g.lock.Unlock()
 
-	g.state.tick(t)
+	err := g.state.tick(t)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
