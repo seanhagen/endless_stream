@@ -2,6 +2,7 @@ package game
 
 import (
 	"context"
+	"log"
 	"sync"
 	"time"
 
@@ -130,11 +131,11 @@ func (g *Game) unregisterHuman(o output) error {
 }
 
 // registerHuman ...
-func (g *Game) registerHuman(id string) (*endless.Output, bool, bool, error) {
+func (g *Game) registerHuman(id string) (*endless.Output, output, error) {
 	if id == "" {
 		x, err := uuid.NewV4()
 		if err != nil {
-			return nil, false, false, err
+			return nil, output{}, err
 		}
 		id = x.String()
 	}
@@ -143,34 +144,42 @@ func (g *Game) registerHuman(id string) (*endless.Output, bool, bool, error) {
 	g.lock.Lock()
 	defer g.lock.Unlock()
 
+	out := output{
+		id:  id,
+		out: make(chan *endless.Output),
+	}
+
 	v, ok := g.playerIds[id]
 	if ok && v < 1 {
 		// player is rejoining
+		log.Printf("player is reconnecting")
 	}
 
 	if len(g.players) <= 4 {
-		isVip := false
-		if len(g.players) == 0 {
-			isVip = true
-		}
-
 		g.playerIds[id] = 1
-		out, err := g.registerPlayer(id)
-		return out, true, isVip, err
+		msg, err := g.registerPlayer(id)
+		out.isPlayer = true
+		return msg, out, err
 	}
 
 	// g.audienceIds[id] = 1
-	out, err := g.registerAudience(id)
-	return out, false, false, err
+	msg, err := g.registerAudience(id)
+	return msg, out, err
 }
 
 // registerPlayer ...
 func (g *Game) registerPlayer(id string) (*endless.Output, error) {
+	isVip := false
+	if len(g.players) == 0 {
+		isVip = true
+	}
+
 	out := &endless.Output{
 		Data: &endless.Output_Joined{
 			Joined: &endless.JoinedGame{
 				Id:         id,
 				AsAudience: false,
+				IsVip:      isVip,
 			},
 		},
 	}
