@@ -63,7 +63,10 @@ func (g *Game) listen() {
 
 		case t := <-ticker.C:
 			log.Printf("game tick")
-			g.tick(t)
+			err := g.tick(t)
+			if err != nil {
+				log.Printf("unable to to tick: %v", err)
+			}
 
 			ts, _ := ptypes.TimestampProto(t)
 			g.output <- &endless.Output{
