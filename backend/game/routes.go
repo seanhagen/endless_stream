@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
@@ -44,7 +45,7 @@ func (s *Srv) cleanup() {
 }
 
 // Create ...
-func (s *Srv) Create(ctx context.Context, in *endless.CreateGame) (*endless.GameCreated, error) {
+func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.GameCreated, error) {
 	var id string
 
 	for {
@@ -123,6 +124,11 @@ func (s *Srv) State(stream endless.Game_StateServer) error {
 		game = g
 		id = strings.TrimSpace(r.GetId())
 		break
+	}
+
+	if id == "" {
+		x, _ := uuid.NewV4()
+		id = x.String()
 	}
 
 	return game.registerClient(id, stream)

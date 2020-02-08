@@ -92,7 +92,7 @@ func createGame(ctx context.Context, id string) (*Game, error) {
 		closingClients: make(chan output),
 		newClients:     make(chan output),
 
-		lock: *&sync.Mutex{},
+		lock: &sync.Mutex{},
 
 		idleTime: 0,
 		running:  true,
@@ -107,14 +107,16 @@ func (g *Game) tick(t time.Time) error {
 	g.lock.Unlock()
 
 	g.state.tick(t)
+
+	return nil
 }
 
 // registerHuman ...
-func (g *Game) registerHuman(id string) (*endless.Output, bool, error) {
+func (g *Game) registerHuman(id string) (*endless.Output, bool, bool, error) {
 	if id == "" {
 		x, err := uuid.NewV4()
 		if err != nil {
-			return nil, false, err
+			return nil, false, false, err
 		}
 		id = x.String()
 	}
@@ -125,23 +127,23 @@ func (g *Game) registerHuman(id string) (*endless.Output, bool, error) {
 
 	v, ok := g.playerIds[id]
 	if ok && v < 1 {
-
+		// player is rejoining
 	}
 
-	isPlayer := true
-	if len(g.players) == 4 {
-		isPlayer = false
-	}
+	if len(g.players) <= 4 {
+		isVip := false
+		if len(g.players) == 0 {
+			isVip = true
+		}
 
-	if isPlayer {
 		g.playerIds[id] = 1
 		out, err := g.registerPlayer(id)
-		return out, isPlayer, err
+		return out, true, isVip, err
 	}
 
 	// g.audienceIds[id] = 1
 	out, err := g.registerAudience(id)
-	return out, isPlayer, err
+	return out, false, false, err
 }
 
 // registerPlayer ...

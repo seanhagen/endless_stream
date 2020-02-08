@@ -10,7 +10,7 @@ import (
 
 // registerClient ...
 func (g *Game) registerClient(id string, stream endless.Game_StateServer) error {
-	out, isPlayer, err := g.registerHuman(id)
+	out, isPlayer, isVip, err := g.registerHuman(id)
 	if err != nil {
 		return err
 	}
@@ -22,6 +22,16 @@ func (g *Game) registerClient(id string, stream endless.Game_StateServer) error 
 		isPlayer: isPlayer,
 	}
 	g.newClients <- output
+
+	stream.Send(&endless.Output{
+		Data: &endless.Output_Joined{
+			Joined: &endless.JoinedGame{
+				Id:         id,
+				AsAudience: !isPlayer,
+				IsVip:      isVip,
+			},
+		},
+	})
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
