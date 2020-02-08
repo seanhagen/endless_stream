@@ -114,6 +114,21 @@ func (g *Game) tick(t time.Time) error {
 	return nil
 }
 
+// unregisterHuman ...
+func (g *Game) unregisterHuman(o output) error {
+	g.lock.Lock()
+	defer g.lock.Unlock()
+
+	if o.isPlayer {
+		delete(g.players, o)
+		g.playerIds[o.id]--
+	} else {
+		delete(g.audience, o)
+	}
+
+	return nil
+}
+
 // registerHuman ...
 func (g *Game) registerHuman(id string) (*endless.Output, bool, bool, error) {
 	if id == "" {
