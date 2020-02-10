@@ -4,11 +4,20 @@ option go_package = "github.com/seanhagen/endless_stream/backend/endless";
 
 import "util.proto";
 
+enum ClientType {
+  // ClientPlayer is a client that is a player
+  ClientPlayer = 0;
+  // ClientAudience is a client that represents an audience member
+  ClientAudience = 1;
+  // ClientDisplay is a client that represents the shared info display
+  ClientDisplay = 2;
+}
+
 message Register {
   string id = 1;
   string code = 2;
   string name = 3;
-  bool as_audience = 4;
+  ClientType type = 4;
 }
 
 message CharSelect {
@@ -35,6 +44,8 @@ message Move {
 
   Dir dir = 1;
 }
+
+
 
 message Input {
   string player_id = 1;
