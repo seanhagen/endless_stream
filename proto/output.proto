@@ -206,6 +206,7 @@ message CurrentState {
 // Tick is a message that's sent out on a set schedule
 // that informs things like countdown timers and whatnot
 message Tick {
+  // Time is just so that the game clients can ignore ticks from too far in the past
   google.protobuf.Timestamp time = 1;
 }
 
