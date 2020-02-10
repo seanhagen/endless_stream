@@ -54,6 +54,7 @@ enum Type {
 // CharacterClass is an enum that represents what class a character is
 enum Class {
   Unknown = 0;
+  Status = -2;
   Audience = -1;
   Fighter = 10;
   Ranger = 20;
@@ -69,6 +70,7 @@ enum StatusEffect {
   Bleeding = 4;
   Frenzied = 5;
   Invisible = 6;
+  Invincible = 7;
 }
 
 // Level is used to control what the UI displays for the current wave via textures/etc
@@ -89,4 +91,5 @@ enum Display {
   Shop = 3;
   Dead = 4;
   GameOver = 5;
+  NewWave = 6;
 }
