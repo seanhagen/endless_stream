@@ -45,7 +45,11 @@ message Move {
   Dir dir = 1;
 }
 
-
+// ActionComplete is sent by the players & status UI clients once they've all processed
+// an action and updated
+message ActionComplete {
+  string completed_id = 1;
+}
 
 message Input {
   string player_id = 1;
@@ -56,5 +60,6 @@ message Input {
     UseSkill skill = 40;
     UseItem item = 50;
     Move move = 60;
+    ActionComplete action_complete = 70;
   }
 }
