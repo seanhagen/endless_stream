@@ -248,6 +248,15 @@ message Action {
   int32 value = 7;
 }
 
+// Sent when the players enter the store, contains the inventory & prices of
+// what's in the store
+message StoreInventory {
+  // Inventory is a map of UUID -> Item of what's in the store
+  map<string,Item> inventory = 1;
+  // Prices is a map of UUID -> price of what's in the store
+  map<string,int32> prices = 2;
+}
+
 // Output is sent by the game server to update clients on various parts of the game
 message Output {
   oneof data {
@@ -257,5 +266,6 @@ message Output {
     EventMessage msg = 4;
     Action action = 5;
     CharacterSelected selected = 6;
+    StoreInventory store_inventory = 7;
   }
 }
