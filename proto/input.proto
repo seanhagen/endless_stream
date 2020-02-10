@@ -51,6 +51,17 @@ message ActionComplete {
   string completed_id = 1;
 }
 
+// Purchase is sent when a player has selected an item to buy in the store
+message Purchase {
+  string id = 1;
+}
+
+// Continue is sent when a player has acknowledged that they're ready to continue. This
+// is sent when the game is in the Victory, Store, or New Wave screens so that the game
+// can continue if all players have stated they're ready ( otherwise a timer will automatically
+// advance to the next state )
+message Continue {}
+
 message Input {
   string player_id = 1;
   oneof input {
@@ -61,5 +72,7 @@ message Input {
     UseItem item = 50;
     Move move = 60;
     ActionComplete action_complete = 70;
+    Purchase purchase = 80;
+    Continue continue = 90;
   }
 }
