@@ -208,6 +208,11 @@ message CurrentState {
 message Tick {
   // Time is just so that the game clients can ignore ticks from too far in the past
   google.protobuf.Timestamp time = 1;
+
+  // Progress is null if there is no progress bar, but if it's present it counts from 100 down to 0
+  // so that the clients know that there is a countdown in progress ( such as the game saying that
+  // it's about to make a descision for a player in battle, or that the store is about to go away, etc)
+  google.protobuf.IntValue progress = 2;
 }
 
 message JoinedGame {
