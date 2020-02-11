@@ -17,10 +17,14 @@ enum Target {
   AOE = 3;
 }
 
+// Position describes where in the arena an actor is
 enum Position {
-  PlayerSide = 0;
+  // Left is the player side
+  Left = 0;
+  // Middle is the center of the arena
   Middle = 1;
-  EnemySide = 2;
+  // Right is the monster spawn side
+  Right = 2;
 }
 
 // Skill represents a player skill that can be used during battle.
