@@ -66,8 +66,8 @@ func (g *Game) registerHuman(id, name string) (*endless.Output, output, error) {
 	}
 
 	if len(g.players) <= 4 {
-		g.playerIds[id] = 1
 		msg, err := g.registerPlayer(id, name)
+
 		out.isPlayer = true
 		return msg, out, err
 	}
@@ -79,9 +79,14 @@ func (g *Game) registerHuman(id, name string) (*endless.Output, output, error) {
 
 // registerPlayer ...
 func (g *Game) registerPlayer(id, name string) (*endless.Output, error) {
+	g.playerIds[id] = 1
+	g.playerCharacters[id] = nil
+	g.playerNames[id] = name
+
 	isVip := false
 	if len(g.players) == 0 {
 		isVip = true
+		g.vipPlayer = id
 	}
 
 	out := &endless.Output{
