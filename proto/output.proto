@@ -96,24 +96,6 @@ message Creature {
 
   // Statuses is a list of effects that currently affect this creature.
   repeated StatusEffect statuses = 6;
-}
-
-// Player represents a user or AI controlled character
-message Player {
-  // Base is the basic stats of the player
-  Creature base = 1;
-  // Character is what class the player is playing as (or if they're the status screen or an audience member)
-  Class character = 2;
-
-  // IsAI is true if this player is currently controlled by an AI
-  bool is_ai = 3;
-  // Level is their current character level, starts at 1
-  int32 level = 4;
-
-  // Skills is a map of ID to skill
-  map<string,Skill> skills = 5;
-  // Inventory is a map of ID to items currently held by this player
-  map<string,Item> inventory = 6;
 
   int32 strength = 20;
   int32 vitality = 21;
@@ -132,6 +114,24 @@ message Player {
 
   int64 gold = 50;
   int64 xp = 51;
+}
+
+// Player represents a user or AI controlled character
+message Player {
+  // Base is the basic stats of the player
+  Creature base = 1;
+  // Character is what class the player is playing as (or if they're the status screen or an audience member)
+  Class character = 2;
+
+  // IsAI is true if this player is currently controlled by an AI
+  bool is_ai = 3;
+  // Level is their current character level, starts at 1
+  int32 level = 4;
+
+  // Skills is a map of ID to skill
+  map<string,Skill> skills = 5;
+  // Inventory is a map of ID to items currently held by this player
+  map<string,Item> inventory = 6;
 }
 
 // Monster represents an enemy the characters are fighting
@@ -204,7 +204,7 @@ message CurrentState {
 
   // AudienceCount is how many folks are in the active audience ( connected to the current game
   // as an audience member )
-  int32 audience_count = 7;
+  int64 audience_count = 7;
 }
 
 // Tick is a message that's sent out on a set schedule

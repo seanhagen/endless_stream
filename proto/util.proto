@@ -75,12 +75,13 @@ enum StatusEffect {
 
 // Level is used to control what the UI displays for the current wave via textures/etc
 enum Level {
-  Forest = 0;
-  Cave = 1;
-  Dungeon = 2;
-  Ice = 3;
-  Fire = 4;
-  Void = 5;
+  Blank = 0;
+  Forest = 1;
+  Cave = 2;
+  Dungeon = 3;
+  Ice = 4;
+  Fire = 5;
+  Void = 6;
 }
 
 // Display is an enum with the various screens
