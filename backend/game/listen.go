@@ -14,9 +14,8 @@ func (g *Game) listen() {
 	ticker := time.NewTicker(tickLen)
 	stateTick := time.NewTicker(stateLen)
 
-	msgId := 1
-
 	for {
+		var err error
 		select {
 		case newClient := <-g.newClients:
 			log.Printf("client connected: %v", newClient.id)
@@ -68,6 +67,10 @@ func (g *Game) listen() {
 		case <-g.ctx.Done():
 			log.Printf("game context signaled done!")
 			goto finished
+		}
+
+		if err != nil {
+			log.Printf("Error occured: %v", err)
 		}
 	}
 finished:

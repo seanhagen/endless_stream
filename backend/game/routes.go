@@ -5,44 +5,10 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"sync"
-	"time"
 
 	"github.com/gofrs/uuid"
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
-
-type Srv struct {
-	games   map[string]*Game
-	l       *sync.Mutex
-	cancels map[string]context.CancelFunc
-}
-
-// cleanup ...
-func (s *Srv) cleanup() {
-	tick := time.NewTicker(time.Second * 10)
-	// on a timer, cleanup games that aren't running any more
-	for {
-		select {
-		case <-tick.C:
-			for id, g := range s.games {
-				if !g.running {
-					s.l.Lock()
-
-					g = nil
-					delete(s.games, id)
-
-					if c, ok := s.cancels[id]; ok {
-						c()
-					}
-					delete(s.cancels, id)
-
-					s.l.Unlock()
-				}
-			}
-		}
-	}
-}
 
 // Create ...
 func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.GameCreated, error) {
@@ -85,7 +51,7 @@ func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.
 // State ...
 func (s *Srv) State(stream endless.Game_StateServer) error {
 	var game *Game
-	var id string
+	var id, name string
 	for {
 		msg, err := stream.Recv()
 		if err != nil {
@@ -123,6 +89,7 @@ func (s *Srv) State(stream endless.Game_StateServer) error {
 		}
 		game = g
 		id = strings.TrimSpace(r.GetId())
+		name = r.GetName()
 		break
 	}
 
@@ -131,5 +98,9 @@ func (s *Srv) State(stream endless.Game_StateServer) error {
 		id = x.String()
 	}
 
-	return game.registerClient(id, stream)
+	if name == "" {
+		name = fmt.Sprintf("Anon-%v", strings.ToLower(getGameId()))
+	}
+
+	return game.registerClient(id, name, stream)
 }

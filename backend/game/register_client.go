@@ -9,12 +9,11 @@ import (
 )
 
 // registerClient ...
-func (g *Game) registerClient(id string, stream endless.Game_StateServer) error {
-	msg, out, err := g.registerHuman(id)
+func (g *Game) registerClient(id, name string, stream endless.Game_StateServer) error {
+	msg, out, err := g.registerHuman(id, name)
 	if err != nil {
 		return err
 	}
-	stream.Send(msg)
 
 	g.newClients <- out
 	ctx := context.Background()
@@ -24,8 +23,9 @@ func (g *Game) registerClient(id string, stream endless.Game_StateServer) error 
 		g.closingClients <- out
 	}()
 
-	wg := &sync.WaitGroup{}
+	g.output <- msg
 
+	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
 		for {

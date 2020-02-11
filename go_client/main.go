@@ -48,8 +48,16 @@ func main() {
 				os.Exit(1)
 			}
 
+			fmt.Printf("What's your name? (Blank for anon): ")
+			txt, err := reader.ReadString('\n')
+			if err != nil {
+				fmt.Printf("Unable to read input: %v\n", err)
+				os.Exit(1)
+			}
+			name := strings.TrimSpace(txt)
+
 			fmt.Printf("Game created, code: %v\nJoining game!\n\n", resp.GetCode())
-			handleStreamInput(ctx, ec, resp.GetCode(), "")
+			handleStreamInput(ctx, ec, resp.GetCode(), "", name)
 			goto complete
 		case 2:
 			fmt.Printf("\nEnter game code:")
@@ -58,8 +66,17 @@ func main() {
 				fmt.Printf("\nUnable to read input: %v\n\n", err)
 				os.Exit(1)
 			}
-			txt = strings.TrimSpace(txt)
-			handleStreamInput(ctx, ec, txt, "")
+			code := strings.TrimSpace(txt)
+
+			fmt.Printf("What's your name? (Blank for anon): ")
+			txt, err = reader.ReadString('\n')
+			if err != nil {
+				fmt.Printf("Unable to read input: %v\n", err)
+				os.Exit(1)
+			}
+			name := strings.TrimSpace(txt)
+
+			handleStreamInput(ctx, ec, code, "", name)
 			goto complete
 		case 3:
 			fmt.Printf("\nEnter game code:")
@@ -78,7 +95,7 @@ func main() {
 			}
 			id = strings.TrimSpace(id)
 
-			handleStreamInput(ctx, ec, code, id)
+			handleStreamInput(ctx, ec, code, id, "")
 			goto complete
 
 		case 4:
@@ -92,7 +109,7 @@ func main() {
 complete:
 }
 
-func handleStreamInput(ctx context.Context, client endless.GameClient, code, id string) {
+func handleStreamInput(ctx context.Context, client endless.GameClient, code, id, name string) {
 	strm, err := client.State(ctx)
 	if err != nil {
 		log.Printf("error connecting to game state: %v", err)
@@ -142,8 +159,8 @@ func handleStreamInput(ctx context.Context, client endless.GameClient, code, id 
 				case *endless.Output_Joined:
 					j := msg.GetJoined()
 					log.Printf(
-						"Joined game:\n\tPlayer ID: %v\n\tVIP? %v\n\tAudience? %v",
-						j.GetId(), j.GetIsVip(), j.GetAsAudience())
+						"Player joined game:\n\tPlayer ID: %v -- %v\n\tVIP? %v\n\tAudience? %v",
+						j.GetId(), j.GetName(), j.GetIsVip(), j.GetAsAudience())
 
 				default:
 					log.Printf("Unknown message type: %T", t)
@@ -157,7 +174,7 @@ func handleStreamInput(ctx context.Context, client endless.GameClient, code, id 
 		Input: &endless.Input_Register{
 			Register: &endless.Register{
 				Code: code,
-				Name: "client 1",
+				Name: name,
 				Id:   id,
 			},
 		},
