@@ -1,0 +1,53 @@
+38abfd77-1258-4879-8625-5bf653720231:
+  name: Attack
+  type: Basic
+  description: Hit them with your staff
+  cooldown: 0
+  cost: 0
+  scripts:
+    onActivate: wizard-basic-attack
+
+fc28e229-6b49-47e6-9467-759b70f911cd:
+  name: Magic Missile
+  type: Action
+  description: Fire a magical bolt
+  cooldown:
+    1: 2
+    2: 1
+    3: 0
+  cost: 3
+  scripts:
+    onActivate: wizard-magic-missile
+
+eeae9b25-d688-4c19-9478-2a473f14d6b4:
+  name: Chain Lightning
+  type: Action
+  description: Fire multiple bolts of lightning from your staff
+  cooldown:
+    1: 3
+    2: 2
+    3: 1
+  cost: 5
+  scripts:
+    onActivate: wizard-lightning
+
+89c82611-6cbe-4948-843b-4e798a79e205:
+  name: Meditation Master
+  type: Passive
+  description: Boost Focus regeneration for all party members
+  cooldown: 0
+  cost: 0
+  scripts:
+    onLevelUp: wizard-mediation
+
+907056bf-a29a-4478-a5b0-646363571290:
+  name: Disintegrate
+  type: Action
+  description: Fire a powerful beam of energy
+  cooldown:
+    1: 4
+    2: 3
+    3: 2
+  cost: 8
+  scripts:
+    onActivate: wizard-disintegrate

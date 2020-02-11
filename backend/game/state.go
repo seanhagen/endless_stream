@@ -11,6 +11,7 @@ import (
 )
 
 type skill interface{}
+
 type item interface{}
 
 type status interface {
@@ -138,11 +139,14 @@ func newState(ctx context.Context, id string) *gameState {
 func (gs *gameState) tick(t time.Time) error {
 	// get current actor
 
-	//
-
 	// actor has action to perform?
+	//   check for statuses like stunned
+	//   if need to skip, return a special "skip" action
 
-	// if no, return
+	// if no action ( ie, still waiting for player input )
+
+	// perform action
+	//
 
 	return nil
 }
