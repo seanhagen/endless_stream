@@ -74,13 +74,19 @@ Based on when a script is called, the arguments sent will change:
   * an array of UUIDs that represent who the skill is targeting
 
 * `onAttack`
+  * UUID of what is being attacked
 
 * `onDefense`
+  * UUID of what is attacking
 
 * `onMove`
+  * the integer of the threat zone the actor is leaving
+  * the integer of the threat zone the actor is entering
 
 * `onCooldown`
 
 * `onRoundOver`
+  * the round number
 
 * `onLevelUp`
+  * the new level of the actor
