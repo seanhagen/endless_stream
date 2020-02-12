@@ -17,9 +17,9 @@ func (g *Game) handleInput(ctx context.Context, in input) error {
 	var out *endless.Output
 
 	if in.isPlayer {
-		out, err = g.handlePlayerInput(ctx, in)
+		out, err = g.handlePlayerInput(ctx, in.in)
 	} else {
-		out, err = g.handleAudienceInput(ctx, in)
+		out, err = g.handleAudienceInput(ctx, in.in)
 	}
 
 	if err != nil {
@@ -39,8 +39,14 @@ func (g *Game) handleInput(ctx context.Context, in input) error {
 				},
 			},
 		}
+		return err
 	}
-	return err
+
+	if out != nil {
+		g.output <- out
+	}
+
+	return nil
 }
 
 // handlePlayerInput ...
@@ -51,7 +57,7 @@ func (g *Game) handlePlayerInput(ctx context.Context, in *endless.Input) (*endle
 	case StateCharSelect:
 		// character select
 		if cs := in.GetCharSelect(); cs != nil {
-			return g.handleCharacterSelect(cs)
+			return g.handleCharacterSelect(id, cs)
 		}
 		if st := in.GetGameStart(); st != nil {
 			return g.handleGameStart(id, st)
@@ -66,7 +72,7 @@ func (g *Game) handlePlayerInput(ctx context.Context, in *endless.Input) (*endle
 			// in.GetMove()
 			// in.GetSkill()
 		}
-	case StateDead:
+	case StateDefeat:
 		// game over
 		// cont := in.GetContinue() // start new game, go to the
 		// eg := in.GetEndGame()

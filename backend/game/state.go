@@ -72,10 +72,42 @@ type actor interface {
 }
 
 // outputState ...
-func (g *Game) outputState() *endless.CurrentState {
+func (g *Game) outputState() *endless.Output {
+	g.lock.Lock()
+	defer g.lock.Unlock()
 
-	return &endless.CurrentState{
-		Display: g.display,
-		// Wave: g.waveNumber,
+	var d endless.Display
+	switch g.screenState.MustState().(GameState) {
+	case StateCharSelect:
+		d = endless.Display_ScreenCharSelect
+	case StateNewWave:
+		d = endless.Display_ScreenNewWave
+	case StateWaveAnimWait:
+		fallthrough
+	case StateWaveInput:
+		fallthrough
+	case StateWaveProcess:
+		fallthrough
+	case StateWave:
+		d = endless.Display_ScreenWave
+	case StateDefeat:
+		d = endless.Display_ScreenDead
+	case StateGameOver:
+		d = endless.Display_ScreenGameOver
+	case StateVictory:
+		d = endless.Display_ScreenVictory
+	case StateStore:
+		d = endless.Display_ScreenStore
+	default:
+		d = endless.Display_ScreenLoading
+	}
+
+	return &endless.Output{
+		Data: &endless.Output_State{
+			State: &endless.CurrentState{
+				Display: d,
+				// Wave: g.waveNumber,
+			},
+		},
 	}
 }

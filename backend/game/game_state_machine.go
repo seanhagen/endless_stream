@@ -1,7 +1,6 @@
 package game
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 
@@ -9,27 +8,61 @@ import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
+// GameState ...
 type GameState string
 
 const (
-	StateCharSelect GameState = "CharacterSelect"
-	StateWave                 = "Wave"
-	StateDead                 = "Dead"
-	StateGameOver             = "GameOver"
-	StateVictory              = "Victory"
-	StateStore                = "Store"
-	StateNewWave              = "NewWave"
+	StateCharSelect   GameState = "CharacterSelect"
+	StateNewWave                = "NewWave"
+	StateWave                   = "Wave"
+	StateWaveStart              = "WaveStart"
+	StateWaveInput              = "WaveInput"
+	StateWaveProcess            = "WaveProcess"
+	StateWaveAnimWait           = "WaveAnimWait"
+	StateDefeat                 = "Defeat"
+	StateVictory                = "Victory"
+	StateStore                  = "Store"
+	StateGameOver               = "GameOver"
 )
 
 type GameStateTrigger string
 
 const (
-	TriggerStartGame  = "GameStart"
-	TriggerAllDead    = "AllDead"
-	TriggerGameOver   = "GameOver"
-	TriggerStartAgain = "StartAgain"
-	TriggerVictory    = "Victory"
-	TriggerContinue   = "Continue"
+	// Char Select -> New Wave
+	TriggerStartGame GameStateTrigger = "GameStart"
+
+	// New Wave -> Wave
+	TriggerStartWave = "StartWave"
+
+	// Wave -> Wave Input
+	TriggerWaveInput = "GetWaveInput"
+
+	// Wave -> Victory
+	TriggerWaveVictory = "WaveVictory"
+
+	// Wave -> Defeat
+	TriggerWaveDefeat = "WaveDefeat"
+
+	// Wave Input -> Wave Process
+	TriggerWaveProcessing = "WaveProcessing"
+
+	// Wave Process -> Anim Wait
+	TriggerWaveAnimWait = "WaveAnimWait"
+
+	// Anim Wait -> Wave
+	TriggerWaveContinue = "WaveContinue"
+
+	// Defeat -> Char Select
+	TriggerNewGame = "StartOver"
+
+	// Defeat -> Game Over
+	TriggerGameOver = "IGiveUp"
+
+	// Victory -> Store
+	TriggerStore = "LetsGoShopping"
+
+	// Store -> New Wave
+	TriggerNewWave = "BackIntoTheBreach"
 )
 
 func onWave(w *endless.Wave) {
@@ -54,42 +87,53 @@ func getGameStateMachine() *stateless.StateMachine {
 	sm.SetTriggerParameters(TriggerStartGame, reflect.TypeOf(&endless.Wave{}))
 
 	sm.Configure(StateCharSelect).
-		Permit(TriggerStartGame, StateWave)
+		Permit(TriggerStartGame, StateNewWave)
 	//, Permit(
 	//    trigger interface{},
 	//    destinationState interface{},
 	//    guards ...func(context.Context, ...interface{}) bool)
 
-	sm.Configure(StateWave).
-		Permit(TriggerAllDead, StateDead).
-		Permit(TriggerVictory, StateVictory).
-		OnEntry(func(ctx context.Context, args ...interface{}) error {
-			if len(args) <= 0 {
-				return fmt.Errorf("require wave")
-			}
-			w, ok := args[0].(*endless.Wave)
-			if !ok {
-				return fmt.Errorf("first argument must be *endless.Wave")
-			}
-			onWave(w)
-			return nil
-		})
+	sm.Configure(StateNewWave).
+		Permit(TriggerStartWave, StateWave)
 
-	sm.Configure(StateDead).
-		Permit(TriggerStartAgain, StateCharSelect).
+	sm.Configure(StateWave).
+		Permit(TriggerWaveInput, StateWaveInput).
+		Permit(TriggerWaveVictory, StateVictory).
+		Permit(TriggerWaveDefeat, StateDefeat)
+
+	sm.Configure(StateWaveInput).
+		Permit(TriggerWaveProcessing, StateWaveProcess)
+
+	sm.Configure(StateWaveProcess).
+		Permit(TriggerWaveAnimWait, StateWaveAnimWait)
+
+	sm.Configure(StateWaveAnimWait).
+		Permit(TriggerWaveContinue, StateWave)
+
+	sm.Configure(StateDefeat).
+		Permit(TriggerNewGame, StateCharSelect).
 		Permit(TriggerGameOver, StateGameOver)
 
 	sm.Configure(StateVictory).
-		Permit(TriggerContinue, StateStore)
+		Permit(TriggerStore, StateStore)
 
 	sm.Configure(StateStore).
-		Permit(TriggerContinue, StateNewWave)
+		Permit(TriggerNewWave, StateNewWave)
 
-	sm.Configure(StateNewWave).
-		Permit(TriggerContinue, StateWave)
+	// sm.Configure(StateWave).
+	// 	OnEntry(func(ctx context.Context, args ...interface{}) error {
+	// 		if len(args) <= 0 {
+	// 			return fmt.Errorf("require wave")
+	// 		}
+	// 		w, ok := args[0].(*endless.Wave)
+	// 		if !ok {
+	// 			return fmt.Errorf("first argument must be *endless.Wave")
+	// 		}
+	// 		onWave(w)
+	// 		return nil
+	// 	})
 
-	fmt.Printf("state machine: \n\n%v\n\n", sm.ToGraph())
-
-	fmt.Printf("state machine setup!\n")
+	// fmt.Printf("state machine: \n\n%v\n\n", sm.ToGraph())
+	// fmt.Printf("state machine setup!\n")
 	return sm
 }

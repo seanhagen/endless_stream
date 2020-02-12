@@ -22,6 +22,7 @@ func (g *Game) listen() {
 			g.lock.Lock()
 			g.players[newClient] = true
 			g.lock.Unlock()
+			newClient.out <- g.outputState()
 
 		case clientLeft := <-g.closingClients:
 			log.Printf("client disconnected: %v", clientLeft.id)
@@ -48,7 +49,6 @@ func (g *Game) listen() {
 			if err != nil {
 				log.Printf("unable to to tick: %v", err)
 			}
-
 			ts, _ := ptypes.TimestampProto(t)
 			g.output <- &endless.Output{
 				Data: &endless.Output_Tick{
@@ -58,11 +58,7 @@ func (g *Game) listen() {
 
 		case <-stateTick.C:
 			// log.Printf("sending state")
-			g.output <- &endless.Output{
-				Data: &endless.Output_State{
-					State: &endless.CurrentState{},
-				},
-			}
+			g.output <- g.outputState()
 
 		case <-g.ctx.Done():
 			log.Printf("game context signaled done!")
