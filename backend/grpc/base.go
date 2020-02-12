@@ -1,4 +1,4 @@
-package server
+package grpc
 
 import (
 	"context"
@@ -29,7 +29,7 @@ type Base struct {
 	streamIntercept []grpc.StreamServerInterceptor
 	_siLock         *sync.Mutex
 
-	handlers []GRPCHandler
+	handlers []Handler
 	_hLock   *sync.Mutex
 }
 
@@ -59,7 +59,7 @@ func New(ctx context.Context, conf Config) (*Base, error) {
 		// erRep:           ec,
 		// stTr:            tr,
 
-		handlers: []GRPCHandler{},
+		handlers: []Handler{},
 		_hLock:   &sync.Mutex{},
 
 		unaryIntercept: conf.UnaryInterceptors,
@@ -108,7 +108,7 @@ func (ba *Base) AddStreamInterceptor(s ...grpc.StreamServerInterceptor) {
 }
 
 // RegisterHandler ...
-func (ba *Base) RegisterHandler(hn GRPCHandler) {
+func (ba *Base) RegisterHandler(hn Handler) {
 	ba._hLock.Lock()
 	ba.handlers = append(ba.handlers, hn)
 	ba._hLock.Unlock()

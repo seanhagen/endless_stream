@@ -1,4 +1,4 @@
-package game
+package service
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 
 	"github.com/gofrs/uuid"
 	"github.com/seanhagen/endless_stream/backend/endless"
+	"github.com/seanhagen/endless_stream/backend/game"
 )
 
 // Create ...
@@ -15,7 +16,7 @@ func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.
 	var id string
 
 	for {
-		id = getGameId()
+		id = game.GetGameId()
 		if _, ok := s.games[id]; ok {
 			continue
 		}
@@ -24,7 +25,7 @@ func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
-	g, err := createGame(ctx, id)
+	g, err := game.Create(ctx, id)
 	if err != nil {
 		cancel()
 		return nil, err
@@ -33,11 +34,11 @@ func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.
 		defer func() {
 			// capture panic, remove game from maps
 			if r := recover(); r != nil {
-				g.running = false
+				g.Running = false
 				log.Printf("Reocvered panic from Game %v listen: %v", id, r)
 			}
 		}()
-		g.listen()
+		g.Listen()
 	}()
 
 	s.l.Lock()
@@ -50,7 +51,7 @@ func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.
 
 // State ...
 func (s *Srv) State(stream endless.Game_StateServer) error {
-	var game *Game
+	var g *game.Game
 	var id, name string
 	for {
 		msg, err := stream.Recv()
@@ -74,7 +75,8 @@ func (s *Srv) State(stream endless.Game_StateServer) error {
 		}
 
 		c := r.GetCode()
-		g, ok := s.games[c]
+		var ok bool
+		g, ok = s.games[c]
 		if !ok {
 			out := &endless.Output{
 				Data: &endless.Output_Msg{
@@ -87,7 +89,7 @@ func (s *Srv) State(stream endless.Game_StateServer) error {
 			stream.Send(out)
 			continue
 		}
-		game = g
+
 		id = strings.TrimSpace(r.GetId())
 		name = r.GetName()
 		break
@@ -99,8 +101,8 @@ func (s *Srv) State(stream endless.Game_StateServer) error {
 	}
 
 	if name == "" {
-		name = fmt.Sprintf("Anon-%v", strings.ToLower(getGameId()))
+		name = fmt.Sprintf("Anon-%v", strings.ToLower(game.GetGameId()))
 	}
 
-	return game.registerClient(id, name, stream)
+	return g.RegisterClient(id, name, stream)
 }

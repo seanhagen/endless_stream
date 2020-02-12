@@ -1,4 +1,4 @@
-package game
+package service
 
 import (
 	"context"
@@ -6,29 +6,30 @@ import (
 	"time"
 
 	"github.com/seanhagen/endless_stream/backend/endless"
-	"github.com/seanhagen/endless_stream/backend/server"
-	"google.golang.org/grpc"
+	"github.com/seanhagen/endless_stream/backend/game"
+	"github.com/seanhagen/endless_stream/backend/grpc"
+	g "google.golang.org/grpc"
 )
 
 type Srv struct {
-	games   map[string]*Game
+	games   map[string]*game.Game
 	l       *sync.Mutex
 	cancels map[string]context.CancelFunc
 }
 
 // Setup ...
-func Setup(ctx context.Context, srv *server.Base) error {
+func Setup(ctx context.Context, srv *grpc.Base) error {
 	// TODO:
 	//   - return svc so that it can be gracefully shutdown
 	//   - add function to svc for graceful shutdown
 	//   - add method to game that gracefully shutsdown the game
 	svc := &Srv{
-		games:   map[string]*Game{},
+		games:   map[string]*game.Game{},
 		cancels: map[string]context.CancelFunc{},
 		l:       &sync.Mutex{},
 	}
 
-	srv.RegisterHandler(func(s *grpc.Server) {
+	srv.RegisterHandler(func(s *g.Server) {
 		endless.RegisterGameServer(s, svc)
 	})
 
@@ -45,7 +46,7 @@ func (s *Srv) cleanup() {
 		select {
 		case <-tick.C:
 			for id, g := range s.games {
-				if !g.running {
+				if !g.Running {
 					s.l.Lock()
 
 					g = nil

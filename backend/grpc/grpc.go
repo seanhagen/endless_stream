@@ -1,4 +1,4 @@
-package server
+package grpc
 
 import (
 	"context"
@@ -25,8 +25,8 @@ var DefaultTimeout = 0 * time.Second
 // GatewayHandler ...
 type GatewayHandler func(context.Context, *runtime.ServeMux, *grpc.ClientConn) error
 
-// GRPCHandler ...
-type GRPCHandler func(*grpc.Server)
+// Handler ...
+type Handler func(*grpc.Server)
 
 type grpcConfig struct {
 	vip *viper.Viper
@@ -47,7 +47,7 @@ type grpcServer struct {
 }
 
 // registerHandler ...
-func (s *grpcServer) registerHandler(ctx context.Context, fn GRPCHandler) {
+func (s *grpcServer) registerHandler(ctx context.Context, fn Handler) {
 	fn(s.srv)
 }
 
