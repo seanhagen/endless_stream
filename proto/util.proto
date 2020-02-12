@@ -86,11 +86,12 @@ enum Level {
 
 // Display is an enum with the various screens
 enum Display {
-  CharacterSelect = 0;
-  CharacterSheet = 1;
-  LevelUp = 2;
-  Shop = 3;
-  Dead = 4;
-  GameOver = 5;
-  NewWave = 6;
+  ScreenLoading = 0;
+  ScreenCharSelect = 1;
+  ScreenWave = 2;
+  ScreenVictory = 3;
+  ScreenDead = 4;
+  ScreenGameOver = 5;
+  ScreenStore = 6;
+  ScreenNewWave = 7;
 }
