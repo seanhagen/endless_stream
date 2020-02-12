@@ -1,5 +1,22 @@
 package game
 
+import (
+	"math/rand"
+	"time"
+)
+
+const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+func getGameId() string {
+	b := make([]byte, 4)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
+}
+
 var statToMod = map[int]int{
 	0:  -3,
 	1:  -2,
@@ -34,7 +51,7 @@ func xpForLevel(level int) int {
 		return 6
 	}
 
-	return level + xpForNextLevel(level-1)
+	return level + xpForLevel(level-1)
 }
 
 func budgetForWave(num int) int {
