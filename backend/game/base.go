@@ -162,9 +162,7 @@ func getLevelOfWave(i int) endless.Level {
 		return endless.Level_Fire
 	}
 
-	if i > 50 {
-		return endless.Level_Void
-	}
+	return endless.Level_Void
 }
 
 // isCurrentPlayer ...
