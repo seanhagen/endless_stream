@@ -9,8 +9,8 @@ import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
-// listen ...
-func (g *Game) listen() {
+// Listen ...
+func (g *Game) Listen() {
 	ticker := time.NewTicker(tickLen)
 	stateTick := time.NewTicker(stateLen)
 
@@ -45,10 +45,13 @@ func (g *Game) listen() {
 
 		case t := <-ticker.C:
 			// log.Printf("game tick")
-			err := g.tick(t)
+			ctx := context.Background()
+			ctx, cancel := context.WithTimeout(ctx, time.Second*2)
+			err := g.tick(ctx, t)
 			if err != nil {
 				log.Printf("unable to to tick: %v", err)
 			}
+			cancel()
 			ts, _ := ptypes.TimestampProto(t)
 			g.output <- &endless.Output{
 				Data: &endless.Output_Tick{
@@ -71,4 +74,9 @@ func (g *Game) listen() {
 	}
 finished:
 	log.Printf("game done")
+}
+
+// finished ...
+func (g *Game) finished() {
+	g.cancelFn()
 }

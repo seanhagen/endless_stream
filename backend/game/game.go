@@ -1,6 +1,7 @@
 package game
 
 import (
+	"context"
 	"log"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 )
 
 // tick ...
-func (g *Game) tick(t time.Time) error {
+func (g *Game) tick(ctx context.Context, t time.Time) error {
 	g.lock.Lock()
 	defer g.lock.Unlock()
 
@@ -17,10 +18,67 @@ func (g *Game) tick(t time.Time) error {
 		g.idleTime++
 	}
 
-	// err := g.state.tick(t)
-	// if err != nil {
-	// 	return err
-	// }
+	// run all the ai scripts
+
+	// check tickCountdown timers
+	cds := g.tickCountdowns[g.tickCounterIdx]
+	for _, c := range cds {
+		c(ctx)
+	}
+	// remove those counters
+	g.tickCountdowns[g.tickCounterIdx] = []countdownFunc{}
+	// decrement counter
+	g.tickCounterIdx--
+	if g.tickCounterIdx < tickCounterMin { // loop back around
+		g.tickCounterIdx = tickCounterMax
+	}
+
+	switch g.screenState.MustState().(GameState) {
+	case StateCharSelect:
+		// handle assigning classes to players
+		// if VIP sends 'GameStart', move to new wave state
+	case StateNewWave:
+		// set up next wave
+		// run all round counters
+	case StateWave:
+	// check
+	//  if players are all dead, go to 'Defeat' state
+	//  if monsters are all dead, go to 'Victory' state
+	//  otherwise go to wave input state
+	case StateWaveInput:
+		// get current actor
+		//   get input
+		//   if valid, store and continue
+	case StateWaveProcess:
+		// process current actor action
+		//   if action is move or skill, advance iniative
+		//   otherwise apply item affect and continue
+		// send tick to all current status effects
+		// check all monsters
+		//   if dead, run 'onDeath' script then remove
+		// check all players
+		//   if dead, send status update to that player
+		// determine next in iniative order
+		// any other state updates
+		// start countdown timer for animation wait
+	case StateWaveAnimWait:
+		// wait for timer to finish
+	case StateDefeat:
+		// output defeat message
+		// if vip sends 'StartOver', go to character select state
+		// if vip sends 'IGiveUp', go to game over state
+	case StateVictory:
+		// output victory message
+		// start countdown timer for transition
+		// when timer is done or vip sends continue, go to store state
+	case StateStore:
+		// send store inventory message
+		// start countdown timer for transition
+		// when timer is done or vip sends continue, go to new wave
+	case StateGameOver:
+		// start countdown timer
+		// when timer over or vip sends quit message, quit game
+	}
 
 	return nil
 }

@@ -10,8 +10,8 @@ type item interface{}
 
 type status interface {
 	effect(*creature)
-	tick()
-	shouldRemove() bool
+	// returns true if the status is done and should be removed
+	tick() bool
 }
 
 type creature struct {
@@ -65,11 +65,9 @@ type monster struct {
 	cost     int32
 }
 
-type actor interface {
-	isPlayer() bool
-	id() string
-	setNextAction()
-}
+type action interface{}
+
+type actor interface{}
 
 // outputState ...
 func (g *Game) outputState() *endless.Output {

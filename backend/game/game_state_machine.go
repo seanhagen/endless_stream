@@ -15,7 +15,6 @@ const (
 	StateCharSelect   GameState = "CharacterSelect"
 	StateNewWave                = "NewWave"
 	StateWave                   = "Wave"
-	StateWaveStart              = "WaveStart"
 	StateWaveInput              = "WaveInput"
 	StateWaveProcess            = "WaveProcess"
 	StateWaveAnimWait           = "WaveAnimWait"

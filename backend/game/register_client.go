@@ -8,8 +8,8 @@ import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
-// registerClient ...
-func (g *Game) registerClient(id, name string, stream endless.Game_StateServer) error {
+// RegisterClient ...
+func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) error {
 	msg, out, err := g.registerHuman(id, name)
 	if err != nil {
 		return err

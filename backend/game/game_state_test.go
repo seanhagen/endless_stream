@@ -11,6 +11,8 @@ import (
 func TestGameStateSetup(t *testing.T) {
 	s := getGameStateMachine()
 
+	fmt.Printf("graph: \n\n%v\n\n", s.ToGraph())
+
 	// err := s.Fire(TriggerAllDead, "wat")
 	// spew.Dump(s, err)
 

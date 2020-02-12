@@ -2,6 +2,7 @@ package game
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 
@@ -11,6 +12,12 @@ import (
 
 const tickLen = time.Second * 1
 const stateLen = tickLen * 30
+
+const roundCounterMax int32 = 30
+const roundCounterMin int32 = 0
+
+const tickCounterMax int32 = 30
+const tickCounterMin int32 = 0
 
 type output struct {
 	id       string
@@ -23,9 +30,13 @@ type input struct {
 	isPlayer bool
 }
 
+type countdownFunc func(context.Context)
+
 type Game struct {
 	// ctx is a cancelable context that is canceled when the game is done/erorrs
 	ctx context.Context
+
+	cancelFn context.CancelFunc
 
 	// code is the code to join this game
 	code string
@@ -81,19 +92,29 @@ type Game struct {
 
 	msgId int32
 
-	// running is true if the game is running, or false if it's not
+	// round countdowns are functions that wait a specific number of rounds before executing
+	roundCounterIdx int32
+	roundCountdowns map[int32][]countdownFunc
+
+	// tick countdowns are functions that wait a specific number of ticks before executing
+	tickCounterIdx int32
+	tickCountdowns map[int32][]countdownFunc
+
+	// Running is true if the game is running, or false if it's not
 	// if a game isn't running, when a client connects it should
 	//   - send the state
 	//   - send a message stating the game is over
 	//   - disconnect the client
-	running bool
+	Running bool
 }
 
-func createGame(ctx context.Context, id string) (*Game, error) {
+func Create(ctx context.Context, id string) (*Game, error) {
+	ctx, cancel := context.WithCancel(ctx)
 	g := &Game{
-		ctx:   ctx,
-		code:  id,
-		msgId: 0,
+		ctx:      ctx,
+		cancelFn: cancel,
+		code:     id,
+		msgId:    0,
 
 		output: make(chan *endless.Output, 10),
 		input:  make(chan input, 100),
@@ -115,12 +136,82 @@ func createGame(ctx context.Context, id string) (*Game, error) {
 		display: endless.Level_Forest,
 
 		idleTime: 0,
-		running:  true,
+		Running:  true,
 
 		currentWaveNumber: 1,
 		waves:             setupWaves(),
+
+		roundCounterIdx: roundCounterMax,
+		roundCountdowns: setupRoundCountdowns(),
+
+		tickCounterIdx: tickCounterMax,
+		tickCountdowns: setupTickCountdowns(),
 	}
 	return g, nil
+}
+
+// addRoundCountdown ...
+func (g *Game) addRoundCountdown(numRounds int32, fn countdownFunc) error {
+	return addCountdown(
+		numRounds,
+		roundCounterMin,
+		roundCounterMax,
+		g.roundCounterIdx,
+		fn,
+		g.roundCountdowns,
+	)
+}
+
+// addTickCountdown ...
+func (g *Game) addTickCountdown(numRounds int32, fn countdownFunc) error {
+	return addCountdown(
+		numRounds,
+		tickCounterMin,
+		tickCounterMax,
+		g.tickCounterIdx,
+		fn,
+		g.tickCountdowns,
+	)
+}
+
+// addCountdown ...
+func addCountdown(numRounds, min, max, cur int32, fn countdownFunc, cdowns map[int32][]countdownFunc) error {
+	if numRounds > max {
+		return fmt.Errorf("'%v' is greater than max counter '%v'", numRounds, max)
+	}
+
+	if numRounds < min {
+		return fmt.Errorf("'%v' is smaller than min counter '%v'", numRounds, min)
+	}
+
+	idx := cur - numRounds
+	if idx < 0 {
+		idx += max
+	}
+
+	c, ok := cdowns[idx]
+	if !ok {
+		c = []countdownFunc{}
+	}
+	c = append(c, fn)
+	cdowns[idx] = c
+	return nil
+}
+
+func setupRoundCountdowns() map[int32][]countdownFunc {
+	return setupCountdowns(roundCounterMin, roundCounterMax)
+}
+
+func setupTickCountdowns() map[int32][]countdownFunc {
+	return setupCountdowns(tickCounterMin, tickCounterMax)
+}
+
+func setupCountdowns(min, max int32) map[int32][]countdownFunc {
+	out := map[int32][]countdownFunc{}
+	for i := min; i <= max; i++ {
+		out[i] = []countdownFunc{}
+	}
+	return out
 }
 
 // setupWaves ...

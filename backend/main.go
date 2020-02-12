@@ -4,9 +4,9 @@ import (
 	"context"
 	"log"
 
-	"github.com/seanhagen/endless_stream/backend/game"
-	"github.com/seanhagen/endless_stream/backend/server"
-	"google.golang.org/grpc"
+	"github.com/seanhagen/endless_stream/backend/grpc"
+	"github.com/seanhagen/endless_stream/backend/service"
+	g "google.golang.org/grpc"
 )
 
 var (
@@ -28,7 +28,7 @@ func main() {
 		log.Fatalf("Unable to setup server: %v", err)
 	}
 
-	err = game.Setup(ctx, srv)
+	err = service.Setup(ctx, srv)
 	if err != nil {
 		log.Fatalf("Unable to initialize game server: %v", err)
 	}
@@ -41,14 +41,14 @@ func main() {
 	log.Printf("server shutdown complete")
 }
 
-func setup(ctx context.Context) (*server.Base, error) {
-	conf := server.Config{
+func setup(ctx context.Context) (*grpc.Base, error) {
+	conf := grpc.Config{
 		Version:            Version,
 		Build:              Build,
 		Repo:               Repo,
-		UnaryInterceptors:  []grpc.UnaryServerInterceptor{},
-		StreamInterceptors: []grpc.StreamServerInterceptor{},
+		UnaryInterceptors:  []g.UnaryServerInterceptor{},
+		StreamInterceptors: []g.StreamServerInterceptor{},
 	}
 
-	return server.New(ctx, conf)
+	return grpc.New(ctx, conf)
 }
