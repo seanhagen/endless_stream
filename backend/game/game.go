@@ -17,10 +17,10 @@ func (g *Game) tick(t time.Time) error {
 		g.idleTime++
 	}
 
-	err := g.state.tick(t)
-	if err != nil {
-		return err
-	}
+	// err := g.state.tick(t)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
