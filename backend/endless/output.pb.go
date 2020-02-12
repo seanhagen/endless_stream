@@ -929,7 +929,7 @@ func (m *CurrentState) GetDisplay() Display {
 	if m != nil {
 		return m.Display
 	}
-	return Display_CharacterSelect
+	return Display_ScreenLoading
 }
 
 func (m *CurrentState) GetCurrentWave() *Wave {
