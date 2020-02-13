@@ -8,41 +8,35 @@ type skill interface{}
 
 type item interface{}
 
-type status interface {
-	effect(*creature)
-	// returns true if the status is done and should be removed
-	tick() bool
-}
-
 type creature struct {
-	id   string
-	name string
+	Id   string
+	Name string
 
-	position *endless.Position
-	statuses []status
+	Position *endless.Position
+	Statuses []status
 
-	strength         int32
-	maxVitality      int32 // aka max hp
-	currentVitality  int32 // aka current hp
-	combatDamageBase int32
-	vitalityRegen    int32
+	Strength         int32
+	MaxVitality      int32 // aka max hp
+	CurrentVitality  int32 // aka current hp
+	CombatDamageBase int32
+	VitalityRegen    int32
 
-	intelligence int32
-	currentFocus int32
-	maxFocus     int32
-	willpower    int32
-	focusRegen   int32
+	Intelligence int32
+	CurrentFocus int32
+	MaxFocus     int32
+	Willpower    int32
+	FocusRegen   int32
 
-	agility    int32
-	evasion    int32
-	accuracy   int32
-	initiative int32
+	Agility    int32
+	Evasion    int32
+	Accuracy   int32
+	Initiative int32
 
 	// a list of current modifiers that affect the various stats
-	modifiers map[string]int32
+	Modifiers map[string]int32
 
-	gold int32
-	xp   int32
+	Gold int32
+	XP   int32
 }
 
 type player struct {
