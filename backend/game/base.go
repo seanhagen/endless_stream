@@ -10,14 +10,25 @@ import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
-const tickLen = time.Second * 1
-const stateLen = tickLen * 30
+// tick 5 times a second
+const tickLen = time.Millisecond * 200
 
+// send state every 5 seconds
+const stateLen = time.Second * 5
+
+// max number of rounds ahead something can schedule: 30
 const roundCounterMax int32 = 30
 const roundCounterMin int32 = 0
 
-const tickCounterMax int32 = 30
+// max number of ticks ahead something can schedule: 60 seconds, or 300 ticks
+const tickCounterMax int32 = 300
 const tickCounterMin int32 = 0
+
+// 30 seconds in ticks is 150
+const tick30Seconds int32 = 150
+
+const inputLength = 100
+const audienceInputLength = inputLength
 
 type output struct {
 	id       string
@@ -45,14 +56,18 @@ type Game struct {
 	// and a listener will take care of sending the output to all connected clients
 	output chan *endless.Output
 
-	// input is a channel for data from any player
+	// input is a channel for data from any player or audience member
 	input chan input
+
+	// playerInput is input just from the 1-4 players, no audience input
+	playerInput chan input
+
+	// audienceInput is input just from the audience, no player input
+	audienceInput chan input
 
 	// characters is a map of Class -> player ID. If a charcter hasn't been selected yet,
 	// the class won't be a key in the map.
 	characters map[endless.Class]string
-
-	vipPlayer string
 
 	// players is a map of output -> bool, to keep track of connected players
 	players map[output]bool
@@ -69,6 +84,9 @@ type Game struct {
 	playerNames      map[string]string
 	currentPlayer    *string
 
+	// vipPlayer is the player who connected first
+	vipPlayer string
+
 	display endless.Level
 
 	screenState *stateless.StateMachine
@@ -79,7 +97,11 @@ type Game struct {
 
 	// audience are humans who've connected to this game but are only able to do audience things, they
 	// are unable to control any of the characters
-	audience map[output]bool
+	audience    map[output]bool
+	audienceIds map[string]bool
+	// they do get to cheer or boo, which can impact the game ( ...somehow )
+	audienceCheer int
+	audienceBoo   int
 
 	closingClients chan output
 	newClients     chan output
@@ -116,8 +138,10 @@ func Create(ctx context.Context, id string) (*Game, error) {
 		code:     id,
 		msgId:    0,
 
-		output: make(chan *endless.Output, 10),
-		input:  make(chan input, 100),
+		output:        make(chan *endless.Output, 10),
+		input:         make(chan input, inputLength),
+		playerInput:   make(chan input, inputLength),
+		audienceInput: make(chan input, audienceInputLength),
 
 		players:          map[output]bool{},
 		playerIds:        map[string]int{},

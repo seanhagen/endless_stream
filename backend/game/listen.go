@@ -16,18 +16,27 @@ func (g *Game) Listen() {
 
 	for {
 		var err error
+		// multiple select statements ( with default cases ) allows go to do more
+		// than one thing each iteration, so a tick won't have to wait because
+		// there's an update to send out or a player has connected
+
 		select {
 		case newClient := <-g.newClients:
-			log.Printf("client connected: %v", newClient.id)
 			g.lock.Lock()
+			log.Printf("client connected: %v", newClient.id)
 			g.players[newClient] = true
+
 			g.lock.Unlock()
+			// output state attempts to gain lock
 			newClient.out <- g.outputState()
 
 		case clientLeft := <-g.closingClients:
 			log.Printf("client disconnected: %v", clientLeft.id)
 			g.unregisterHuman(clientLeft)
+		default:
+		}
 
+		select {
 		case update := <-g.output:
 			if len(g.players) > 0 {
 				// log.Printf("sending output to players")
@@ -38,11 +47,17 @@ func (g *Game) Listen() {
 			}
 
 		case input := <-g.input:
-			log.Printf("got player input: %v", input)
-			ctx, cancel := context.WithTimeout(g.ctx, time.Second)
-			err = g.handleInput(ctx, input)
-			cancel()
+			log.Printf("got player/audience input: %v", input)
+			g.handleInput(input)
 
+		case <-stateTick.C:
+			// log.Printf("sending state")
+			g.output <- g.outputState()
+
+		default:
+		}
+
+		select {
 		case t := <-ticker.C:
 			// log.Printf("game tick")
 			ctx := context.Background()
@@ -59,13 +74,14 @@ func (g *Game) Listen() {
 				},
 			}
 
-		case <-stateTick.C:
-			// log.Printf("sending state")
-			g.output <- g.outputState()
+		default:
+		}
 
+		select {
 		case <-g.ctx.Done():
 			log.Printf("game context signaled done!")
 			goto finished
+		default:
 		}
 
 		if err != nil {

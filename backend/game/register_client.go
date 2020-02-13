@@ -4,18 +4,18 @@ import (
 	"context"
 	"log"
 	"sync"
+	"time"
 
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
 // RegisterClient ...
 func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) error {
-	msg, out, err := g.registerHuman(id, name)
+	out, err := g.registerHuman(id, name)
 	if err != nil {
 		return err
 	}
 
-	g.newClients <- out
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
@@ -23,7 +23,8 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 		g.closingClients <- out
 	}()
 
-	g.output <- msg
+	isPlayer := out.isPlayer
+	outCh := out.out
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
@@ -68,7 +69,7 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 				}
 
 				msg.PlayerId = id
-				g.input <- input{in: msg, isPlayer: out.isPlayer}
+				g.input <- input{in: msg, isPlayer: isPlayer}
 			}
 
 			if finished {
@@ -88,7 +89,7 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 			select {
 			case <-ctx.Done():
 				finished = true
-			case out := <-out.out:
+			case out := <-outCh:
 				if stream.Context().Err() != nil {
 					finished = true
 					break
@@ -112,4 +113,99 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 
 	wg.Wait()
 	return nil
+}
+
+// unregisterHuman is called in listen.go when a clien disconnects
+func (g *Game) unregisterHuman(o output) error {
+	g.lock.Lock()
+	defer g.lock.Unlock()
+
+	if o.isPlayer {
+		delete(g.players, o)
+		g.playerIds[o.id]--
+	} else {
+		delete(g.audience, o)
+	}
+
+	return nil
+}
+
+// registerHuman is called above in RegisterClient
+func (g *Game) registerHuman(id, name string) (output, error) {
+	// accessing some maps, gotta lock
+	g.lock.Lock()
+	defer g.lock.Unlock()
+
+	out := output{
+		id:       id,
+		out:      make(chan *endless.Output),
+		isPlayer: false,
+	}
+
+	v, ok := g.playerIds[id]
+	if ok && v < 1 {
+		// player is rejoining
+		name = g.playerNames[id]
+	}
+
+	if len(g.players)+1 <= 4 {
+		msg, err := g.registerPlayer(id, name)
+		out.isPlayer = true
+		g.newClients <- out
+
+		time.AfterFunc(time.Millisecond*100, func() {
+			g.output <- msg
+		})
+		return out, err
+	}
+
+	g.newClients <- out
+
+	// g.audienceIds[id] = 1
+	msg, err := g.registerAudience(id)
+	time.AfterFunc(time.Millisecond*100, func() {
+		g.output <- msg
+	})
+	return out, err
+}
+
+// registerPlayer ...
+func (g *Game) registerPlayer(id, name string) (*endless.Output, error) {
+	g.playerIds[id] = 1
+	g.playerCharacters[id] = nil
+	g.playerNames[id] = name
+
+	isVip := false
+	if len(g.players) == 0 || id == g.vipPlayer {
+		isVip = true
+		g.vipPlayer = id
+	}
+
+	out := &endless.Output{
+		Data: &endless.Output_Joined{
+			Joined: &endless.JoinedGame{
+				Id:         id,
+				AsAudience: false,
+				IsVip:      isVip,
+				Name:       name,
+			},
+		},
+	}
+
+	return out, nil
+}
+
+// registerAudience ...
+func (g *Game) registerAudience(id string) (*endless.Output, error) {
+	out := &endless.Output{
+		Data: &endless.Output_Joined{
+			Joined: &endless.JoinedGame{
+				Id:         id,
+				AsAudience: true,
+				Name:       "Audience Member",
+			},
+		},
+	}
+
+	return out, nil
 }
