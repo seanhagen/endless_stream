@@ -172,9 +172,9 @@ func createPlayerCharacter(id string, c endless.Class) *player {
 
 	return &player{
 		creature: creature{
-			id:        id,
-			position:  &p,
-			modifiers: map[string]int32{},
+			Id:        id,
+			Position:  &p,
+			Modifiers: map[string]int32{},
 		},
 		class:     c,
 		isAI:      false,

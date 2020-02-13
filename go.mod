@@ -13,7 +13,9 @@ require (
 	github.com/sirupsen/logrus v1.2.0
 	github.com/soheilhy/cmux v0.1.4
 	github.com/spf13/viper v1.6.2
+	github.com/yuin/gopher-lua v0.0.0-20191220021717-ab39c6098bdb
 	go.opencensus.io v0.22.0
 	google.golang.org/genproto v0.0.0-20190927181202-20e1ac93f88c
 	google.golang.org/grpc v1.27.0
+	layeh.com/gopher-luar v1.0.7
 )
