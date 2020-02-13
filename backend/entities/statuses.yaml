@@ -1,0 +1,16 @@
+statuses:
+  8c6ba2dc-4571-48a2-88f6-0afe1f15c6c5:
+    name: Poison
+    alerts:
+      - You've been poisioned!
+    description: >-
+      Does 3-5 damage each turn to the aflicted creature
+    scriptName: poison.lua
+
+  66d9b169-0520-4618-ad66-e043bb5f658e:
+    name: Stunned
+    description: While you are stunned, you will automatically skip your turn
+    alerts:
+      - That blow stuns you
+      - You've been stunned, you're seeing stars
+    scriptName: stunned.lua

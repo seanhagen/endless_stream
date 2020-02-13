@@ -1,0 +1,6 @@
+ai:
+  20c81e00-3c76-4711-a7e8-29c88e14fe9e:
+    name: fighter-ai-full
+
+  017a6e1d-4729-4c4f-be0f-52c033a27617:
+    name: fighter-ai-timeout

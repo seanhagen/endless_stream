@@ -1,0 +1,14 @@
+monsters:
+  7f71782b-3df1-4a2b-9ee7-e526c2af57a8:
+    name: Small Rat
+    description: A small rat. Looks bitey.
+    type: Rat
+    isFlying: false
+    isBoss: false
+    cost_mod: 0
+    m_mod: 6
+    g_mod: -3
+    strength: 0
+    intelligence: 1
+    agility: 0
+    script: small-rat.lua

@@ -1,0 +1,5 @@
+items:
+  e943b199-67de-4991-8441-faaedd87bdfc:
+    name: Basic Health Potion
+    description: Drink this to get back 10% of your health
+    script: basic-health-potion
