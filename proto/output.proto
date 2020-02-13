@@ -170,7 +170,7 @@ message EventMessage {
 // so nobody else can select it.
 message CharacterSelected {
   // Selected is a map of ID -> class
-  map<string, Class> selected = 1;
+  map<string, ClassType> selected = 1;
 }
 
 // Wave has some basic information about the wave
