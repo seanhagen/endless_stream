@@ -12,5 +12,4 @@ function tick()
       return true
    end
    return false
-
 end

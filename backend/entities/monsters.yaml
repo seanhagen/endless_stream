@@ -3,12 +3,21 @@ monsters:
     name: Small Rat
     description: A small rat. Looks bitey.
     type: Rat
-    isFlying: false
-    isBoss: false
-    cost_mod: 0
-    m_mod: 6
-    g_mod: -3
+    mod: 6
+    costMod: -1
     strength: 0
-    intelligence: 1
-    agility: 0
-    script: small-rat.lua
+    intelligence: 0
+    agility: 1
+    script: small-rat
+
+  be1a8651-c834-4212-8244-00585053b2a2:
+    name: Leprechaun
+    description: A small man wearing green with a giant sack of coins
+    type: Fae
+    isBoss: true
+    mod: 6
+    goldMod: 4.0
+    strength: 1
+    intelligence: 0
+    agility: 7
+    script: leprechaun

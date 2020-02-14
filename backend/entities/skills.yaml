@@ -3,8 +3,8 @@ skills:
     942f437b-925d-4371-8565-37ba54560473:
       name: Attack
       type: Basic
-      description: Use your mace on an enemy
-      cooldown: 0
+      description:
+        0: Use your mace on an enemy
       cost: 0
       script: cleric-basic-attack
       # onActivate
@@ -12,23 +12,19 @@ skills:
     873a0f01-ab2e-4121-af1f-ef3dc17faf87:
       name: Healing Hand
       type: Action
-      description: Heal any player
-      cooldown: 0
+      description:
+        0: Heal any player
       cost: 4
-      scripts: cleric-healing-hand
+      script: cleric-healing-hand
       # onActivate
 
     2ce92a08-eb5a-4c17-b19a-9e3cc70037cb:
       name: Illuminate
       type: Action
       description:
-        1: Reveal all invisible enemies. Reduce target accuracy by 1. Doesn't stack.
-        2: Reveal all invisible enemies. Reduce target accuracy by 2. Doesn't stack.
-        3: Reveal all invisible enemies. Reduce target accuracy by 3. Doesn't stack.
-      cooldown:
-        1: 2
-        2: 1
-        3: 0
+        1: Reveal all invisible enemies. Reduce target accuracy by 1. Doesn\'t stack.
+        2: Reveal all invisible enemies. Reduce target accuracy by 2. Doesn\'t stack.
+        3: Reveal all invisible enemies. Reduce target accuracy by 3. Doesn\'t stack.
       cost: 2
       script: cleric-illuminate
       # onActivate
@@ -36,8 +32,8 @@ skills:
     9f4f52ca-1d05-4d55-a387-5518bd6fe259:
       name: Triage
       type: Passive
-      description: Boost vitality regeneration for all party memberse
-      cooldown: 0
+      description:
+        0: Boost vitality regeneration for all party memberse
       cost: 0
       script: cleric-triage
       # onLevelUp: cleric-triage
@@ -45,11 +41,8 @@ skills:
     c9bb9876-b0cb-4729-a1ea-c14f1983f58b:
       name: United We Stand
       type: Action
-      description: Heal the entire party
-      cooldown:
-        1: 3
-        2: 2
-        3: 1
+      description:
+        0: Heal the entire party
       cost: 6
       script: cleric-united
       #  onActivate: cleric-united
@@ -58,8 +51,8 @@ skills:
     b4615553-5f54-4c3f-87f9-a1d49b7069b4:
       name: Attack
       type: Basic
-      description: Attack with your sword
-      cooldown: 0
+      description:
+        0: Attack with your sword
       cost: 0
       script: fighter-basic-attack
       #onActivate: fighter-basic-attack
@@ -71,7 +64,6 @@ skills:
         1: Boosts evasion for one round
         2: Boosts evasion for two rounds
         3: Boosts evasion for three rounds
-      cooldown: 0
       cost: 3
       script: fighter-guard
       #onActivate: fighter-guard
@@ -79,10 +71,8 @@ skills:
     013cba39-f424-4ce0-9523-ccb36ae29845:
       name: Battle Focus
       type: Passive
-      description: >-
-        Each subsequent attack on the same target increases damage. Effect is
-        removed if target is disengaged.
-      cooldown: 0
+      description:
+        0: Each subsequent attack on the same target increases damage. Effect is removed if target is disengaged.
       script: fighter-battle-focus
       #onAttack: fighter-battle-focus-activate
       #onMove: figure-battle-focus-move
@@ -90,11 +80,8 @@ skills:
     e0724f58-ce8c-4eb1-a0e1-246796fad53b:
       name: Use Your Head
       type: Action
-      description: Slam your head into your enemy and stun them
-      cooldown:
-        1: 2
-        2: 1
-        3: 0
+      description:
+        0: Slam your head into your enemy and stun them
       cost: 2
       script: fighter-use-head
       #onActivate: fighter-use-head
@@ -102,11 +89,8 @@ skills:
     6474641b-5f8f-4ff4-98ec-8e1852cdb8c6:
       name: End Them Rightly!
       type: Action
-      description: Kills target if they're below a threshold. Can't miss.
-      cooldown:
-        1: 3
-        2: 2
-        3: 1
+      description:
+        0: Kills target if they're below a threshold. Can\'t miss.
       cost: 5
       script: fighter-end-them
       #onActivate: fighter-end-them
@@ -115,8 +99,8 @@ skills:
     68c58d95-7477-4cd2-ab13-28c753dacd50:
       name: Attack
       type: Basic
-      description: Fire an arrow
-      cooldown: 0
+      description:
+        0: Fire an arrow
       cost: 0
       script: ranger-basic-attack
       #onActivate: ranger-basic-attack
@@ -124,11 +108,8 @@ skills:
     ebe39761-9e24-4b21-ac23-7fbfd22e719a:
       name: Double Nock
       type: Action
-      description: Shoot two enemies
-      cooldown:
-        1: 2
-        2: 1
-        3: 0
+      description:
+        0: Shoot two enemies
       cost: 2
       script: ranger-double-nock
       #onActivate: ranger-double-nock
@@ -136,10 +117,8 @@ skills:
     968e66eb-ba91-4353-95e7-e7c333de25ab:
       name: Mark Your Prey
       type: Action
-      description: >-
-        Choose an enemy: that enemy cannot become invisible and all
-        attacks toward that enemy gain a bonus
-      cooldown: 0
+      description:
+        0: "Choose an enemy: that enemy cannot become invisible and all attacks toward that enemy gain a bonus"
       cost: 0
       script: ranger-mark-your-prey
       #onActivate: ranger-mark-prey
@@ -149,8 +128,8 @@ skills:
     69344088-aa7b-4448-bf93-239aa7790274:
       name: Dodge
       type: Passive
-      description: Increases your Evasion
-      cooldown: 0
+      description:
+        0: Increases your Evasion
       cost: 0
       script: ranger-dodge
       #onLevelUp: ranger-dodge-level-up
@@ -158,11 +137,8 @@ skills:
     f3e3d40e-8e97-4bfa-9312-89cbfa180ed3:
       name: Clear The Room
       type: Action
-      description: Make a ranged attack against every enemy in the wave
-      cooldown:
-        1: 5
-        2: 4
-        3: 3
+      description:
+        0: Make a ranged attack against every enemy in the wave
       cost: 5
       script: ranger-clear-room
 
@@ -170,8 +146,8 @@ skills:
     38abfd77-1258-4879-8625-5bf653720231:
       name: Attack
       type: Basic
-      description: Hit them with your staff
-      cooldown: 0
+      description:
+        0: Hit them with your staff
       cost: 0
       script: wizard-basic-attack
       #onActivate: wizard-basic-attack
@@ -179,11 +155,8 @@ skills:
     fc28e229-6b49-47e6-9467-759b70f911cd:
       name: Magic Missile
       type: Action
-      description: Fire a magical bolt
-      cooldown:
-        1: 2
-        2: 1
-        3: 0
+      description:
+        0: Fire a magical bolt
       cost: 3
       script: wizard-magic-missile
       #onActivate: wizard-magic-missile
@@ -191,11 +164,8 @@ skills:
     eeae9b25-d688-4c19-9478-2a473f14d6b4:
       name: Chain Lightning
       type: Action
-      description: Fire multiple bolts of lightning from your staff
-      cooldown:
-        1: 3
-        2: 2
-        3: 1
+      description:
+        0: Fire multiple bolts of lightning from your staff
       cost: 5
       script: wizard-lightning
       #onActivate: wizard-lightning
@@ -203,8 +173,8 @@ skills:
     89c82611-6cbe-4948-843b-4e798a79e205:
       name: Meditation Master
       type: Passive
-      description: Boost Focus regeneration for all party members
-      cooldown: 0
+      description:
+        0: Boost Focus regeneration for all party members
       cost: 0
       script: wizard-meditate
       #onLevelUp: wizard-mediation
@@ -212,11 +182,8 @@ skills:
     907056bf-a29a-4478-a5b0-646363571290:
       name: Disintegrate
       type: Action
-      description: Fire a powerful beam of energy
-      cooldown:
-        1: 4
-        2: 3
-        3: 2
+      description:
+        0: Fire a powerful beam of energy
       cost: 8
       script: wizard-disintegrate
       #onActivate: wizard-disintegrate

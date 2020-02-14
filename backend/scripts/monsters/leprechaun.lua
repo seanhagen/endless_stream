@@ -1,0 +1,1 @@
+goldBonus = 100
