@@ -17,7 +17,7 @@ func GetGameId() string {
 	return string(b)
 }
 
-var statToMod = map[int]int{
+var statToMod = map[int32]int32{
 	0:  -3,
 	1:  -2,
 	2:  -1,
@@ -32,12 +32,20 @@ var statToMod = map[int]int{
 }
 
 // vitalityForStat also produces the focus for the stat
-func vitalityForStat(stat int) int {
-	return 20 + (stat * 5)
+func vitalityForStat(stat int32) int32 {
+	return 20 + ((stat - 3) * 5)
+}
+
+func focusForStat(stat int32) int32 {
+	return 20 + ((stat - 3) * 5)
+}
+
+func willForStat(stat int32) int32 {
+	return (stat * 2) + 5
 }
 
 // evasionForStat also produces the willpower for the stat
-func evasionForStat(stat int) int {
+func evasionForStat(stat int32) int32 {
 	return (stat * 2) + 5
 }
 

@@ -25,7 +25,7 @@ func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
-	g, err := game.Create(ctx, id)
+	g, err := game.Create(ctx, id, s.entityCol)
 	if err != nil {
 		cancel()
 		return nil, err

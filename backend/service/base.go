@@ -12,21 +12,23 @@ import (
 )
 
 type Srv struct {
-	games   map[string]*game.Game
-	l       *sync.Mutex
-	cancels map[string]context.CancelFunc
+	games     map[string]*game.Game
+	l         *sync.Mutex
+	cancels   map[string]context.CancelFunc
+	entityCol game.EntityCollection
 }
 
 // Setup ...
-func Setup(ctx context.Context, srv *grpc.Base) error {
+func Setup(ctx context.Context, srv *grpc.Base, ec game.EntityCollection) error {
 	// TODO:
 	//   - return svc so that it can be gracefully shutdown
 	//   - add function to svc for graceful shutdown
 	//   - add method to game that gracefully shutsdown the game
 	svc := &Srv{
-		games:   map[string]*game.Game{},
-		cancels: map[string]context.CancelFunc{},
-		l:       &sync.Mutex{},
+		games:     map[string]*game.Game{},
+		cancels:   map[string]context.CancelFunc{},
+		l:         &sync.Mutex{},
+		entityCol: ec,
 	}
 
 	srv.RegisterHandler(func(s *g.Server) {

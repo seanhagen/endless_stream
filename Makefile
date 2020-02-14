@@ -53,4 +53,4 @@ proto: pb gw srv desc
 	@find $(GO_TARGET_DIR) -name '*.go' -type f -exec sed -i 's/org\/\/gen/org\/gen/g' {} \;
 
 clean:
-	rm -rf backend/grpc
+	rm -rf $(GO_TARGET_DIR)

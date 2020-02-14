@@ -17,32 +17,36 @@ func TestMonsterInit(t *testing.T) {
 		gold int32
 		cost int32
 
-		mmod int32
-		gmod int32
-		cmod int32
+		mod     int32
+		cmod    int32
+		goldMod float64
+		xpMod   float64
 
-		boss bool
+		isBoss bool
 	}{
-		{"rat", 0, 0, 1, 1, 1, 2, 6, -3, -1, false},
-		{"corvid shaman", 2, 4, 3, 2, 4, 8, 6, -1, 2, false},
-		{"wendigo", 6, 5, 7, 16, 32, 16, 12, 3, 5, true},
+		{"rat", 0, 0, 1, 1, 1, 2, 6, -1, 2.0, 1.0, false},
+		{"corvid shaman", 2, 4, 3, 2, 4, 8, 6, 2, 2, 1, false},
+		{"wendigo", 6, 5, 7, 16, 32, 16, 12, 5, 2, 1, true},
+		{"leprechaun", 1, 0, 7, 7, 28, 7, 6, 0, 4.0, 1.0, true},
 	}
 
 	for _, x := range tests {
 		tt := x
-		t.Run(fmt.Sprintf("test %v", tt.name), func(t *testing.T) {
+		tn := fmt.Sprintf("test %v", tt.name)
+		t.Run(tn, func(t *testing.T) {
 			mb := monsterBase{
 				Name:         tt.name,
 				CostMod:      tt.cmod,
-				MMod:         tt.mmod,
-				GMod:         tt.gmod,
+				Mod:          tt.mod,
+				GoldMod:      tt.goldMod,
+				XPMod:        tt.xpMod,
 				Strength:     tt.str,
 				Intelligence: tt.int,
 				Agility:      tt.agi,
-				IsBoss:       tt.boss,
+				IsBoss:       tt.isBoss,
 			}
 
-			monster := createMonster(mb, "")
+			monster := createMonster(tn, mb, "")
 
 			if monster.Gold != tt.gold {
 				t.Errorf("Wrong gold amount, expected %v got %v", tt.gold, monster.Gold)

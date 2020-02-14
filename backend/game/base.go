@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	packr "github.com/gobuffalo/packr/v2"
 	"github.com/qmuntal/stateless"
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
@@ -43,6 +44,15 @@ type input struct {
 
 type countdownFunc func(context.Context)
 
+type Box interface {
+	Find(string) ([]byte, error)
+	FindString(string) (string, error)
+	HasDir(string) bool
+	Has(string) bool
+	Walk(packr.WalkFunc) error
+	WalkPrefix(string, packr.WalkFunc) error
+}
+
 type Game struct {
 	// ctx is a cancelable context that is canceled when the game is done/erorrs
 	ctx context.Context
@@ -67,7 +77,7 @@ type Game struct {
 
 	// characters is a map of Class -> player ID. If a charcter hasn't been selected yet,
 	// the class won't be a key in the map.
-	characters map[endless.Class]string
+	characters map[endless.ClassType]string
 
 	// players is a map of output -> bool, to keep track of connected players
 	players map[output]bool
@@ -128,15 +138,19 @@ type Game struct {
 	//   - send a message stating the game is over
 	//   - disconnect the client
 	Running bool
+
+	entityCollection EntityCollection
 }
 
-func Create(ctx context.Context, id string) (*Game, error) {
+func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	g := &Game{
 		ctx:      ctx,
 		cancelFn: cancel,
 		code:     id,
 		msgId:    0,
+
+		entityCollection: ec,
 
 		output:        make(chan *endless.Output, 10),
 		input:         make(chan input, inputLength),
@@ -171,6 +185,7 @@ func Create(ctx context.Context, id string) (*Game, error) {
 		tickCounterIdx: tickCounterMax,
 		tickCountdowns: setupTickCountdowns(),
 	}
+
 	return g, nil
 }
 

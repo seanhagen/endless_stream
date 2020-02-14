@@ -1,42 +1,65 @@
 package game
 
 import (
+	"fmt"
 	"testing"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
-func TestStatusScripting(t *testing.T) {
-	c := creature{
-		CurrentVitality: 50,
-		MaxVitality:     50,
+func TestScriptFuncExist(t *testing.T) {
+	tests := []struct {
+		script string
+		valid  bool
+	}{
+		{`init = 0`, false},
+		{`function init() count = 0 end`, false},
+		{`function init() count = 0 end
+function tick() count = 0 end`, true},
 	}
 
+	c := &creature{}
+	for i, x := range tests {
+		tt := x
+		t.Run(fmt.Sprintf("test %v", i), func(t *testing.T) {
+			s := Status{script: tt.script}
+			err := s.build(c)
+			if tt.valid && err != nil {
+				t.Fatalf("expected valid status, got error: %v", err)
+			}
+			if !tt.valid && err == nil {
+				t.Fatalf("expected error got nil")
+			}
+		})
+	}
+}
+
+func TestStatusScripting(t *testing.T) {
+	var startVitality int32 = 50
+	var endVitality int32 = 47
+	expectTicks := 3
+
+	c := creature{
+		CurrentVitality: startVitality,
+	}
+
+	// an example of a poision script that does 1 damage a turn for 3 turns
 	testScript := `count = 0
 
-function init()
-   count = math.random(1,3)
-   print("status init! count: " .. count)
-end
+function init() count = 3 end
 
 function tick()
-   print("creature current health " .. creature.CurrentVitality)
-
    count = count-1
-   p = math.random(1,5)
-   print("poison damage: " .. p)
+   p = 1
    creature.CurrentVitality = creature.CurrentVitality - p
-   print("creature health after poison damage " .. creature.CurrentVitality)
    if count == 0 then
       return true
    end
    return false
 end
 `
-
-	s, err := newStatus(testScript, &c)
+	s := Status{script: testScript}
+	err := s.build(&c)
 	if err != nil {
-		t.Errorf("unable to setup status: %v", err)
+		t.Fatalf("unable to setup status: %v", err)
 	}
 
 	cnt := 0
@@ -45,14 +68,17 @@ end
 		if err != nil {
 			t.Fatalf("unable to tick status: %v", err)
 		}
+		cnt++
 		if b {
 			break
 		}
-		cnt++
 	}
-	t.Logf("got %v ticks from status", cnt)
 
-	spew.Dump(c.CurrentVitality)
+	if c.CurrentVitality != endVitality {
+		t.Errorf("wrong vitality, expected '%v' got '%v'", endVitality, c.CurrentVitality)
+	}
 
-	t.Errorf("nope")
+	if cnt != expectTicks {
+		t.Errorf("wrong number of ticks, expected %v got %v", expectTicks, cnt)
+	}
 }

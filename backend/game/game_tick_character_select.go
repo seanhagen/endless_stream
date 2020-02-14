@@ -7,7 +7,7 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 	startingGame := false
 
 	// map showing who's selected what, so that we can report back to the clients
-	out := map[string]endless.Class{}
+	out := map[string]endless.ClassType{}
 
 	for pid, inputs := range input {
 		if pid == g.vipPlayer {

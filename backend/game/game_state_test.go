@@ -1,31 +1,23 @@
 package game
 
-import (
-	"fmt"
-	"testing"
+// func TestGameStateSetup(t *testing.T) {
+// 	s := getGameStateMachine()
 
-	"github.com/davecgh/go-spew/spew"
-	"github.com/seanhagen/endless_stream/backend/endless"
-)
+// 	fmt.Printf("graph: \n\n%v\n\n", s.ToGraph())
 
-func TestGameStateSetup(t *testing.T) {
-	s := getGameStateMachine()
+// 	// err := s.Fire(TriggerAllDead, "wat")
+// 	// spew.Dump(s, err)
 
-	fmt.Printf("graph: \n\n%v\n\n", s.ToGraph())
+// 	w := &endless.Wave{
+// 		Num:     1,
+// 		HasBoss: false,
+// 		Level:   endless.Level_Forest,
+// 	}
 
-	// err := s.Fire(TriggerAllDead, "wat")
-	// spew.Dump(s, err)
+// 	err := s.Fire(TriggerStartGame, w)
+// 	spew.Dump(err)
 
-	w := &endless.Wave{
-		Num:     1,
-		HasBoss: false,
-		Level:   endless.Level_Forest,
-	}
+// 	fmt.Printf("state is: %v\n", s.MustState())
 
-	err := s.Fire(TriggerStartGame, w)
-	spew.Dump(err)
-
-	fmt.Printf("state is: %v\n", s.MustState())
-
-	t.Errorf("nope")
-}
+// 	t.Errorf("nope")
+// }

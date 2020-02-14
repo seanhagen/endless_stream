@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 
+	"github.com/gobuffalo/packr/v2"
+	"github.com/seanhagen/endless_stream/backend/game"
 	"github.com/seanhagen/endless_stream/backend/grpc"
 	"github.com/seanhagen/endless_stream/backend/service"
 	g "google.golang.org/grpc"
@@ -28,7 +30,22 @@ func main() {
 		log.Fatalf("Unable to setup server: %v", err)
 	}
 
-	err = service.Setup(ctx, srv)
+	scr, err := scripts(ctx)
+	if err != nil {
+		log.Fatalf("Unable to load game scripts: %v", err)
+	}
+
+	ent, err := entities(ctx)
+	if err != nil {
+		log.Fatalf("Unable to load game entities: %v", err)
+	}
+
+	ec, err := game.SetupEntityCollection(scr, ent)
+	if err != nil {
+		log.Fatalf("Unable to setup all game entities: %v", err)
+	}
+
+	err = service.Setup(ctx, srv, ec)
 	if err != nil {
 		log.Fatalf("Unable to initialize game server: %v", err)
 	}
@@ -40,6 +57,16 @@ func main() {
 	}
 
 	log.Printf("server shutdown complete")
+}
+
+func scripts(ctx context.Context) (*packr.Box, error) {
+	b := packr.New("scripts", "./scripts")
+	return b, nil
+}
+
+func entities(ctx context.Context) (*packr.Box, error) {
+	b := packr.New("entities", "./entities")
+	return b, nil
 }
 
 func setup(ctx context.Context) (*grpc.Base, error) {

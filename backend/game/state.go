@@ -4,41 +4,6 @@ import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
-type skill interface{}
-
-type item interface{}
-
-type creature struct {
-	Id   string
-	Name string
-
-	Position *endless.Position
-	Statuses []status
-
-	Strength         int32
-	MaxVitality      int32 // aka max hp
-	CurrentVitality  int32 // aka current hp
-	CombatDamageBase int32
-	VitalityRegen    int32
-
-	Intelligence int32
-	CurrentFocus int32
-	MaxFocus     int32
-	Willpower    int32
-	FocusRegen   int32
-
-	Agility    int32
-	Evasion    int32
-	Accuracy   int32
-	Initiative int32
-
-	// a list of current modifiers that affect the various stats
-	Modifiers map[string]int32
-
-	Gold int32
-	XP   int32
-}
-
 type player struct {
 	creature
 
@@ -51,17 +16,27 @@ type player struct {
 	inventory map[string]item
 }
 
-type monster struct {
-	creature
-	mType    endless.Type
-	isFlying bool
-	isBoss   bool
-	cost     int32
+type action interface {
+	isItem() bool
+	isSkill() bool
+	isSkip() bool
+	do(*Game)
 }
 
-type action interface{}
+type actor interface {
+	// tick is called every tick
+	tick() error
+	// round is called at the start of every round
+	round() error
+	// getAction is called when it's this actors turn in iniative order
+	getAction() action
+	// iniative determines iniative order, lower goes earlier in a round
+	initiative() int
 
-type actor interface{}
+	OnHit()
+	OnMove()
+	OnDeath()
+}
 
 // outputState ...
 func (g *Game) outputState() *endless.Output {
