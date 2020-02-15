@@ -1,17 +1,57 @@
 ---
 version: "2.4"
 
+x-base: &base
+  command: ["server"]
+  stop_signal: SIGTERM
+  cpu_count: 1
+  cpu_percent: 30
+  cpus: 0.3
+  mem_limit: 512M
+  memswap_limit: 512M
+  environment:
+    GRPC_GO_LOG_SEVERITY_LEVEL: warning
+    GRPC_GO_LOG_VERBOSITY_LEVEL: 0
+
 services:
-  database:
-    image: postgres:11
-    cpu_count: 1
-    cpu_percent: 30
-    cpus: 0.3
-    mem_limit: 512M
-    memswap_limit: 512M
+  # database:
+  #   image: postgres:11
+  #   cpu_count: 1
+  #   cpu_percent: 30
+  #   cpus: 0.3
+  #   mem_limit: 512M
+  #   memswap_limit: 512M
+  #   ports:
+  #     - "5454:5432"
+  #   environment:
+  #     POSTGRES_USER: user
+  #     POSTGRES_PASSWORD: secret
+  #     POSTGRES_DB: endless
+
+  game_server:
+    <<: *base
+    build:
+      context: ./backend
     ports:
-      - "5454:5432"
+      - "3000:3000"
+    volumes:
+      - ./backend/dev.config.yaml:/etc/es/config.yaml
+
+  grpcweb:
+    image: gcr.io/cave-goblin-network/grpcweb-proxy:20200214-0
+    command: [
+    "/bin/grpcwebproxy",
+    "--server_tls_cert_file=/misc/localhost.crt",
+    "--server_tls_key_file=/misc/localhost.key",
+    "--backend_addr=playgrounds:10000",
+    "--backend_tls_noverify",
+    "--use_websockets",
+    "--allow_all_origins"
+    ]
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: endless
+      GRPC_GO_LOG_SEVERITY_LEVEL: warning
+      GRPC_GO_LOG_VERBOSITY_LEVEL: 0
+    depends_on:
+        - game_server
+    ports:
+      - "8080:3000"

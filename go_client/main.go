@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/seanhagen/endless_stream/backend/endless"
 	"google.golang.org/grpc"
 )
@@ -116,6 +117,9 @@ func handleStreamInput(ctx context.Context, client endless.GameClient, code, id,
 		os.Exit(1)
 	}
 
+	l := &sync.Mutex{}
+	var disp endless.Display
+
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
@@ -129,8 +133,17 @@ func handleStreamInput(ctx context.Context, client endless.GameClient, code, id,
 				case *endless.Output_Tick:
 					//ti := msg.GetTick()
 
+				case *endless.Output_Selected:
+					fmt.Printf("Character selected:\n")
+					for k, v := range t.Selected.GetSelected() {
+						fmt.Printf("\t%v -> %v\n", k, endless.ClassType_name[int32(v)])
+					}
+
 				case *endless.Output_State:
-					//s := msg.GetState()
+					s := msg.GetState()
+					l.Lock()
+					disp = s.GetDisplay()
+					l.Unlock()
 
 				case *endless.Output_Msg:
 					m := msg.GetMsg()
@@ -179,6 +192,43 @@ func handleStreamInput(ctx context.Context, client endless.GameClient, code, id,
 			},
 		},
 	})
+
+	go func() {
+		inp := bufio.NewReader(os.Stdin)
+		for {
+			switch disp {
+			case endless.Display_ScreenCharSelect:
+				fmt.Printf("Choose your character:\n\t1) Fighter\n\t2)Ranger\n\t3)Cleric\n\t4)Wizard\n\nEnter your selection [1-4]:")
+				i := getIntFromInput(inp)
+				var c endless.ClassType
+				switch i {
+				case 1:
+					c = endless.ClassType_Fighter
+				case 2:
+					c = endless.ClassType_Ranger
+				case 3:
+					c = endless.ClassType_Cleric
+				case 4:
+					c = endless.ClassType_Wizard
+				default:
+					fmt.Printf("Not a valid selection, go again\n")
+				}
+				if c != endless.ClassType_Unknown {
+					strm.Send(&endless.Input{
+						Input: &endless.Input_CharSelect{
+							CharSelect: &endless.CharSelect{
+								PlayerId: id,
+								Choice: &endless.Class{
+									Class: c,
+								},
+							},
+						},
+					})
+				}
+			}
+		}
+	}()
+
 	if err != nil {
 		log.Printf("Unable to send message: %v", err)
 	}
@@ -194,4 +244,19 @@ func setupConn(addr string) (*grpc.ClientConn, error) {
 		grpc.WithUserAgent("test client"),
 	}
 	return grpc.Dial(addr, dopts...)
+}
+
+type strRead interface {
+	ReadString(byte) (string, error)
+}
+
+func getIntFromInput(r strRead) int {
+	t, err := r.ReadString('\n')
+	spew.Dump(t, err)
+	if err != nil {
+		return 0
+	}
+	t = strings.TrimSpace(t)
+	ch, _ := strconv.Atoi(t)
+	return ch
 }
