@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"time"
@@ -16,7 +17,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-const grpcListen = ":10001"
+const grpcListen = "10001"
 
 // DefaultTimeout is the timeout used when the grpc-gateway sends requests
 // to the grpc server. The default is 0 -- no timeout.
@@ -53,8 +54,9 @@ func (s *grpcServer) registerHandler(ctx context.Context, fn Handler) {
 
 // createGRPCServer creates a GRPC server from the config
 func (ba *Base) createGRPCServer(ctx context.Context, conf grpcConfig) (*grpcServer, error) {
+	listenPort := shouldEnv("PORT", grpcListen)
 	// setup default grpc listener
-	l, err := net.Listen("tcp", grpcListen)
+	l, err := net.Listen("tcp", fmt.Sprintf(":%v", listenPort))
 	if err != nil {
 		return nil, err
 	}
