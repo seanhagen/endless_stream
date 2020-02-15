@@ -94,6 +94,8 @@ type Game struct {
 	playerNames      map[string]string
 	currentPlayer    *string
 
+	selectedCharacters map[endless.ClassType]string
+
 	// vipPlayer is the player who connected first
 	vipPlayer string
 
@@ -161,6 +163,8 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 		playerIds:        map[string]int{},
 		playerCharacters: map[string]*player{},
 		playerNames:      map[string]string{},
+
+		selectedCharacters: map[endless.ClassType]string{},
 
 		audience: map[output]bool{},
 

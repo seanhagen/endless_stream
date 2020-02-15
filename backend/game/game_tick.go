@@ -57,8 +57,8 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 
 	switch g.screenState.MustState().(GameState) {
 	case StateCharSelect:
-		// class assignment handled in input handler
-		// if VIP sends 'GameStart', move to new wave state
+		g.stateCharSelect(playerInputs)
+
 	case StateNewWave:
 		// if player hasn't selected a class, assign random from classes left over
 		// if there are fewer than 4 players, create AI players to fill the slots

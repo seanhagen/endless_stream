@@ -69,10 +69,18 @@ func (g *Game) outputState() *endless.Output {
 		d = endless.Display_ScreenLoading
 	}
 
+	sc := map[string]endless.ClassType{}
+	if len(g.selectedCharacters) > 0 {
+		for k, v := range g.selectedCharacters {
+			sc[v] = k
+		}
+	}
+
 	return &endless.Output{
 		Data: &endless.Output_State{
 			State: &endless.CurrentState{
-				Display: d,
+				Display:  d,
+				Selected: &endless.CharacterSelected{Selected: sc},
 				// Wave: g.waveNumber,
 			},
 		},

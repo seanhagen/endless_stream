@@ -11,7 +11,7 @@ import (
 
 type EntityCollection struct {
 	AI          map[string]interface{}
-	Items       map[string]interface{}
+	Items       itemMap
 	Monsters    monsterList
 	Skills      skillMap
 	ClassSkills map[string][]string
@@ -105,6 +105,17 @@ func SetupEntityCollection(scripts, entities Box) (EntityCollection, error) {
 			out.ClassSkills = sl.toClassSkills()
 
 		case "items":
+			im := itemMap{}
+			err := v.UnmarshalKey(t, &im)
+			if err != nil {
+				return out, err
+			}
+			for k, i := range im {
+				i.script = loadScript("items", i.ScriptName, scripts)
+				im[k] = i
+			}
+
+			out.Items = im
 
 		case "ai":
 		}

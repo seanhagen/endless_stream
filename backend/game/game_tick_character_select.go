@@ -1,50 +1,77 @@
 package game
 
-import "github.com/seanhagen/endless_stream/backend/endless"
+import (
+	"log"
+)
 
 // stateCharSelect ...
 func (g *Game) stateCharSelect(input map[string][]input) error {
 	startingGame := false
-
-	// map showing who's selected what, so that we can report back to the clients
-	out := map[string]endless.ClassType{}
+	// updateSelected := false
 
 	for pid, inputs := range input {
-		if pid == g.vipPlayer {
-			// check to see if there are any 'start game' inputs
-			for _, i := range inputs {
+		for _, i := range inputs {
+			// check to see if there are any 'start game' inputs from the VIP player
+			if pid == g.vipPlayer {
 				if x := i.in.GetGameStart(); x != nil {
 					startingGame = true
 					break
 				}
 			}
-		}
 
-		// check to see if any of the inputs are 'character select'
-		for _, i := range inputs {
+			// check to see if any of the inputs are 'character select'
 			if x := i.in.GetCharSelect(); x != nil {
+				c := x.GetChoice()
+				if c == nil {
+					// if nil, player has 'unselected' the class, so remove their selection
+					for k, v := range g.selectedCharacters {
+						if v == pid {
+							log.Printf("Player %v has un-selected their previous choice", pid)
+							delete(g.selectedCharacters, k)
+							// updateSelected = true
+							break
+						}
+					}
+					continue
+				}
+
 				// got a character select input, x.GetChoice() -> nil or class
-				//
-				// if nil, player has 'unselected' the class, so remove their selection
-				// otherwise:
-				//   if the class is not taken, assign it to this player
-				//   if the player had previously selected a class, delete that from the selected character map
+				ct := c.GetClass()
+				if _, ok := g.selectedCharacters[ct]; !ok {
+					//   if the player had previously selected a class, delete that from the selected character map
+					for k, v := range g.selectedCharacters {
+						if v == pid {
+							delete(g.selectedCharacters, k)
+						}
+					}
+					//   if the class is not taken, assign it to this player
+					log.Printf("Player %v selected a character: %v", pid, c)
+					g.selectedCharacters[ct] = pid
+					// updateSelected = true
+				}
 			}
 		}
 	}
 
-	if len(out) > 0 {
-		g.output <- &endless.Output{
-			Data: &endless.Output_Selected{
-				Selected: &endless.CharacterSelected{
-					Selected: out,
-				},
-			},
-		}
-	}
+	// if len(g.selectedCharacters) > 0 && updateSelected {
+	// 	// map showing who's selected what, so that we can report back to the clients
+	// 	out := map[string]endless.ClassType{}
+	// 	for k, v := range g.selectedCharacters {
+	// 		out[v] = k
+	// 	}
+
+	// 	g.output <- &endless.Output{
+	// 		Data: &endless.Output_Selected{
+	// 			Selected: &endless.CharacterSelected{
+	// 				Selected: out,
+	// 			},
+	// 		},
+	// 	}
+	// }
 
 	if startingGame {
 		// do the state transition!
+		log.Printf("VIP has started the game")
 	}
 
 	return nil
