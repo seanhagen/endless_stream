@@ -2,8 +2,11 @@ import Phaser from "phaser";
 
 import logoImg from "./assets/logo.png";
 
+import Inn from "./scenes/inn";
 import Forest from "./scenes/forest";
 
+const width = 1280;
+const height = 720;
 
 const config = {
   type: Phaser.AUTO,
@@ -27,4 +30,5 @@ const config = {
 
 const game = new Phaser.Game(config);
 game.scene.add('forest', Forest);
-game.scene.start('forest')
+game.scene.add('inn', Inn)
+game.scene.start('inn')

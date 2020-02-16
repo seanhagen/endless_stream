@@ -8,7 +8,7 @@ const height = 720;
 
 export default class Forest extends Phaser.Scene {
   constructor() {
-    super({key: 'Forest', active: true});
+    super({key: 'Forest', active: false});
   }
 
   preload(){
