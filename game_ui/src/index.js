@@ -1,32 +1,30 @@
 import Phaser from "phaser";
+
 import logoImg from "./assets/logo.png";
+
+import Forest from "./scenes/forest";
+
 
 const config = {
   type: Phaser.AUTO,
   parent: "phaser-example",
-  width: 800,
-  height: 600,
-  scene: {
-    preload: preload,
-    create: create
-  }
+  width: width,
+  height: height,
+  // scene: {
+  //   preload: preload,
+  //   create: create,
+  //   update: update
+  // },
+  pixelArt: true,
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 0 }
+    }
+  },
+  // scenes: [Forest]
 };
 
 const game = new Phaser.Game(config);
-
-function preload() {
-  this.load.image("logo", logoImg);
-}
-
-function create() {
-  const logo = this.add.image(400, 150, "logo");
-
-  this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: "Power2",
-    yoyo: true,
-    loop: 10
-  });
-}
+game.scene.add('forest', Forest);
+game.scene.start('forest')
