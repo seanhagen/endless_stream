@@ -2,7 +2,6 @@
 version: "2.4"
 
 x-base: &base
-  command: ["server"]
   stop_signal: SIGTERM
   cpu_count: 1
   cpu_percent: 30
@@ -30,20 +29,20 @@ services:
 
   game_server:
     <<: *base
+    command: ["/server"]
     build:
       context: ./backend
     ports:
-      - "3000:3000"
+      - "8000:8000"
     volumes:
       - ./backend/dev.config.yaml:/etc/es/config.yaml
 
   grpcweb:
     image: gcr.io/cave-goblin-network/grpcweb-proxy:20200214-0
     command: [
-    "/bin/grpcwebproxy",
     "--server_tls_cert_file=/misc/localhost.crt",
     "--server_tls_key_file=/misc/localhost.key",
-    "--backend_addr=playgrounds:10000",
+    "--backend_addr=game_server:8000",
     "--backend_tls_noverify",
     "--use_websockets",
     "--allow_all_origins"
@@ -54,4 +53,5 @@ services:
     depends_on:
         - game_server
     ports:
-      - "8080:3000"
+      - "8080:8080"
+      - "8443:8443"

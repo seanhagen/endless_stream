@@ -18,7 +18,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	c, err := setupConn("localhost:10001")
+	c, err := setupConn("localhost:8000")
 	if err != nil {
 		log.Fatal(err)
 	}

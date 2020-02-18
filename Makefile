@@ -14,10 +14,12 @@ export INCPATH=$(GOPATH)
 endif
 
 GO_BUILD_ENV:=CGO_ENABLED=0 GOOS=linux GOARCH=amd64
-
 LDFLAGS=$(LDFLAGSBASE) -X main.Repo=${REPO}
-LDFLAGBUILD=-ldflags "$(LDFLAGS) -s -w"
-LDFLAGDEBUG=-ldflags "$(LDFLAGS)"
+LDFLAGBUILD=$(LDFLAGS) -s -w -linkmode external -extldflags -static
+LDFLAGDEBUG=$(LDFLAGS) -s -w
+
+
+GO_BUILD_CMD=go build -a -ldflags '${LDFLAGBUILD}' -o ${SERVER_TARGET} -installsuffix cgo
 
 PROTO_DIR=proto
 
@@ -76,12 +78,22 @@ proto: pb gw srv desc
 	@find $(GO_PROTO_TARGET_DIR) -name '*.go' -type f -exec sed -i 's/org\/\/gen/org\/gen/g' {} \;
 
 $(SERVER_TARGET):
-	go build -a ${LDFLAGBUILD} -o ${SERVER_TARGET} -installsuffix cgo ./$(SERVER_SRC)
+	$(GO_BUILD_CMD) ./$(SERVER_SRC)
 
 server: $(SERVER_TARGET)
 
+
+PROTOC_GEN_TS_PATH=
+
 all: clean proto server
 
-clean:
+clnsrv:
 	rm -rf $(SERVER_TARGET)
+
+clnproto:
 	rm -rf $(GO_PROTO_TARGET_DIR)
+
+rebuild: clnsrv server
+	docker-compose up -d --no-deps --build $(SERVICE)
+
+clean: clnsrv clnproto

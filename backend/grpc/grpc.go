@@ -3,6 +3,7 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"time"
@@ -67,10 +68,12 @@ func (ba *Base) createGRPCServer(ctx context.Context, conf grpcConfig) (*grpcSer
 	}
 
 	// setup grpc dialer
-	conn, err := grpc.Dial(grpcListen, dopts...)
+	conn, err := grpc.Dial(listenPort, dopts...)
 	if err != nil {
 		return nil, err
 	}
+
+	log.Printf("Server setup to listen on %v", listenPort)
 
 	srv, err := ba.setupGRPC(conf)
 	if err != nil {

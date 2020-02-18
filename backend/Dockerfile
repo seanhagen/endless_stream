@@ -3,10 +3,10 @@ MAINTAINER Sean Hagen <sean.hagen@gmail.com>
 
 RUN apk --no-cache add ca-certificates
 
-WORKDIR /app
-ADD server /app/server
+ADD server /server
 ADD config.yaml /etc/es/config.yaml
 
-ENV PORT 3000
+ENV PORT 8000
+EXPOSE 8000
 
-CMD ["./server"]
+ENTRYPOINT ["/server"]
