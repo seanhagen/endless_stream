@@ -1,46 +1,48 @@
-import React, {Component} from 'react';
-import { compose } from 'redux';
-import { Route, withRouter, BrowserRouter as Router } from 'react-router-dom';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import React, { Component, Fragment } from "react";
+import { compose } from "redux";
+import { Link, Route, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-import Home from './components/home';
+import { gameState } from "./reducers/game";
 
-// import {GameClient} from './grpc/endless_pb_service';
-// import {CreateGame} from './grpc/endless_pb';
+import Home from "./components/home";
+import Game from "./components/game";
 
-// const gc = new GameClient('http://localhost:8080')
+import "./App.css";
 
-// const createGame = new CreateGame();
-// gc.create(createGame, (err, msg) => {
-//   if (err){
-//     var x = err.toObject();
-//     console.error("error creating game: ", x)
-//     return
-//   }
-
-//   var resp = msg.toObject();
-//   console.log("response: ", resp);
-// })
-// console.log("create game: ", createGame);
-
-// gc.create()
-// var stateClient = gc.state()
-// console.log("state client: ", stateClient);
-
-// stateClient.on('data', (msg) => {
-//   console.log("state message: ", msg)
-// })
-
-class App extends Component {
-  render(){
+class Welcome extends Component {
+  render() {
     return (
-        <div className="App">
-        <Route exact path="/" component={Home} />
-        </div>
+      <Fragment>
+        <h1>Welcome To Endless Stream!</h1>
+        <Link to="/game">Start or Join A Game!</Link>
+      </Fragment>
     );
   }
 }
 
-export default compose(withRouter)(App);
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Route exact path="/" component={Welcome} />
+        <Route path="/game" component={Home} />
+        <Route path="/player/:code" component={Game} />
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return { code: state.game.code };
+};
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(gameState.actions, dispatch)
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(compose(withRouter)(App));
