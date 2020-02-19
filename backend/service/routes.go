@@ -104,5 +104,8 @@ func (s *Srv) State(stream endless.Game_StateServer) error {
 		name = fmt.Sprintf("Anon-%v", strings.ToLower(game.GetGameId()))
 	}
 
-	return g.RegisterClient(id, name, stream)
+	log.Printf("registering client %v", id)
+	err := g.RegisterClient(id, name, stream)
+	log.Printf("client %v done", id)
+	return err
 }

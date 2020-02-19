@@ -42,8 +42,8 @@ type actor interface {
 
 // outputState ...
 func (g *Game) outputState() *endless.Output {
-	g.lock.Lock()
-	defer g.lock.Unlock()
+	g.Lock()
+	defer g.Unlock()
 	log.Printf("outputting state")
 
 	var d endless.Display

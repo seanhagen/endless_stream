@@ -8,8 +8,8 @@ import (
 
 // tick ...
 func (g *Game) tick(ctx context.Context, t time.Time) error {
-	g.lock.Lock()
-	defer g.lock.Unlock()
+	g.Lock()
+	defer g.Unlock()
 	log.Printf("game tick happens")
 
 	if len(g.players) == 0 {
@@ -21,6 +21,7 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 	// get player inputs
 	playerInputs := map[string][]input{}
 	l := len(g.playerInput)
+	log.Printf("player inputs to be processed: %v", l)
 	if l > 0 {
 		for i := 0; i < l; i++ {
 			pi := <-g.playerInput
@@ -37,6 +38,7 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 	// get audience inputs
 	audienceInputs := []input{}
 	l = len(g.audienceInput)
+	log.Printf("audience inputs: %v", l)
 	for i := 0; i < l; i++ {
 		ai := <-g.audienceInput
 		if y := ai.in.GetAudience(); y != nil {
@@ -46,6 +48,7 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 
 	// check tickCountdown timers
 	cds := g.tickCountdowns[g.tickCounterIdx]
+	log.Printf("countdowns to process: %v", len(cds))
 	for _, c := range cds {
 		c(ctx)
 	}
@@ -57,6 +60,7 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 		g.tickCounterIdx = tickCounterMax
 	}
 
+	log.Printf("processing game state")
 	switch g.screenState.MustState().(GameState) {
 	case StateCharSelect:
 		g.stateCharSelect(playerInputs)
@@ -106,6 +110,6 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 		// start countdown timer
 		// when timer over or vip sends quit message, quit game
 	}
-
+	log.Printf("tick over")
 	return nil
 }

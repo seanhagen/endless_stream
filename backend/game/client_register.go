@@ -11,8 +11,7 @@ import (
 
 // RegisterClient ...
 func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) error {
-	g.lock.Lock()
-	defer g.lock.Unlock()
+	g.Lock()
 	log.Printf("client connected: %v, registering client", id)
 
 	out, err := g.registerHuman(id, name)
@@ -25,11 +24,14 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
 		cancel()
-		g.closingClients <- out
+		g.unregisterHuman(out)
+		//g.closingClients <- out
 	}()
 
 	isPlayer := out.isPlayer
 	outCh := out.out
+
+	g.Unlock()
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
@@ -130,7 +132,7 @@ func (g *Game) registerHuman(id, name string) (output, error) {
 	// accessing some maps, gotta lock
 	out := output{
 		id:       id,
-		out:      make(chan *endless.Output),
+		out:      make(chan *endless.Output, 10),
 		isPlayer: false,
 	}
 
@@ -140,22 +142,20 @@ func (g *Game) registerHuman(id, name string) (output, error) {
 		name = g.playerNames[id]
 	}
 
+	var err error
+	var msg *endless.Output
+
 	if len(g.players)+1 <= 4 {
-		out.isPlayer = true
 		log.Printf("client is player")
-		g.newClients <- out
-		log.Printf("output sent to channel")
-		msg, err := g.registerPlayer(id, name)
+		out.isPlayer = true
+		g.players[out] = true
+		msg, err = g.registerPlayer(id, name)
 		log.Printf("player registered")
-		time.AfterFunc(time.Millisecond*100, func() {
-			g.output <- msg
-		})
-		log.Printf("afterfunc registered")
-		return out, err
+	} else {
+		g.audience[out] = true
+		msg, err = g.registerAudience(id)
 	}
 
-	g.newClients <- out
-	msg, err := g.registerAudience(id)
 	time.AfterFunc(time.Millisecond*100, func() {
 		g.output <- msg
 	})
