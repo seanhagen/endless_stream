@@ -4,7 +4,7 @@
 import * as endless_pb from "./endless_pb";
 import * as input_pb from "./input_pb";
 import * as output_pb from "./output_pb";
-import {grpc} from "grpc-web-client";
+import {grpc} from "@improbable-eng/grpc-web";
 
 type GameCreate = {
   readonly methodName: string;
@@ -39,14 +39,14 @@ interface UnaryResponse {
 interface ResponseStream<T> {
   cancel(): void;
   on(type: 'data', handler: (message: T) => void): ResponseStream<T>;
-  on(type: 'end', handler: () => void): ResponseStream<T>;
+  on(type: 'end', handler: (status?: Status) => void): ResponseStream<T>;
   on(type: 'status', handler: (status: Status) => void): ResponseStream<T>;
 }
 interface RequestStream<T> {
   write(message: T): RequestStream<T>;
   end(): void;
   cancel(): void;
-  on(type: 'end', handler: () => void): RequestStream<T>;
+  on(type: 'end', handler: (status?: Status) => void): RequestStream<T>;
   on(type: 'status', handler: (status: Status) => void): RequestStream<T>;
 }
 interface BidirectionalStream<ReqT, ResT> {
@@ -54,7 +54,7 @@ interface BidirectionalStream<ReqT, ResT> {
   end(): void;
   cancel(): void;
   on(type: 'data', handler: (message: ResT) => void): BidirectionalStream<ReqT, ResT>;
-  on(type: 'end', handler: () => void): BidirectionalStream<ReqT, ResT>;
+  on(type: 'end', handler: (status?: Status) => void): BidirectionalStream<ReqT, ResT>;
   on(type: 'status', handler: (status: Status) => void): BidirectionalStream<ReqT, ResT>;
 }
 

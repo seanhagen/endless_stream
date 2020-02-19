@@ -15,8 +15,8 @@ JS_OUT_DIR=src/grpc
 
 JS_GRPC_FILES=$(addsuffix /service_grpc_web_pb.js,$(addprefix js/,$(SERVICES)))
 JS_IMPORT_FIX=M
-JS_GEN_OUT=--plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --js_out=import_style=commonjs:$(JS_OUT_DIR) --ts_out=$(JS_OUT_DIR)
-JS_GEN_WEB_OUT=--plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --grpc-web_out=import_style=commonjs,mode=grpcwebtext:$(JS_OUT_DIR) --ts_out=service=true:$(JS_OUT_DIR)
+JS_GEN_OUT=--plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --js_out=import_style=commonjs,binary:$(JS_OUT_DIR) --ts_out=$(JS_OUT_DIR)
+JS_GEN_WEB_OUT=--plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --grpc-web_out=import_style=commonjs,mode=grpcwebtext:$(JS_OUT_DIR) --ts_out=service=true:$(JS_OUT_DIR) --js_out=import_style=commonjs,binary:$(JS_OUT_DIR)
 JS_PROTOC=protoc $(IMPORTS) $(JS_GEN_OUT) $(JS_GEN_WEB_OUT)
 NOD_MODE=./node_modules
 

@@ -4,7 +4,7 @@
 var endless_pb = require("./endless_pb");
 var input_pb = require("./input_pb");
 var output_pb = require("./output_pb");
-var grpc = require("grpc-web-client").grpc;
+var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var Game = (function () {
   function Game() {}
@@ -80,10 +80,10 @@ GameClient.prototype.state = function state(metadata) {
     transport: this.options.transport
   });
   client.onEnd(function (status, statusMessage, trailers) {
-    listeners.end.forEach(function (handler) {
-      handler();
-    });
     listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
       handler({ code: status, details: statusMessage, metadata: trailers });
     });
     listeners = null;

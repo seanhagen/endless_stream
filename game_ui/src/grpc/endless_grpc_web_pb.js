@@ -45,6 +45,16 @@ proto.endless.stream.v1.GameClient =
    */
   this.hostname_ = hostname;
 
+  /**
+   * @private @const {?Object} The credentials to be used to connect
+   *    to the server
+   */
+  this.credentials_ = credentials;
+
+  /**
+   * @private @const {?Object} Options for the client
+   */
+  this.options_ = options;
 };
 
 
@@ -71,29 +81,17 @@ proto.endless.stream.v1.GamePromiseClient =
    */
   this.hostname_ = hostname;
 
-};
-
-
-/**
- * @const
- * @type {!grpc.web.MethodDescriptor<
- *   !proto.endless.stream.v1.CreateGame,
- *   !proto.endless.stream.v1.GameCreated>}
- */
-const methodDescriptor_Game_Create = new grpc.web.MethodDescriptor(
-  '/endless.stream.v1.Game/Create',
-  grpc.web.MethodType.UNARY,
-  proto.endless.stream.v1.CreateGame,
-  proto.endless.stream.v1.GameCreated,
   /**
-   * @param {!proto.endless.stream.v1.CreateGame} request
-   * @return {!Uint8Array}
+   * @private @const {?Object} The credentials to be used to connect
+   *    to the server
    */
-  function(request) {
-    return request.serializeBinary();
-  },
-  proto.endless.stream.v1.GameCreated.deserializeBinary
-);
+  this.credentials_ = credentials;
+
+  /**
+   * @private @const {?Object} Options for the client
+   */
+  this.options_ = options;
+};
 
 
 /**
@@ -104,10 +102,7 @@ const methodDescriptor_Game_Create = new grpc.web.MethodDescriptor(
  */
 const methodInfo_Game_Create = new grpc.web.AbstractClientBase.MethodInfo(
   proto.endless.stream.v1.GameCreated,
-  /**
-   * @param {!proto.endless.stream.v1.CreateGame} request
-   * @return {!Uint8Array}
-   */
+  /** @param {!proto.endless.stream.v1.CreateGame} request */
   function(request) {
     return request.serializeBinary();
   },
@@ -131,7 +126,7 @@ proto.endless.stream.v1.GameClient.prototype.create =
       '/endless.stream.v1.Game/Create',
       request,
       metadata || {},
-      methodDescriptor_Game_Create,
+      methodInfo_Game_Create,
       callback);
 };
 
@@ -150,7 +145,7 @@ proto.endless.stream.v1.GamePromiseClient.prototype.create =
       '/endless.stream.v1.Game/Create',
       request,
       metadata || {},
-      methodDescriptor_Game_Create);
+      methodInfo_Game_Create);
 };
 
 

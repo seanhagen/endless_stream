@@ -16,8 +16,8 @@ export class Skill extends jspb.Message {
   getLevel(): number;
   setLevel(value: number): void;
 
-  getTarget(): Target;
-  setTarget(value: Target): void;
+  getTarget(): TargetMap[keyof TargetMap];
+  setTarget(value: TargetMap[keyof TargetMap]): void;
 
   getCost(): number;
   setCost(value: number): void;
@@ -52,7 +52,7 @@ export namespace Skill {
     id: string,
     name: string,
     level: number,
-    target: Target,
+    target: TargetMap[keyof TargetMap],
     cost: number,
     cooldown: number,
     cooldownLeft: number,
@@ -69,8 +69,8 @@ export class Item extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
-  getTarget(): Target;
-  setTarget(value: Target): void;
+  getTarget(): TargetMap[keyof TargetMap];
+  setTarget(value: TargetMap[keyof TargetMap]): void;
 
   getPassive(): boolean;
   setPassive(value: boolean): void;
@@ -100,7 +100,7 @@ export namespace Item {
   export type AsObject = {
     id: string,
     name: string,
-    target: Target,
+    target: TargetMap[keyof TargetMap],
     passive: boolean,
     bonusMap: Array<[string, number]>,
     count: number,
@@ -122,13 +122,13 @@ export class Creature extends jspb.Message {
   getCurHp(): number;
   setCurHp(value: number): void;
 
-  getPosition(): Position;
-  setPosition(value: Position): void;
+  getPosition(): PositionMap[keyof PositionMap];
+  setPosition(value: PositionMap[keyof PositionMap]): void;
 
   clearStatusesList(): void;
-  getStatusesList(): Array<util_pb.StatusEffect>;
-  setStatusesList(value: Array<util_pb.StatusEffect>): void;
-  addStatuses(value: util_pb.StatusEffect, index?: number): util_pb.StatusEffect;
+  getStatusesList(): Array<util_pb.StatusEffectMap[keyof util_pb.StatusEffectMap]>;
+  setStatusesList(value: Array<util_pb.StatusEffectMap[keyof util_pb.StatusEffectMap]>): void;
+  addStatuses(value: util_pb.StatusEffectMap[keyof util_pb.StatusEffectMap], index?: number): util_pb.StatusEffectMap[keyof util_pb.StatusEffectMap];
 
   getStrength(): number;
   setStrength(value: number): void;
@@ -188,8 +188,8 @@ export namespace Creature {
     name: string,
     maxHp: number,
     curHp: number,
-    position: Position,
-    statusesList: Array<util_pb.StatusEffect>,
+    position: PositionMap[keyof PositionMap],
+    statusesList: Array<util_pb.StatusEffectMap[keyof util_pb.StatusEffectMap]>,
     strength: number,
     vitality: number,
     combatDamageBase: number,
@@ -255,8 +255,8 @@ export class Monster extends jspb.Message {
   getBase(): Creature | undefined;
   setBase(value?: Creature): void;
 
-  getType(): util_pb.Type;
-  setType(value: util_pb.Type): void;
+  getType(): util_pb.TypeMap[keyof util_pb.TypeMap];
+  setType(value: util_pb.TypeMap[keyof util_pb.TypeMap]): void;
 
   getIsFlying(): boolean;
   setIsFlying(value: boolean): void;
@@ -277,7 +277,7 @@ export class Monster extends jspb.Message {
 export namespace Monster {
   export type AsObject = {
     base?: Creature.AsObject,
-    type: util_pb.Type,
+    type: util_pb.TypeMap[keyof util_pb.TypeMap],
     isFlying: boolean,
     isBoss: boolean,
   }
@@ -326,7 +326,7 @@ export namespace EventMessage {
 }
 
 export class CharacterSelected extends jspb.Message {
-  getSelectedMap(): jspb.Map<string, util_pb.ClassType>;
+  getSelectedMap(): jspb.Map<string, util_pb.ClassType[keyof util_pb.ClassType]>;
   clearSelectedMap(): void;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CharacterSelected.AsObject;
@@ -340,7 +340,7 @@ export class CharacterSelected extends jspb.Message {
 
 export namespace CharacterSelected {
   export type AsObject = {
-    selectedMap: Array<[string, util_pb.ClassType]>,
+    selectedMap: Array<[string, util_pb.ClassType[keyof util_pb.ClassType]]>,
   }
 }
 
@@ -351,8 +351,8 @@ export class Wave extends jspb.Message {
   getHasBoss(): boolean;
   setHasBoss(value: boolean): void;
 
-  getLevel(): util_pb.Level;
-  setLevel(value: util_pb.Level): void;
+  getLevel(): util_pb.LevelMap[keyof util_pb.LevelMap];
+  setLevel(value: util_pb.LevelMap[keyof util_pb.LevelMap]): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Wave.AsObject;
@@ -368,7 +368,7 @@ export namespace Wave {
   export type AsObject = {
     num: number,
     hasBoss: boolean,
-    level: util_pb.Level,
+    level: util_pb.LevelMap[keyof util_pb.LevelMap],
   }
 }
 
@@ -385,8 +385,8 @@ export class CurrentState extends jspb.Message {
   getCurrentPlayer(): google_protobuf_wrappers_pb.StringValue | undefined;
   setCurrentPlayer(value?: google_protobuf_wrappers_pb.StringValue): void;
 
-  getDisplay(): util_pb.Display;
-  setDisplay(value: util_pb.Display): void;
+  getDisplay(): util_pb.DisplayMap[keyof util_pb.DisplayMap];
+  setDisplay(value: util_pb.DisplayMap[keyof util_pb.DisplayMap]): void;
 
   hasCurrentWave(): boolean;
   clearCurrentWave(): void;
@@ -418,7 +418,7 @@ export namespace CurrentState {
     monstersList: Array<Monster.AsObject>,
     playersMap: Array<[string, Player.AsObject]>,
     currentPlayer?: google_protobuf_wrappers_pb.StringValue.AsObject,
-    display: util_pb.Display,
+    display: util_pb.DisplayMap[keyof util_pb.DisplayMap],
     currentWave?: Wave.AsObject,
     upcomingWavesMap: Array<[number, Wave.AsObject]>,
     audienceCount: number,
@@ -615,16 +615,20 @@ export namespace Output {
   }
 }
 
-export enum Target {
-  SELF = 0,
-  MELEE = 1,
-  RANGED = 2,
-  AOE = 3,
+export interface TargetMap {
+  SELF: 0;
+  MELEE: 1;
+  RANGED: 2;
+  AOE: 3;
 }
 
-export enum Position {
-  LEFT = 0,
-  MIDDLE = 1,
-  RIGHT = 2,
+export const Target: TargetMap;
+
+export interface PositionMap {
+  LEFT: 0;
+  MIDDLE: 1;
+  RIGHT: 2;
 }
+
+export const Position: PositionMap;
 

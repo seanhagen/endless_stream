@@ -14,8 +14,8 @@ export class Register extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
-  getType(): ClientType;
-  setType(value: ClientType): void;
+  getType(): ClientTypeMap[keyof ClientTypeMap];
+  setType(value: ClientTypeMap[keyof ClientTypeMap]): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Register.AsObject;
@@ -32,7 +32,7 @@ export namespace Register {
     id: string,
     code: string,
     name: string,
-    type: ClientType,
+    type: ClientTypeMap[keyof ClientTypeMap],
   }
 }
 
@@ -123,8 +123,8 @@ export namespace UseItem {
 }
 
 export class Move extends jspb.Message {
-  getDir(): Move.Dir;
-  setDir(value: Move.Dir): void;
+  getDir(): Move.DirMap[keyof Move.DirMap];
+  setDir(value: Move.DirMap[keyof Move.DirMap]): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Move.AsObject;
@@ -138,13 +138,15 @@ export class Move extends jspb.Message {
 
 export namespace Move {
   export type AsObject = {
-    dir: Move.Dir,
+    dir: Move.DirMap[keyof Move.DirMap],
   }
 
-  export enum Dir {
-    LEFT = 0,
-    RIGHT = 1,
+  export interface DirMap {
+    LEFT: 0;
+    RIGHT: 1;
   }
+
+  export const Dir: DirMap;
 }
 
 export class ActionComplete extends jspb.Message {
@@ -349,9 +351,11 @@ export namespace Input {
   }
 }
 
-export enum ClientType {
-  CLIENTPLAYER = 0,
-  CLIENTAUDIENCE = 1,
-  CLIENTDISPLAY = 2,
+export interface ClientTypeMap {
+  CLIENTPLAYER: 0;
+  CLIENTAUDIENCE: 1;
+  CLIENTDISPLAY: 2;
 }
+
+export const ClientType: ClientTypeMap;
 
