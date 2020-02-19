@@ -93,6 +93,9 @@ clnsrv:
 clnproto:
 	rm -rf $(GO_PROTO_TARGET_DIR)
 
+run: clnsrv server
+	docker-compose up --build
+
 rebuild: clnsrv server
 	docker-compose up -d --no-deps --build $(SERVICE)
 

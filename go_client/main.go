@@ -192,6 +192,9 @@ func handleStreamInput(ctx context.Context, client endless.GameClient, code, id,
 			},
 		},
 	})
+	if err != nil {
+		log.Printf("Unable to send register message: %v", err)
+	}
 
 	go func() {
 		inp := bufio.NewReader(os.Stdin)
