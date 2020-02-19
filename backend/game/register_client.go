@@ -11,10 +11,15 @@ import (
 
 // RegisterClient ...
 func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) error {
+	g.lock.Lock()
+	defer g.lock.Unlock()
+	log.Printf("client connected: %v, registering client", id)
+
 	out, err := g.registerHuman(id, name)
 	if err != nil {
 		return err
 	}
+	log.Printf("human registered")
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
@@ -29,6 +34,7 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
+		log.Printf("client gofunc started")
 		for {
 			finished := false
 			select {
@@ -51,6 +57,7 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 
 	wg.Add(1)
 	go func() {
+		log.Printf("client incoming message gofunc started")
 		// handle incoming messages
 		for {
 			finished := false
@@ -83,6 +90,7 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 
 	wg.Add(1)
 	go func() {
+		log.Printf("client outgoing message gofunc started")
 		// handle outgoing messages
 		for {
 			finished := false
@@ -111,31 +119,15 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 		wg.Done()
 	}()
 
+	log.Printf("waiting for client to finish")
 	wg.Wait()
-	return nil
-}
-
-// unregisterHuman is called in listen.go when a clien disconnects
-func (g *Game) unregisterHuman(o output) error {
-	g.lock.Lock()
-	defer g.lock.Unlock()
-
-	if o.isPlayer {
-		delete(g.players, o)
-		g.playerIds[o.id]--
-	} else {
-		delete(g.audience, o)
-	}
-
+	log.Printf("client finished")
 	return nil
 }
 
 // registerHuman is called above in RegisterClient
 func (g *Game) registerHuman(id, name string) (output, error) {
 	// accessing some maps, gotta lock
-	g.lock.Lock()
-	defer g.lock.Unlock()
-
 	out := output{
 		id:       id,
 		out:      make(chan *endless.Output),
@@ -149,19 +141,20 @@ func (g *Game) registerHuman(id, name string) (output, error) {
 	}
 
 	if len(g.players)+1 <= 4 {
-		msg, err := g.registerPlayer(id, name)
 		out.isPlayer = true
+		log.Printf("client is player")
 		g.newClients <- out
-
+		log.Printf("output sent to channel")
+		msg, err := g.registerPlayer(id, name)
+		log.Printf("player registered")
 		time.AfterFunc(time.Millisecond*100, func() {
 			g.output <- msg
 		})
+		log.Printf("afterfunc registered")
 		return out, err
 	}
 
 	g.newClients <- out
-
-	// g.audienceIds[id] = 1
 	msg, err := g.registerAudience(id)
 	time.AfterFunc(time.Millisecond*100, func() {
 		g.output <- msg

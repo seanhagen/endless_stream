@@ -24,11 +24,16 @@ func (g *Game) Listen() {
 		case newClient := <-g.newClients:
 			g.lock.Lock()
 			log.Printf("client connected: %v", newClient.id)
-			g.players[newClient] = true
-
+			if newClient.isPlayer {
+				g.players[newClient] = true
+			} else {
+				g.audience[newClient] = true
+			}
 			g.lock.Unlock()
 			// output state attempts to gain lock
-			newClient.out <- g.outputState()
+			// log.Printf("generating output to send")
+			// newClient.out <- g.outputState()
+			log.Printf("got new client")
 
 		case clientLeft := <-g.closingClients:
 			log.Printf("client disconnected: %v", clientLeft.id)
@@ -49,17 +54,14 @@ func (g *Game) Listen() {
 		case input := <-g.input:
 			log.Printf("got player/audience input: %v", input)
 			g.handleInput(input)
-
-		case <-stateTick.C:
-			// log.Printf("sending state")
-			g.output <- g.outputState()
-
 		default:
 		}
 
 		select {
+		case <-stateTick.C:
+			g.output <- g.outputState()
+
 		case t := <-ticker.C:
-			// log.Printf("game tick")
 			ctx := context.Background()
 			ctx, cancel := context.WithTimeout(ctx, time.Second*2)
 			err := g.tick(ctx, t)
@@ -73,7 +75,6 @@ func (g *Game) Listen() {
 					Tick: &endless.Tick{Time: ts},
 				},
 			}
-
 		default:
 		}
 

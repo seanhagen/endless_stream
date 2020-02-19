@@ -168,8 +168,8 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 
 		audience: map[output]bool{},
 
-		closingClients: make(chan output),
-		newClients:     make(chan output),
+		closingClients: make(chan output, 5),
+		newClients:     make(chan output, 5),
 
 		lock: &sync.Mutex{},
 

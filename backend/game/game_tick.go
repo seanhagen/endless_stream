@@ -2,6 +2,7 @@ package game
 
 import (
 	"context"
+	"log"
 	"time"
 )
 
@@ -9,6 +10,7 @@ import (
 func (g *Game) tick(ctx context.Context, t time.Time) error {
 	g.lock.Lock()
 	defer g.lock.Unlock()
+	log.Printf("game tick happens")
 
 	if len(g.players) == 0 {
 		g.idleTime++

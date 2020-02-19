@@ -1,6 +1,8 @@
 package game
 
 import (
+	"log"
+
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
@@ -42,6 +44,7 @@ type actor interface {
 func (g *Game) outputState() *endless.Output {
 	g.lock.Lock()
 	defer g.lock.Unlock()
+	log.Printf("outputting state")
 
 	var d endless.Display
 	switch g.screenState.MustState().(GameState) {
