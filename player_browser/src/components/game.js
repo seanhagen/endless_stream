@@ -7,11 +7,11 @@ import { v4 } from "uuid";
 import { gameState } from "../reducers/game";
 import io from "socket.io-client";
 import { ClientType, CharSelect, Register, Input } from "../grpc/input_pb";
-import { Display, Class, ClassType } from '../grpc/util_pb';
+import { Display, Class, ClassType } from "../grpc/util_pb";
 
 console.log("class type: ", ClassType);
 
-const emitInput = 'input'
+const emitInput = "input";
 
 export class Game extends Component {
   constructor(props) {
@@ -21,9 +21,15 @@ export class Game extends Component {
       pid = v4();
       localStorage.setItem("player-uuid", pid);
     }
+    var name = localStorage.getItem("player-name");
+    if (name === null) {
+      name = "testing name";
+      localStorage.setItem("player-name", name);
+    }
 
     this.state = {
       pid: pid,
+      name: name,
       joining: false,
       error: null,
       code: props.match.params.code,
@@ -33,10 +39,11 @@ export class Game extends Component {
     this.processData = this.processData.bind(this);
     this.selectCharacter = this.selectCharacter.bind(this);
 
-    const s = io("http://localhost:3002");
+    const s = io(process.env.REACT_APP_GAME_SERVER);
     s.on("connect", () => {
       const reg = new Register();
       reg.setId(pid);
+      reg.setName(name);
       reg.setCode(this.state.code);
       reg.setType(ClientType.CLIENTPLAYER);
 
@@ -45,24 +52,27 @@ export class Game extends Component {
       s.emit(emitInput, inp.toObject());
     });
     s.on("data", this.processData);
+    s.on("error", e => {
+      console.error("error from socket: ", e);
+    });
     s.on("disconnect", () => {
       console.log("disconnected");
     });
     this.socket = s;
   }
 
-  processData(msg){
-    switch (msg.data){
+  processData(msg) {
+    switch (msg.data) {
       case "tick":
         break;
       case "state":
-        this.setState({game: msg.state});
+        this.setState({ game: msg.state });
         break;
       case "joined":
-        console.log("somone joined: ", msg)
+        console.log("somone joined: ", msg);
         break;
       default:
-        console.log("don't know how to handle this message type: ", msg.data)
+        console.log("don't know how to handle this message type: ", msg.data);
     }
   }
 
@@ -70,48 +80,44 @@ export class Game extends Component {
     this.socket.close();
   }
 
-  renderJoining(code){
+  renderJoining(code) {
     return (
-        <div>
+      <div>
         <h1>Endless Stream</h1>
         <p>Joining Game: {code}</p>
-        </div>
+      </div>
     );
   }
 
-  renderError(error){
+  renderError(error) {
     return (
-        <div>
+      <div>
         <h1>Endless Stream</h1>
         <p>Error joining game: {error}</p>
-        </div>
+      </div>
     );
   }
 
-  renderState(){
-    const {game} = this.state;
-    if (game === null){
-      return (
-          <p>Joining game!</p>
-      );
+  renderState() {
+    const { game } = this.state;
+    if (game === null) {
+      return <p>Joining game!</p>;
     }
 
-    switch (game.display){
-    case Display.SCREENCHARSELECT:
-      return this.renderCharSelect();
+    switch (game.display) {
+      case Display.SCREENCHARSELECT:
+        return this.renderCharSelect();
     }
 
-    return (
-        <p>Game Joined!</p>
-    );
+    return <p>Game Joined!</p>;
   }
 
-  selectCharacter(ev){
+  selectCharacter(ev) {
     ev.preventDefault();
-    console.log("character select: ", ev.target.dataset)
+    console.log("character select: ", ev.target.dataset);
 
     const c = new Class();
-    c.setClass(ClassType[ev.target.dataset.class.toUpperCase()])
+    c.setClass(ClassType[ev.target.dataset.class.toUpperCase()]);
 
     const cs = new CharSelect();
     cs.setPlayerId(this.state.pid);
@@ -120,28 +126,33 @@ export class Game extends Component {
     const inp = new Input();
     inp.setPlayerId(this.state.pid);
     inp.setCharSelect(cs);
-    this.socket.emit(emitInput, inp.toObject())
+
+    console.log("selecting character: ", inp.toObject());
+
+    this.socket.emit(emitInput, inp.toObject());
   }
 
-  makeCharSelectButton(cl){
+  makeCharSelectButton(cl) {
     const name = cl.charAt(0).toUpperCase() + cl.slice(1);
     return (
-        <button data-class={cl} onClick={this.selectCharacter}>{name}</button>
-    )
+      <button data-class={cl} onClick={this.selectCharacter}>
+        {name}
+      </button>
+    );
   }
 
-  renderCharSelect(){
-    const {game} = this.state;
+  renderCharSelect() {
+    const { game } = this.state;
     console.log("selected: ", game.selected);
     return (
-        <Fragment>
+      <Fragment>
         <h3>Character Select!</h3>
-        {this.makeCharSelectButton('fighter')}
-      {this.makeCharSelectButton('ranger')}
-      {this.makeCharSelectButton('cleric')}
-      {this.makeCharSelectButton('wizard')}
+        {this.makeCharSelectButton("fighter")}
+        {this.makeCharSelectButton("ranger")}
+        {this.makeCharSelectButton("cleric")}
+        {this.makeCharSelectButton("wizard")}
       </Fragment>
-    )
+    );
   }
 
   render() {
@@ -156,11 +167,11 @@ export class Game extends Component {
     }
 
     return (
-        <div>
+      <div>
         <h1>Endless Stream</h1>
         {this.renderState()}
       </div>
-    )
+    );
   }
 }
 
