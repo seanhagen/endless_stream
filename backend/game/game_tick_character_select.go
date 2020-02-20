@@ -25,9 +25,6 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 				}
 			}
 
-			inp := i.in
-			spew.Dump(*inp)
-
 			// check to see if any of the inputs are 'character select'
 			if x := i.in.GetCharSelect(); x != nil {
 				c := x.GetChoice()
@@ -61,22 +58,6 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 			}
 		}
 	}
-
-	// if len(g.selectedCharacters) > 0 && updateSelected {
-	// 	// map showing who's selected what, so that we can report back to the clients
-	// 	out := map[string]endless.ClassType{}
-	// 	for k, v := range g.selectedCharacters {
-	// 		out[v] = k
-	// 	}
-
-	// 	g.output <- &endless.Output{
-	// 		Data: &endless.Output_Selected{
-	// 			Selected: &endless.CharacterSelected{
-	// 				Selected: out,
-	// 			},
-	// 		},
-	// 	}
-	// }
 
 	if startingGame {
 		// do the state transition!
