@@ -9,6 +9,8 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -121,11 +123,11 @@ var fileDescriptor_602ff85d9c6c040c = []byte{
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
-var _ grpc.ClientConn
+var _ grpc.ClientConnInterface
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion4
+const _ = grpc.SupportPackageIsVersion6
 
 // GameClient is the client API for Game service.
 //
@@ -136,10 +138,10 @@ type GameClient interface {
 }
 
 type gameClient struct {
-	cc *grpc.ClientConn
+	cc grpc.ClientConnInterface
 }
 
-func NewGameClient(cc *grpc.ClientConn) GameClient {
+func NewGameClient(cc grpc.ClientConnInterface) GameClient {
 	return &gameClient{cc}
 }
 
@@ -187,6 +189,17 @@ func (x *gameStateClient) Recv() (*Output, error) {
 type GameServer interface {
 	Create(context.Context, *CreateGame) (*GameCreated, error)
 	State(Game_StateServer) error
+}
+
+// UnimplementedGameServer can be embedded to have forward compatible implementations.
+type UnimplementedGameServer struct {
+}
+
+func (*UnimplementedGameServer) Create(ctx context.Context, req *CreateGame) (*GameCreated, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (*UnimplementedGameServer) State(srv Game_StateServer) error {
+	return status.Errorf(codes.Unimplemented, "method State not implemented")
 }
 
 func RegisterGameServer(s *grpc.Server, srv GameServer) {
