@@ -3,13 +3,11 @@ package grpc
 import (
 	"context"
 	"net"
-	"net/http"
 	"sync"
 	"time"
 
 	library "github.com/Z2hMedia/backend-go-library/v7"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -48,11 +46,9 @@ type Base struct {
 	// erRep *errors.Reporter
 	// stTr  *stats.Tracer
 
-	cancel  context.CancelFunc
-	srv     *grpc.Server
-	wrapSrv *grpcweb.WrappedGrpcServer
-	httpSrv *http.Server
-	listen  net.Listener
+	cancel context.CancelFunc
+	srv    *grpc.Server
+	listen net.Listener
 
 	unaryIntercept  []grpc.UnaryServerInterceptor
 	_uiLock         *sync.Mutex

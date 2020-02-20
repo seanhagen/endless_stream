@@ -2,15 +2,11 @@ package grpc
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"net"
-	"net/http"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
-	"github.com/improbable-eng/grpc-web/go/grpcweb"
-	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/stats/view"
@@ -80,46 +76,5 @@ func (ba *Base) setupGRPC(grpcConf grpcConfig) error {
 	}
 	ba.srv = gs
 
-	opts := []grpcweb.Option{
-		grpcweb.WithWebsockets(true),
-	}
-
-	ws := grpcweb.WrapServer(gs, opts...)
-	ba.wrapSrv = ws
-
 	return nil
-}
-
-// setupHTTP ...
-func (ba *Base) setupHTTP() {
-	c := cors.New(cors.Options{
-		AllowCredentials: true,
-		AllowedHeaders: []string{
-			"DNT", "X-CustomHeader", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since",
-			"Cache-Control", "Content-Type", "Content-Range", "Range", "Authorization",
-			"X-Host", "X-HTTP-Host", "X-Request-ID", "X-Server-Name", "X-Request-URI",
-			"X-User-Agent", "X-Referrer",
-		},
-		ExposedHeaders: []string{
-			"DNT", "X-CustomHeader", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since",
-			"Cache-Control", "Content-Type", "Content-Range", "Range", "Authorization",
-		},
-	})
-
-	fb := fallback{}
-	hs := &http.Server{
-		TLSConfig: &tls.Config{
-			PreferServerCipherSuites: true,
-			CurvePreferences: []tls.CurveID{
-				tls.CurveP256,
-				tls.X25519,
-			},
-		},
-		Handler: c.Handler(
-			hstsHandler(
-				grpcTrafficSplitter(fb.ServeHTTP, ba.srv),
-			),
-		),
-	}
-	ba.httpSrv = hs
 }
