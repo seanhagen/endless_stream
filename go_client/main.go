@@ -15,10 +15,13 @@ import (
 	"google.golang.org/grpc"
 )
 
+const host = "localhost:8000"
+
 func main() {
 	ctx := context.Background()
 
-	c, err := setupConn("localhost:8000")
+	fmt.Printf("Connecting to server: %v\n", host)
+	c, err := setupConn(host)
 	if err != nil {
 		log.Fatal(err)
 	}
