@@ -35,12 +35,14 @@ export class Game extends Component {
       error: null,
       code: props.match.params.code,
       game: null,
-      selectedCharacter: 0
+      selectedCharacter: 0,
+      amVip: false
     };
 
     this.processData = this.processData.bind(this);
     this.selectCharacter = this.selectCharacter.bind(this);
     this.unselectCharacter = this.unselectCharacter.bind(this);
+    this.handleJoin = this.handleJoin.bind(this);
 
     const s = io(process.env.REACT_APP_GAME_SERVER);
     s.on("connect", () => {
@@ -77,10 +79,22 @@ export class Game extends Component {
 
         break;
       case "joined":
-        console.log("somone joined: ", msg);
+        this.handleJoin(msg.joined);
         break;
       default:
         console.log("don't know how to handle this message type: ", msg.data);
+    }
+  }
+
+  handleJoin(data) {
+    const { pid } = this.state;
+    if (pid == data.id) {
+      if (data.isVip) {
+        this.setState({ amVip: true });
+      }
+      if (data.asAudience) {
+        console.log("this user is part of the audience!");
+      }
     }
   }
 
@@ -163,7 +177,7 @@ export class Game extends Component {
     this.socket.emit(emitInput, inp.toObject());
   }
 
-  makeCharSelectButton(pid, cl, selected) {
+  makeCharSelectButton(cl, selected) {
     const name = cl.charAt(0).toUpperCase() + cl.slice(1);
     const clVal = ClassType[cl.toUpperCase()];
     const alreadySelected = Object.values(selected);
@@ -222,21 +236,35 @@ export class Game extends Component {
     }
   }
 
+  startGame(ev) {
+    ev.preventDefault();
+    console.log("need to start the game");
+  }
+
   renderCharSelect() {
-    const { pid, game } = this.state;
+    const { amVip, pid, game } = this.state;
     const { selected } = game.selected;
     return (
       <Fragment>
         <h3>Character Select!</h3>
         {selected[pid] === undefined ? (
           <Fragment>
-            {this.makeCharSelectButton(pid, "fighter", selected)}
-            {this.makeCharSelectButton(pid, "ranger", selected)}
-            {this.makeCharSelectButton(pid, "cleric", selected)}
-            {this.makeCharSelectButton(pid, "wizard", selected)}
+            {this.makeCharSelectButton("fighter", selected)}
+            {this.makeCharSelectButton("ranger", selected)}
+            {this.makeCharSelectButton("cleric", selected)}
+            {this.makeCharSelectButton("wizard", selected)}
           </Fragment>
         ) : (
             <Fragment>{this.renderSelected()}</Fragment>
+          )}
+        {amVip ? (
+          <Fragment>
+            <br />
+            <br />
+            <button onClick={this.startGame}>Start Game</button>
+          </Fragment>
+        ) : (
+            <Fragment />
           )}
       </Fragment>
     );
