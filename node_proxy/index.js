@@ -106,9 +106,12 @@ const fixInput = data => {
 };
 
 const fixCharSelect = data => {
-  data.charSelect.choice.class = data.charSelect.choice.pb_class;
-  delete data.charSelect.choice.pb_class;
-  data.char_select = data.charSelect;
-  delete data.CharSelect;
+  if (data.charSelect.choice !== undefined) {
+    data.charSelect.choice.class = data.charSelect.choice.pb_class;
+    delete data.charSelect.choice.pb_class;
+    data.char_select = data.charSelect;
+    delete data.CharSelect;
+  }
+
   return data;
 };
