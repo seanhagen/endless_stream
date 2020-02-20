@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import { v4 } from "uuid";
+import * as _ from "lodash";
 
 import { gameState } from "../reducers/game";
 import io from "socket.io-client";
@@ -33,11 +34,13 @@ export class Game extends Component {
       joining: false,
       error: null,
       code: props.match.params.code,
-      game: null
+      game: null,
+      selectedCharacter: 0
     };
 
     this.processData = this.processData.bind(this);
     this.selectCharacter = this.selectCharacter.bind(this);
+    this.unselectCharacter = this.unselectCharacter.bind(this);
 
     const s = io(process.env.REACT_APP_GAME_SERVER);
     s.on("connect", () => {
@@ -62,11 +65,16 @@ export class Game extends Component {
   }
 
   processData(msg) {
+    const { game } = this.state;
     switch (msg.data) {
       case "tick":
         break;
       case "state":
-        this.setState({ game: msg.state });
+        if (!_.isEqual(game, msg.state)) {
+          console.log("new state: ", msg.state);
+          this.setState({ game: msg.state });
+        }
+
         break;
       case "joined":
         console.log("somone joined: ", msg);
@@ -116,8 +124,11 @@ export class Game extends Component {
     ev.preventDefault();
     console.log("character select: ", ev.target.dataset);
 
+    const s = ClassType[ev.target.dataset.class.toUpperCase()];
+    this.setState({ selectedCharacter: s });
+
     const c = new Class();
-    c.setClass(ClassType[ev.target.dataset.class.toUpperCase()]);
+    c.setClass(s);
 
     const cs = new CharSelect();
     cs.setPlayerId(this.state.pid);
@@ -127,13 +138,41 @@ export class Game extends Component {
     inp.setPlayerId(this.state.pid);
     inp.setCharSelect(cs);
 
-    console.log("selecting character: ", inp.toObject());
-
+    const { pid, game } = this.state;
+    var { selected } = game;
+    selected.selected[pid] = s;
+    game.selected = selected;
+    this.setState({ game: game });
     this.socket.emit(emitInput, inp.toObject());
   }
 
-  makeCharSelectButton(cl) {
+  unselectCharacter(ev) {
+    ev.preventDefault();
+    const cs = new CharSelect();
+    cs.setPlayerId(this.state.pid);
+
+    const inp = new Input();
+    inp.setPlayerId(this.state.pid);
+    inp.setCharSelect(cs);
+
+    const { pid, game } = this.state;
+    var { selected } = game;
+    delete selected.selected[pid];
+    game.selected = selected;
+    this.setState({ game: game });
+    this.socket.emit(emitInput, inp.toObject());
+  }
+
+  makeCharSelectButton(pid, cl, selected) {
     const name = cl.charAt(0).toUpperCase() + cl.slice(1);
+    const clVal = ClassType[cl.toUpperCase()];
+    const alreadySelected = Object.values(selected);
+    var taken = alreadySelected.includes(clVal);
+
+    if (taken) {
+      return <button disabled={true}>{name}</button>;
+    }
+
     return (
       <button data-class={cl} onClick={this.selectCharacter}>
         {name}
@@ -141,16 +180,64 @@ export class Game extends Component {
     );
   }
 
+  renderSelected() {
+    const { pid, game } = this.state;
+    const selected = game.selected.selected[pid];
+    switch (selected) {
+      case ClassType.FIGHTER:
+        return (
+          <Fragment>
+            <h3>Fighter</h3>
+            <button onClick={this.unselectCharacter}>Unselect</button>
+          </Fragment>
+        );
+      case ClassType.RANGER:
+        return (
+          <Fragment>
+            <h3>Ranger</h3>
+            <button onClick={this.unselectCharacter}>Unselect</button>
+          </Fragment>
+        );
+      case ClassType.CLERIC:
+        return (
+          <Fragment>
+            <h3>Cleric</h3>
+            <button onClick={this.unselectCharacter}>Unselect</button>
+          </Fragment>
+        );
+      case ClassType.WIZARD:
+        return (
+          <Fragment>
+            <h3>Wizard</h3>
+            <button onClick={this.unselectCharacter}>Unselect</button>
+          </Fragment>
+        );
+      default:
+        return (
+          <Fragment>
+            <h3>Unknown</h3>
+            <button onClick={this.unselectCharacter}>Unselect</button>
+          </Fragment>
+        );
+    }
+  }
+
   renderCharSelect() {
-    const { game } = this.state;
-    console.log("selected: ", game.selected);
+    const { pid, game } = this.state;
+    const { selected } = game.selected;
     return (
       <Fragment>
         <h3>Character Select!</h3>
-        {this.makeCharSelectButton("fighter")}
-        {this.makeCharSelectButton("ranger")}
-        {this.makeCharSelectButton("cleric")}
-        {this.makeCharSelectButton("wizard")}
+        {selected[pid] === undefined ? (
+          <Fragment>
+            {this.makeCharSelectButton(pid, "fighter", selected)}
+            {this.makeCharSelectButton(pid, "ranger", selected)}
+            {this.makeCharSelectButton(pid, "cleric", selected)}
+            {this.makeCharSelectButton(pid, "wizard", selected)}
+          </Fragment>
+        ) : (
+            <Fragment>{this.renderSelected()}</Fragment>
+          )}
       </Fragment>
     );
   }
