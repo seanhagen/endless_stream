@@ -51,19 +51,16 @@ func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.
 
 // State ...
 func (s *Srv) State(stream endless.Game_StateServer) error {
-	log.Printf("state stream started!")
 	var g *game.Game
 	var id, name string
 
 	msg, err := stream.Recv()
 	if err != nil {
-		log.Printf("Unable to receive state message during handshake: %v", err)
 		return fmt.Errorf("unable to receive message? %v", err)
 	}
 
 	r := msg.GetRegister()
 	if r == nil {
-		log.Printf("first message not registration message")
 		return fmt.Errorf("First message must be registration message")
 	}
 
@@ -86,8 +83,6 @@ func (s *Srv) State(stream endless.Game_StateServer) error {
 		name = fmt.Sprintf("Anon-%v", strings.ToLower(game.GetGameId()))
 	}
 
-	log.Printf("registering client %v", id)
 	err = g.RegisterClient(id, name, stream)
-	log.Printf("client %v done", id)
 	return err
 }

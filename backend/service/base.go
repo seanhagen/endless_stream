@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"log"
 	"sync"
 	"time"
 
@@ -50,7 +49,6 @@ func (s *Srv) cleanup() {
 		case t := <-tick.C:
 			for id, g := range s.games {
 				if !g.IsRunning(t) {
-					log.Printf("game '%v' has been idle too long, shutting down", id)
 					s.l.Lock()
 					ctx := context.Background()
 					ctx, cancel := context.WithTimeout(ctx, time.Second*3)
