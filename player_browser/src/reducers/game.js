@@ -81,9 +81,9 @@ export const gameState = createSlice({
 });
 
 const {
-  createGameStart
-  // createGameFinish,
-  // createGameError
+  createGameStart,
+  createGameFinish,
+  createGameError
 } = gameState.actions;
 // const {
 //   connectGameStart,
@@ -96,21 +96,22 @@ export const { joinGame } = gameState.actions;
 gameState.actions.createGame = () => async (dispatch, getState) => {
   dispatch(createGameStart());
   console.log("game create -- start, state: ", getState());
-  // const cg = new CreateGame();
-  // const resp = gc.create(cg, {}, (err, msg) => {
-  //   const state = getState();
-  //   console.log("game create request done, state: ", state, err, msg);
-  //   if (err) {
-  //     if (err.toObject === undefined) {
-  //       dispatch(createGameError({ msg: err.toString() }));
-  //     } else {
-  //       dispatch(createGameError(err.toObject()));
-  //     }
-  //   } else {
-  //     dispatch(createGameFinish(msg.toObject()));
-  //   }
-  // });
-  // console.log("create thing: ", resp);
+
+  fetch('http://localhost:3002/create',{
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      dispatch(createGameFinish(data));
+    })
+    .catch((error) => {
+      dispatch(createGameError(error));
+    });
 };
 
 export default gameState.reducer;

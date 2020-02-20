@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
@@ -6,90 +6,161 @@ import { v4 } from "uuid";
 
 import { gameState } from "../reducers/game";
 import io from "socket.io-client";
-import { ClientType, Input, Register } from "../grpc/input_pb";
+import { ClientType, CharSelect, Register, Input } from "../grpc/input_pb";
+import { Display, Class, ClassType } from '../grpc/util_pb';
+
+console.log("class type: ", ClassType);
+
+const emitInput = 'input'
 
 export class Game extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      joining: false,
-      error: null,
-      code: props.match.params.code
-    };
-    this.checkStream = this.checkStream.bind(this);
-
-    console.log("io: ", io);
-    const s = io("http://localhost:3002");
-
     var pid = localStorage.getItem("player-uuid");
-    console.log("pid from local storage: ", pid);
     if (pid === null) {
       pid = v4();
       localStorage.setItem("player-uuid", pid);
     }
-    s.on("connect", () => {
-      console.log("socket connected");
 
+    this.state = {
+      pid: pid,
+      joining: false,
+      error: null,
+      code: props.match.params.code,
+      game: null
+    };
+
+    this.processData = this.processData.bind(this);
+    this.selectCharacter = this.selectCharacter.bind(this);
+
+    const s = io("http://localhost:3002");
+    s.on("connect", () => {
       const reg = new Register();
       reg.setId(pid);
       reg.setCode(this.state.code);
-      reg.setName("Testing JS Client");
       reg.setType(ClientType.CLIENTPLAYER);
-      console.log("component mounted: ", reg.toObject());
 
       const inp = new Input();
       inp.setRegister(reg);
-
-      s.emit("input", inp.toObject());
+      s.emit(emitInput, inp.toObject());
     });
-    s.on("data", data => {
-      console.log("recieved data: ", data);
-    });
+    s.on("data", this.processData);
     s.on("disconnect", () => {
       console.log("disconnected");
     });
     this.socket = s;
   }
 
+  processData(msg){
+    switch (msg.data){
+      case "tick":
+        break;
+      case "state":
+        this.setState({game: msg.state});
+        break;
+      case "joined":
+        console.log("somone joined: ", msg)
+        break;
+      default:
+        console.log("don't know how to handle this message type: ", msg.data)
+    }
+  }
+
   componentWillUnmount() {
     this.socket.close();
   }
 
-  checkStream(ev) {
+  renderJoining(code){
+    return (
+        <div>
+        <h1>Endless Stream</h1>
+        <p>Joining Game: {code}</p>
+        </div>
+    );
+  }
+
+  renderError(error){
+    return (
+        <div>
+        <h1>Endless Stream</h1>
+        <p>Error joining game: {error}</p>
+        </div>
+    );
+  }
+
+  renderState(){
+    const {game} = this.state;
+    if (game === null){
+      return (
+          <p>Joining game!</p>
+      );
+    }
+
+    switch (game.display){
+    case Display.SCREENCHARSELECT:
+      return this.renderCharSelect();
+    }
+
+    return (
+        <p>Game Joined!</p>
+    );
+  }
+
+  selectCharacter(ev){
     ev.preventDefault();
-    console.log("stream client: ", this.stream);
+    console.log("character select: ", ev.target.dataset)
+
+    const c = new Class();
+    c.setClass(ClassType[ev.target.dataset.class.toUpperCase()])
+
+    const cs = new CharSelect();
+    cs.setPlayerId(this.state.pid);
+    cs.setChoice(c);
+
+    const inp = new Input();
+    inp.setPlayerId(this.state.pid);
+    inp.setCharSelect(cs);
+    this.socket.emit(emitInput, inp.toObject())
+  }
+
+  makeCharSelectButton(cl){
+    const name = cl.charAt(0).toUpperCase() + cl.slice(1);
+    return (
+        <button data-class={cl} onClick={this.selectCharacter}>{name}</button>
+    )
+  }
+
+  renderCharSelect(){
+    const {game} = this.state;
+    console.log("selected: ", game.selected);
+    return (
+        <Fragment>
+        <h3>Character Select!</h3>
+        {this.makeCharSelectButton('fighter')}
+      {this.makeCharSelectButton('ranger')}
+      {this.makeCharSelectButton('cleric')}
+      {this.makeCharSelectButton('wizard')}
+      </Fragment>
+    )
   }
 
   render() {
     const { joining, error } = this.state;
     const { code } = this.state;
-    console.log("code: ", code);
     if (joining) {
-      return (
-        <div>
-          <h1>Endless Stream</h1>
-          <p>Joining Game: {code}</p>
-        </div>
-      );
+      return this.renderJoining(code);
     }
 
     if (error) {
-      return (
-        <div>
-          <h1>Endless Stream</h1>
-          <p>Error joining game: {error}</p>
-        </div>
-      );
+      return this.renderError(error);
     }
 
     return (
-      <div>
+        <div>
         <h1>Endless Stream</h1>
-        <p>Game Joined!</p>
-        <p>Code: {code}</p>
-        <button onClick={this.checkStream}>Check</button>
+        {this.renderState()}
       </div>
-    );
+    )
   }
 }
 
