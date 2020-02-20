@@ -34,12 +34,7 @@ func (g *Game) IsRunning(t time.Time) bool {
 		log.Printf("game has been idle too long ( %v seconds )", d.Seconds())
 		return false
 	}
-	log.Printf("game has been idle since %v (%v seconds)", g.idleSince, d.Seconds())
-
-	// if g.idleTime > maxIdle {
-	// 	return false
-	// }
-
+	// log.Printf("game has been idle since %v (%v seconds)", g.idleSince, d.Seconds())
 	return true
 }
 

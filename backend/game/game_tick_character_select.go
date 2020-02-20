@@ -2,12 +2,18 @@ package game
 
 import (
 	"log"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 // stateCharSelect ...
 func (g *Game) stateCharSelect(input map[string][]input) error {
 	startingGame := false
 	// updateSelected := false
+
+	if len(input) > 0 {
+		spew.Dump(input)
+	}
 
 	for pid, inputs := range input {
 		for _, i := range inputs {
@@ -18,6 +24,9 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 					break
 				}
 			}
+
+			inp := i.in
+			spew.Dump(*inp)
 
 			// check to see if any of the inputs are 'character select'
 			if x := i.in.GetCharSelect(); x != nil {

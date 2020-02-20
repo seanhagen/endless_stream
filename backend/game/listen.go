@@ -15,29 +15,9 @@ func (g *Game) Listen() {
 	stateTick := time.NewTicker(stateLen)
 
 	for {
-		var err error
 		// multiple select statements ( with default cases ) allows go to do more
 		// than one thing each iteration, so a tick won't have to wait because
 		// there's an update to send out or a player has connected
-
-		// select {
-		// // case newClient := <-g.newClients:
-		// // 	log.Printf("got new client")
-		// // g.Lock()
-		// // if newClient.isPlayer {
-		// // 	g.players[newClient] = true
-		// // } else {
-		// // 	g.audience[newClient] = true
-		// // }
-		// // g.Unlock()
-		// // output state attempts to gain lock
-		// // log.Printf("generating output to send")
-		// // newClient.out <- g.outputState()
-
-		// // case clientLeft := <-g.closingClients:
-		// // 	g.unregisterHuman(clientLeft)
-		// default:
-		// }
 
 		select {
 		case update := <-g.output:
@@ -69,13 +49,8 @@ func (g *Game) Listen() {
 
 		select {
 		case <-g.ctx.Done():
-			log.Printf("game context signaled done!")
 			goto finished
 		default:
-		}
-
-		if err != nil {
-			log.Printf("Error occured: %v", err)
 		}
 	}
 finished:

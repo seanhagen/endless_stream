@@ -1,14 +1,12 @@
 package game
 
 import (
-	"log"
-
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
 // handleInput ...
 func (g *Game) handleInput(in input) {
-	log.Printf("got player/audience input: %#v", in)
+	// log.Printf("got player/audience input: %#v", in)
 	if in.isPlayer {
 		g.playerInput <- in
 	} else {

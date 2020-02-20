@@ -19,7 +19,6 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 	if err != nil {
 		return err
 	}
-	log.Printf("human registered")
 
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
@@ -37,12 +36,10 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 	go func() {
-		log.Printf("client gofunc started")
 		for {
 			finished := false
 			select {
 			case _ = <-stream.Context().Done():
-				log.Printf("Game %v stream client context done", g.code)
 				finished = true
 			case <-ctx.Done():
 				finished = true
@@ -60,7 +57,6 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 
 	wg.Add(1)
 	go func() {
-		log.Printf("client incoming message gofunc started")
 		// handle incoming messages
 		for {
 			finished := false
@@ -93,7 +89,6 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 
 	wg.Add(1)
 	go func() {
-		log.Printf("client outgoing message gofunc started")
 		// handle outgoing messages
 		for {
 			finished := false
@@ -108,7 +103,6 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 
 				err := stream.Send(out)
 				if err != nil {
-					log.Printf("Game %v unable to send message to client: %v", g.code, err)
 					finished = true
 					break
 				}
@@ -122,9 +116,7 @@ func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) 
 		wg.Done()
 	}()
 
-	log.Printf("waiting for client to finish")
 	wg.Wait()
-	log.Printf("client finished")
 	return nil
 }
 
@@ -170,10 +162,12 @@ func (g *Game) registerPlayer(id, name string) (*endless.Output, error) {
 	g.playerNames[id] = name
 
 	isVip := false
-	if len(g.players) == 0 || id == g.vipPlayer {
+	if len(g.players) == 1 || id == g.vipPlayer {
 		isVip = true
 		g.vipPlayer = id
 	}
+
+	log.Printf("registered player, id: %v, vip: %v", id, isVip)
 
 	out := &endless.Output{
 		Data: &endless.Output_Joined{
