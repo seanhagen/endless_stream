@@ -3,6 +3,7 @@ package game
 import (
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
@@ -78,6 +79,7 @@ func (g *Game) outputState() *endless.Output {
 			sc[v] = k
 		}
 	}
+	log.Printf("selected: %v", spew.Sdump(sc, g.selectedCharacters))
 
 	return &endless.Output{
 		Data: &endless.Output_State{
