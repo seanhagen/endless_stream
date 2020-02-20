@@ -2,97 +2,41 @@ package grpc
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
-	"log"
 	"net"
 	"net/http"
-	"time"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
+	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/stats/view"
 	"google.golang.org/grpc"
 )
 
-const grpcListen = "10001"
-
-// DefaultTimeout is the timeout used when the grpc-gateway sends requests
-// to the grpc server. The default is 0 -- no timeout.
-var DefaultTimeout = 0 * time.Second
-
-// GatewayHandler ...
-type GatewayHandler func(context.Context, *runtime.ServeMux, *grpc.ClientConn) error
-
-// Handler ...
-type Handler func(*grpc.Server)
-
-type grpcConfig struct {
-	vip *viper.Viper
-	// trace              *stats.Tracer
-	// error              *errors.Reporter
-	UnaryInterceptors  []grpc.UnaryServerInterceptor
-	StreamInterceptors []grpc.StreamServerInterceptor
-}
-
-type grpcServer struct {
-	cancel   context.CancelFunc
-	srv      *grpc.Server
-	listen   net.Listener
-	dopts    []grpc.DialOption
-	httpSrv  *http.Server
-	grpcDial *grpc.ClientConn
-	// tr       *stats.Tracer
-}
-
-// registerHandler ...
-func (s *grpcServer) registerHandler(ctx context.Context, fn Handler) {
-	fn(s.srv)
-}
-
 // createGRPCServer creates a GRPC server from the config
-func (ba *Base) createGRPCServer(ctx context.Context, conf grpcConfig) (*grpcServer, error) {
+func (ba *Base) createGRPCServer(ctx context.Context, conf grpcConfig) error {
 	listenPort := shouldEnv("PORT", grpcListen)
 	// setup default grpc listener
 	l, err := net.Listen("tcp", fmt.Sprintf(":%v", listenPort))
 	if err != nil {
-		return nil, err
+		return err
 	}
+	ba.listen = l
 
-	// setup default dial opts
-	dopts := []grpc.DialOption{
-		grpc.WithInsecure(),
-	}
-
-	// setup grpc dialer
-	conn, err := grpc.Dial(listenPort, dopts...)
+	err = ba.setupGRPC(conf)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	log.Printf("Server setup to listen on %v", listenPort)
-
-	srv, err := ba.setupGRPC(conf)
-	if err != nil {
-		return nil, err
-	}
-
-	s := &grpcServer{
-		srv:      srv,
-		listen:   l,
-		dopts:    dopts,
-		grpcDial: conn,
-		// tr:       conf.trace,
-	}
-
-	return s, nil
+	return nil
 }
 
 // setupGRPC sets up the gRPC server
-func (ba *Base) setupGRPC(grpcConf grpcConfig) (*grpc.Server, error) {
+func (ba *Base) setupGRPC(grpcConf grpcConfig) error {
 	logrusEntry := logrus.NewEntry(ba.Logger)
 
 	logOpts := []grpc_logrus.Option{}
@@ -130,5 +74,52 @@ func (ba *Base) setupGRPC(grpcConf grpcConfig) (*grpc.Server, error) {
 		grpc_middleware.WithStreamServerChain(streamInterceptors...),
 	}
 
-	return grpc.NewServer(srvOpts...), nil
+	gs := grpc.NewServer(srvOpts...)
+	for _, fn := range ba.handlers {
+		fn(gs)
+	}
+	ba.srv = gs
+
+	opts := []grpcweb.Option{
+		grpcweb.WithWebsockets(true),
+	}
+
+	ws := grpcweb.WrapServer(gs, opts...)
+	ba.wrapSrv = ws
+
+	return nil
+}
+
+// setupHTTP ...
+func (ba *Base) setupHTTP() {
+	c := cors.New(cors.Options{
+		AllowCredentials: true,
+		AllowedHeaders: []string{
+			"DNT", "X-CustomHeader", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since",
+			"Cache-Control", "Content-Type", "Content-Range", "Range", "Authorization",
+			"X-Host", "X-HTTP-Host", "X-Request-ID", "X-Server-Name", "X-Request-URI",
+			"X-User-Agent", "X-Referrer",
+		},
+		ExposedHeaders: []string{
+			"DNT", "X-CustomHeader", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since",
+			"Cache-Control", "Content-Type", "Content-Range", "Range", "Authorization",
+		},
+	})
+
+	fb := fallback{}
+	hs := &http.Server{
+		TLSConfig: &tls.Config{
+			PreferServerCipherSuites: true,
+			CurvePreferences: []tls.CurveID{
+				tls.CurveP256,
+				tls.X25519,
+			},
+		},
+		Handler: c.Handler(
+			hstsHandler(
+				grpcTrafficSplitter(fb.ServeHTTP, ba.srv),
+			),
+		),
+	}
+	ba.httpSrv = hs
 }

@@ -63,7 +63,6 @@ func main() {
 		log.Fatalf("Unable to initialize game server: %v", err)
 	}
 
-	log.Printf("server setup, starting")
 	err = srv.Start(ctx, cancel)
 	if err != nil {
 		log.Fatalf("Error starting or shutting down app: %v", err)

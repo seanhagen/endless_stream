@@ -8,6 +8,7 @@ func (g *Game) unregisterHuman(o output) error {
 	g.Lock()
 	defer g.Unlock()
 
+	g.connected--
 	if o.isPlayer {
 		close(o.out)
 		delete(g.players, o)

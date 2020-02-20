@@ -2,14 +2,38 @@ package grpc
 
 import (
 	"context"
+	"net"
+	"net/http"
 	"sync"
 	"time"
 
 	library "github.com/Z2hMedia/backend-go-library/v7"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )
+
+const grpcListen = "10001"
+
+// DefaultTimeout is the timeout used when the grpc-gateway sends requests
+// to the grpc server. The default is 0 -- no timeout.
+var DefaultTimeout = 0 * time.Second
+
+// GatewayHandler ...
+type GatewayHandler func(context.Context, *runtime.ServeMux, *grpc.ClientConn) error
+
+// Handler ...
+type Handler func(*grpc.Server)
+
+type grpcConfig struct {
+	vip *viper.Viper
+	// trace              *stats.Tracer
+	// error              *errors.Reporter
+	UnaryInterceptors  []grpc.UnaryServerInterceptor
+	StreamInterceptors []grpc.StreamServerInterceptor
+}
 
 // Base is the basis of an application
 type Base struct {
@@ -20,9 +44,15 @@ type Base struct {
 	// Logger is a structured logger
 	Logger *logrus.Logger
 
-	grpc *grpcServer
+	// grpc *grpcServer
 	// erRep *errors.Reporter
 	// stTr  *stats.Tracer
+
+	cancel  context.CancelFunc
+	srv     *grpc.Server
+	wrapSrv *grpcweb.WrappedGrpcServer
+	httpSrv *http.Server
+	listen  net.Listener
 
 	unaryIntercept  []grpc.UnaryServerInterceptor
 	_uiLock         *sync.Mutex

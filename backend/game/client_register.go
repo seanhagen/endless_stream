@@ -12,6 +12,7 @@ import (
 // RegisterClient ...
 func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) error {
 	g.Lock()
+	g.connected++
 	log.Printf("client connected: %v, registering client", id)
 
 	out, err := g.registerHuman(id, name)

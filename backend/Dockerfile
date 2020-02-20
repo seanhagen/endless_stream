@@ -3,6 +3,9 @@ MAINTAINER Sean Hagen <sean.hagen@gmail.com>
 
 RUN apk --no-cache add ca-certificates
 
+ADD cert.pem /certs/cert.pem
+ADD key.pem /certs/key.pem
+
 ADD server /server
 ADD config.yaml /etc/es/config.yaml
 

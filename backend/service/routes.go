@@ -34,7 +34,7 @@ func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.
 		defer func() {
 			// capture panic, remove game from maps
 			if r := recover(); r != nil {
-				g.Running = false
+				g.Shutdown(context.Background())
 				log.Printf("Reocvered panic from Game %v listen: %v", id, r)
 			}
 		}()
@@ -51,49 +51,31 @@ func (s *Srv) Create(origCtx context.Context, in *endless.CreateGame) (*endless.
 
 // State ...
 func (s *Srv) State(stream endless.Game_StateServer) error {
+	log.Printf("state stream started!")
 	var g *game.Game
 	var id, name string
-	for {
-		msg, err := stream.Recv()
-		if err != nil {
-			log.Printf("Unable to receive state message during handshake: %v", err)
-			return fmt.Errorf("unable to receive message? %v", err)
-		}
 
-		r := msg.GetRegister()
-		if r == nil {
-			out := &endless.Output{
-				Data: &endless.Output_Msg{
-					Msg: &endless.EventMessage{
-						Msg:     "You must register your client first",
-						IsError: true,
-					},
-				},
-			}
-			stream.Send(out)
-			continue
-		}
-
-		c := r.GetCode()
-		var ok bool
-		g, ok = s.games[c]
-		if !ok {
-			out := &endless.Output{
-				Data: &endless.Output_Msg{
-					Msg: &endless.EventMessage{
-						Msg:     fmt.Sprintf("No game with code '%v'", c),
-						IsError: true,
-					},
-				},
-			}
-			stream.Send(out)
-			continue
-		}
-
-		id = strings.TrimSpace(r.GetId())
-		name = r.GetName()
-		break
+	msg, err := stream.Recv()
+	if err != nil {
+		log.Printf("Unable to receive state message during handshake: %v", err)
+		return fmt.Errorf("unable to receive message? %v", err)
 	}
+
+	r := msg.GetRegister()
+	if r == nil {
+		log.Printf("first message not registration message")
+		return fmt.Errorf("First message must be registration message")
+	}
+
+	c := r.GetCode()
+	var ok bool
+	g, ok = s.games[c]
+	if !ok {
+		return fmt.Errorf("no game with code '%v'", c)
+	}
+
+	id = strings.TrimSpace(r.GetId())
+	name = r.GetName()
 
 	if id == "" {
 		x, _ := uuid.NewV4()
@@ -105,7 +87,7 @@ func (s *Srv) State(stream endless.Game_StateServer) error {
 	}
 
 	log.Printf("registering client %v", id)
-	err := g.RegisterClient(id, name, stream)
+	err = g.RegisterClient(id, name, stream)
 	log.Printf("client %v done", id)
 	return err
 }

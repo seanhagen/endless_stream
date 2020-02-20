@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 	"sync"
 	"time"
 
@@ -46,10 +47,15 @@ func (s *Srv) cleanup() {
 	// on a timer, cleanup games that aren't running any more
 	for {
 		select {
-		case <-tick.C:
+		case t := <-tick.C:
 			for id, g := range s.games {
-				if !g.Running {
+				if !g.IsRunning(t) {
+					log.Printf("game '%v' has been idle too long, shutting down", id)
 					s.l.Lock()
+					ctx := context.Background()
+					ctx, cancel := context.WithTimeout(ctx, time.Second*3)
+					g.Shutdown(ctx)
+					cancel()
 
 					g = nil
 					delete(s.games, id)

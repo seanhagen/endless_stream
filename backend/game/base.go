@@ -122,7 +122,9 @@ type Game struct {
 	lock *sync.Mutex
 
 	// idleTime how long the game has been waiting for input, ticks up on each game tick
-	idleTime int
+	idleTime  int
+	idleSince time.Time
+	connected int
 
 	msgId int32
 
@@ -139,7 +141,7 @@ type Game struct {
 	//   - send the state
 	//   - send a message stating the game is over
 	//   - disconnect the client
-	Running bool
+	running bool
 
 	entityCollection EntityCollection
 }
@@ -178,7 +180,7 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 		display: endless.Level_Forest,
 
 		idleTime: 0,
-		Running:  true,
+		running:  true,
 
 		currentWaveNumber: 1,
 		waves:             setupWaves(),
