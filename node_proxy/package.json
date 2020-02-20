@@ -1,12 +1,13 @@
 {
   "name": "node_proxy",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple proxy for game service backend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start.dev": "node_modules/.bin/nodemon"
   },
-  "author": "",
+  "author": "Sean Hagen <sean.hagen@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "@grpc/proto-loader": "^0.5.3",
@@ -17,6 +18,7 @@
     "google-protobuf": "^3.11.4",
     "grpc": "^1.24.2",
     "grpc-promise": "^1.4.0",
+    "multipipe": "^3.0.1",
     "socket.io": "^2.3.0",
     "uuid": "^3.4.0"
   }

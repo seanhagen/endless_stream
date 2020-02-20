@@ -1,0 +1,90 @@
+syntax = "proto3";
+package endless.stream.v1;
+option go_package = "github.com/seanhagen/endless_stream/backend/endless";
+
+import "util.proto";
+
+enum ClientType {
+  // ClientPlayer is a client that is a player
+  ClientPlayer = 0;
+  // ClientAudience is a client that represents an audience member
+  ClientAudience = 1;
+  // ClientDisplay is a client that represents the shared info display
+  ClientDisplay = 2;
+}
+
+message Register {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  ClientType type = 4;
+}
+
+message CharSelect {
+  string player_id =1;
+  // if nil, means they've unselected their choice
+  // this allows for players to swap when all four have been selected
+  Class choice = 2;
+}
+
+message GameStart {}
+
+message UseSkill {
+  string skill_id = 1;
+  string target_id = 2;
+}
+
+message UseItem {
+  string item_id = 1;
+}
+
+message Move {
+  enum Dir {
+    Left = 0;
+    Right = 1;
+  }
+
+  Dir dir = 1;
+}
+
+// ActionComplete is sent by the players & status UI clients once they've all processed
+// an action and updated
+message ActionComplete {
+  string completed_id = 1;
+}
+
+// Purchase is sent when a player has selected an item to buy in the store
+message Purchase {
+  string id = 1;
+}
+
+message EndGame {}
+
+// Continue is sent when a player has acknowledged that they're ready to continue. This
+// is sent when the game is in the Victory, Store, or New Wave screens so that the game
+// can continue if all players have stated they're ready ( otherwise a timer will automatically
+// advance to the next state )
+message Continue {}
+
+message AudienceYell {
+  bool is_cheering = 1;
+  bool is_booing = 2;
+  int32 amount = 3;
+}
+
+message Input {
+  string player_id = 1;
+  oneof input {
+    Register register = 10;
+    CharSelect char_select = 20;
+    GameStart game_start = 30;
+    UseSkill skill = 40;
+    UseItem item = 50;
+    Move move = 60;
+    ActionComplete action_complete = 70;
+    Purchase purchase = 80;
+    Continue continue = 90;
+    EndGame end_game = 100;
+    AudienceYell audience = 110;
+  }
+}
