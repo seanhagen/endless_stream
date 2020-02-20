@@ -3,3 +3,5 @@
 /backend/server
 .tern-port
 /backend/node_proxy/node_modules/
+/.gobincache/
+/.log/
