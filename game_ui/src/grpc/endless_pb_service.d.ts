@@ -24,10 +24,30 @@ type GameState = {
   readonly responseType: typeof output_pb.Output;
 };
 
+type GameStateOut = {
+  readonly methodName: string;
+  readonly service: typeof Game;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof input_pb.Input;
+  readonly responseType: typeof output_pb.Output;
+};
+
+type GameStateIn = {
+  readonly methodName: string;
+  readonly service: typeof Game;
+  readonly requestStream: true;
+  readonly responseStream: false;
+  readonly requestType: typeof input_pb.Input;
+  readonly responseType: typeof output_pb.Output;
+};
+
 export class Game {
   static readonly serviceName: string;
   static readonly Create: GameCreate;
   static readonly State: GameState;
+  static readonly StateOut: GameStateOut;
+  static readonly StateIn: GameStateIn;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -72,5 +92,7 @@ export class GameClient {
     callback: (error: ServiceError|null, responseMessage: endless_pb.GameCreated|null) => void
   ): UnaryResponse;
   state(metadata?: grpc.Metadata): BidirectionalStream<input_pb.Input, output_pb.Output>;
+  stateOut(requestMessage: input_pb.Input, metadata?: grpc.Metadata): ResponseStream<output_pb.Output>;
+  stateIn(metadata?: grpc.Metadata): RequestStream<input_pb.Input>;
 }
 

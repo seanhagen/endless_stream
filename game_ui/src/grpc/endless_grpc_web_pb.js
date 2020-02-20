@@ -45,16 +45,6 @@ proto.endless.stream.v1.GameClient =
    */
   this.hostname_ = hostname;
 
-  /**
-   * @private @const {?Object} The credentials to be used to connect
-   *    to the server
-   */
-  this.credentials_ = credentials;
-
-  /**
-   * @private @const {?Object} Options for the client
-   */
-  this.options_ = options;
 };
 
 
@@ -81,17 +71,29 @@ proto.endless.stream.v1.GamePromiseClient =
    */
   this.hostname_ = hostname;
 
-  /**
-   * @private @const {?Object} The credentials to be used to connect
-   *    to the server
-   */
-  this.credentials_ = credentials;
-
-  /**
-   * @private @const {?Object} Options for the client
-   */
-  this.options_ = options;
 };
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.endless.stream.v1.CreateGame,
+ *   !proto.endless.stream.v1.GameCreated>}
+ */
+const methodDescriptor_Game_Create = new grpc.web.MethodDescriptor(
+  '/endless.stream.v1.Game/Create',
+  grpc.web.MethodType.UNARY,
+  proto.endless.stream.v1.CreateGame,
+  proto.endless.stream.v1.GameCreated,
+  /**
+   * @param {!proto.endless.stream.v1.CreateGame} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.endless.stream.v1.GameCreated.deserializeBinary
+);
 
 
 /**
@@ -102,7 +104,10 @@ proto.endless.stream.v1.GamePromiseClient =
  */
 const methodInfo_Game_Create = new grpc.web.AbstractClientBase.MethodInfo(
   proto.endless.stream.v1.GameCreated,
-  /** @param {!proto.endless.stream.v1.CreateGame} request */
+  /**
+   * @param {!proto.endless.stream.v1.CreateGame} request
+   * @return {!Uint8Array}
+   */
   function(request) {
     return request.serializeBinary();
   },
@@ -126,7 +131,7 @@ proto.endless.stream.v1.GameClient.prototype.create =
       '/endless.stream.v1.Game/Create',
       request,
       metadata || {},
-      methodInfo_Game_Create,
+      methodDescriptor_Game_Create,
       callback);
 };
 
@@ -145,7 +150,82 @@ proto.endless.stream.v1.GamePromiseClient.prototype.create =
       '/endless.stream.v1.Game/Create',
       request,
       metadata || {},
-      methodInfo_Game_Create);
+      methodDescriptor_Game_Create);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.endless.stream.v1.Input,
+ *   !proto.endless.stream.v1.Output>}
+ */
+const methodDescriptor_Game_StateOut = new grpc.web.MethodDescriptor(
+  '/endless.stream.v1.Game/StateOut',
+  grpc.web.MethodType.SERVER_STREAMING,
+  input_pb.Input,
+  output_pb.Output,
+  /**
+   * @param {!proto.endless.stream.v1.Input} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  output_pb.Output.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.endless.stream.v1.Input,
+ *   !proto.endless.stream.v1.Output>}
+ */
+const methodInfo_Game_StateOut = new grpc.web.AbstractClientBase.MethodInfo(
+  output_pb.Output,
+  /**
+   * @param {!proto.endless.stream.v1.Input} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  output_pb.Output.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.endless.stream.v1.Input} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.endless.stream.v1.Output>}
+ *     The XHR Node Readable Stream
+ */
+proto.endless.stream.v1.GameClient.prototype.stateOut =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/endless.stream.v1.Game/StateOut',
+      request,
+      metadata || {},
+      methodDescriptor_Game_StateOut);
+};
+
+
+/**
+ * @param {!proto.endless.stream.v1.Input} request The request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!grpc.web.ClientReadableStream<!proto.endless.stream.v1.Output>}
+ *     The XHR Node Readable Stream
+ */
+proto.endless.stream.v1.GamePromiseClient.prototype.stateOut =
+    function(request, metadata) {
+  return this.client_.serverStreaming(this.hostname_ +
+      '/endless.stream.v1.Game/StateOut',
+      request,
+      metadata || {},
+      methodDescriptor_Game_StateOut);
 };
 
 

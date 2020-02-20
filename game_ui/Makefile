@@ -16,7 +16,7 @@ JS_OUT_DIR=src/grpc
 JS_GRPC_FILES=$(addsuffix /service_grpc_web_pb.js,$(addprefix js/,$(SERVICES)))
 JS_IMPORT_FIX=M
 JS_GEN_OUT=--plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --js_out=import_style=commonjs,binary:$(JS_OUT_DIR) --ts_out=$(JS_OUT_DIR)
-JS_GEN_WEB_OUT=--plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --grpc-web_out=import_style=commonjs,mode=grpcwebtext:$(JS_OUT_DIR) --ts_out=service=true:$(JS_OUT_DIR) --js_out=import_style=commonjs,binary:$(JS_OUT_DIR)
+JS_GEN_WEB_OUT=--plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --js_out=import_style=commonjs,binary:$(JS_OUT_DIR) --grpc-web_out=import_style=commonjs,mode=grpcwebtext:$(JS_OUT_DIR) --ts_out=service=true:$(JS_OUT_DIR)
 JS_PROTOC=protoc $(IMPORTS) $(JS_GEN_OUT) $(JS_GEN_WEB_OUT)
 NOD_MODE=./node_modules
 
@@ -36,18 +36,24 @@ $(JS_OUT_DIR):
 	$(eval Y=$(patsubst %/,%,$(dir $Y)))
 	$(eval P=$(subst js/,,$(@:_pb.js=.proto)))
 	@echo "Generating $@ from $(PROTO_DIR)/$P"
-	$(PROTOCMD) $(IMPORTS) $(JS_GEN_OUT) $?
+	@# $(PROTOCMD) $(IMPORTS) $(JS_GEN_OUT) $?
 	$(PROTOCMD) $(IMPORTS) $(JS_GEN_WEB_OUT) $?
+	grpc_tools_node_protoc $(IMPORTS) $(JS_GEN_OUT) --grpc_out=$(JS_OUT_DIR) --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` $?
 
+ANOPRO=../vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/annotations.proto
+HTTPPRO=../vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/http.proto
 
 grpc-js: $(JS_OUT_DIR) $(JS_FILES) $(NODE_MOD)
-	$(PROTOCMD) $(IMPORTS) $(JS_GEN_OUT) ../vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/annotations.proto
-	$(PROTOCMD) $(IMPORTS) $(JS_GEN_OUT) ../vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/http.proto
-	$(PROTOCMD) $(IMPORTS) $(JS_GEN_WEB_OUT) ../vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/annotations.proto
-	$(PROTOCMD) $(IMPORTS) $(JS_GEN_WEB_OUT) ../vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google/api/http.proto
+	$(PROTOCMD) $(IMPORTS) $(JS_GEN_OUT) $(ANOPRO)
+	$(PROTOCMD) $(IMPORTS) $(JS_GEN_OUT) $(HTTPPRO)
+	$(PROTOCMD) $(IMPORTS) $(JS_GEN_WEB_OUT) $(ANOPRO)
+	$(PROTOCMD) $(IMPORTS) $(JS_GEN_WEB_OUT) $(HTTPPRO)
 	@echo "Fixing import paths in JS"
 	@find $(JS_OUT_DIR) -name '*.js' -exec sed -i '/mwitkow/d' {} \;
 	@find $(JS_OUT_DIR) -name '*.js' -exec sed -i 's~\.\./\.\./\.\./\.\./\.\./~~' {} \;
 	@rm -rf $(JS_OUT_DIR)/google
 	@mv $(JS_OUT_DIR)/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis/google $(JS_OUT_DIR)/google
 	@rm -rf $(JS_OUT_DIR)/github.com/
+
+clean:
+	rm -rf $(JS_OUT_DIR)

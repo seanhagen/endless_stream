@@ -30,6 +30,24 @@ Game.State = {
   responseType: output_pb.Output
 };
 
+Game.StateOut = {
+  methodName: "StateOut",
+  service: Game,
+  requestStream: false,
+  responseStream: true,
+  requestType: input_pb.Input,
+  responseType: output_pb.Output
+};
+
+Game.StateIn = {
+  methodName: "StateIn",
+  service: Game,
+  requestStream: true,
+  responseStream: false,
+  requestType: input_pb.Input,
+  responseType: output_pb.Output
+};
+
 exports.Game = Game;
 
 function GameClient(serviceHost, options) {
@@ -100,6 +118,86 @@ GameClient.prototype.state = function state(metadata) {
       return this;
     },
     write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
+  };
+};
+
+GameClient.prototype.stateOut = function stateOut(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(Game.StateOut, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
+    },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
+    }
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
+  };
+};
+
+GameClient.prototype.stateIn = function stateIn(metadata) {
+  var listeners = {
+    end: [],
+    status: []
+  };
+  var client = grpc.client(Game.StateIn, {
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport
+  });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    write: function (requestMessage) {
+      if (!client.started) {
+        client.start(metadata);
+      }
       client.send(requestMessage);
       return this;
     },
