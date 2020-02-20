@@ -76,6 +76,7 @@ desc: $(GRPC_DESCRIPTOR)
 proto: pb gw srv desc
 	@echo "Fixing imports"
 	@find $(GO_PROTO_TARGET_DIR) -name '*.go' -type f -exec sed -i 's/org\/\/gen/org\/gen/g' {} \;
+	@cp -r proto node_proxy
 
 $(SERVER_TARGET):
 	$(GO_BUILD_CMD) ./$(SERVER_SRC)
@@ -98,5 +99,9 @@ run: clnsrv server
 
 rebuild: clnsrv server
 	docker-compose up -d --no-deps --build $(SERVICE)
+
+reproxy:
+	docker-compose build --no-cache nodeproxy
+	docker-compose up -d --no-deps nodeproxy
 
 clean: clnsrv clnproto
