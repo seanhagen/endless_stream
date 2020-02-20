@@ -1,10 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+// import { grpc } from "@improbable-eng/grpc-web";
 
-import { GameClient } from "../grpc/endless_pb_service";
+// import { GameClient } from "../grpc/endless_pb_service";
 import { CreateGame } from "../grpc/endless_pb";
-import { ClientType, Input, Register } from "../grpc/input_pb";
 
-const gc = new GameClient(process.env.REACT_APP_GAME_SERVER);
+import { GamePromiseClient } from "../grpc/endless_grpc_web_pb";
+// import { ClientType, Input, Register } from "../grpc/input_pb";
+
+const gc = new GamePromiseClient(process.env.REACT_APP_GAME_SERVER);
 
 // const createGame = new CreateGame();
 // gc.create(createGame, (err, msg) => {
@@ -78,31 +81,36 @@ export const gameState = createSlice({
 });
 
 const {
-  createGameStart,
-  createGameFinish,
-  createGameError
+  createGameStart
+  // createGameFinish,
+  // createGameError
 } = gameState.actions;
-const {
-  connectGameStart,
-  connectGameFinish,
-  connectGameError
-} = gameState.actions;
-const { setPlayerId } = gameState.actions;
+// const {
+//   connectGameStart,
+//   connectGameFinish,
+//   connectGameError
+// } = gameState.actions;
+// const { setPlayerId } = gameState.actions;
 
 export const { joinGame } = gameState.actions;
 gameState.actions.createGame = () => async (dispatch, getState) => {
   dispatch(createGameStart());
-  const cg = new CreateGame();
-  gc.create(cg, (err, msg) => {
-    const state = getState();
-    console.log("game create request done, state: ", state);
-
-    if (err) {
-      dispatch(createGameError(err.toObject()));
-    } else {
-      dispatch(createGameFinish(msg.toObject()));
-    }
-  });
+  console.log("game create -- start, state: ", getState());
+  // const cg = new CreateGame();
+  // const resp = gc.create(cg, {}, (err, msg) => {
+  //   const state = getState();
+  //   console.log("game create request done, state: ", state, err, msg);
+  //   if (err) {
+  //     if (err.toObject === undefined) {
+  //       dispatch(createGameError({ msg: err.toString() }));
+  //     } else {
+  //       dispatch(createGameError(err.toObject()));
+  //     }
+  //   } else {
+  //     dispatch(createGameFinish(msg.toObject()));
+  //   }
+  // });
+  // console.log("create thing: ", resp);
 };
 
 export default gameState.reducer;

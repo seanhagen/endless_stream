@@ -1,18 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Link, Route, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { v4 } from "uuid";
-import {grpc} from "@improbable-eng/grpc-web";
 
 import { gameState } from "../reducers/game";
-
-import { Game as GC } from "../grpc/endless_pb_service";
+import io from "socket.io-client";
 import { ClientType, Input, Register } from "../grpc/input_pb";
-
-// import {BookService} from "../_proto/examplecom/library/book_service_pb_service";
-// import {QueryBooksRequest, Book, GetBookRequest} from "../_proto/examplecom/library/book_service_pb";
-//const gc = new GameClient(process.env.REACT_APP_GAME_SERVER);
 
 export class Game extends Component {
   constructor(props) {
@@ -23,44 +17,42 @@ export class Game extends Component {
       code: props.match.params.code
     };
     this.checkStream = this.checkStream.bind(this);
-    const pid = v4();
-    const reg = new Register();
-    reg.setId(pid);
-    reg.setCode(this.state.code);
-    reg.setName("Testing JS Client");
-    reg.setType(ClientType.CLIENTPLAYER);
-    console.log("component mounted: ", reg.toObject());
 
-    const inp = new Input();
-    inp.setRegister(reg);
+    console.log("io: ", io);
+    const s = io("http://localhost:3002");
 
-    const client = grpc.client(GC.State, {
-      host: process.env.REACT_APP_GAME_SERVER,
-    });
-    client.onHeaders((headers: grpc.Metadata) => {
-      console.log("queryBooks.onHeaders", headers);
-    });
-    client.onMessage((message: Book) => {
-      console.log("queryBooks.onMessage", message.toObject());
-    });
-    client.onEnd((code: grpc.Code, msg: string, trailers: grpc.Metadata) => {
-      console.log("queryBooks.onEnd", code, msg, trailers);
-    });
-    client.start();
-    client.send(inp);
+    var pid = localStorage.getItem("player-uuid");
+    console.log("pid from local storage: ", pid);
+    if (pid === null) {
+      pid = v4();
+      localStorage.setItem("player-uuid", pid);
+    }
+    s.on("connect", () => {
+      console.log("socket connected");
 
-    // const strm = gc.state();
-    // strm
-    //   .on("data", msg => {
-    //     console.log("stream data: ", msg.toObject());
-    //     // dispatch(gameState.actions.receiveStreamMsg(msg.toObject()));
-    //   })
-    //   .on("status", msg => {
-    //     console.log("stream status: ", msg);
-    //   })
-    //   .write(inp);
+      const reg = new Register();
+      reg.setId(pid);
+      reg.setCode(this.state.code);
+      reg.setName("Testing JS Client");
+      reg.setType(ClientType.CLIENTPLAYER);
+      console.log("component mounted: ", reg.toObject());
 
-    // this.stream = strm;
+      const inp = new Input();
+      inp.setRegister(reg);
+
+      s.emit("input", inp.toObject());
+    });
+    s.on("data", data => {
+      console.log("recieved data: ", data);
+    });
+    s.on("disconnect", () => {
+      console.log("disconnected");
+    });
+    this.socket = s;
+  }
+
+  componentWillUnmount() {
+    this.socket.close();
   }
 
   checkStream(ev) {
