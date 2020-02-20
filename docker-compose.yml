@@ -3,7 +3,7 @@ version: "2.4"
 
 x-base: &base
   stop_signal: SIGTERM
-  cpu_count: 1
+  cpu_count: 2
   cpu_percent: 30
   cpus: 0.3
   mem_limit: 512M
