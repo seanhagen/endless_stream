@@ -61,6 +61,7 @@ enum ClassType {
   Cleric = 30;
   Wizard = 40;
 }
+
 message Class {
   ClassType class = 1;
 }
