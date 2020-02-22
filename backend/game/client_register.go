@@ -15,7 +15,7 @@ func (g *Game) RegisterClient(id, name string, clientType endless.ClientType, st
 	g.connected++
 	log.Printf("client connected: %v, registering client", id)
 
-	out, err := g.registerHuman(id, name)
+	out, err := g.registerHuman(id, name, clientType)
 	if err != nil {
 		return err
 	}
@@ -121,7 +121,7 @@ func (g *Game) RegisterClient(id, name string, clientType endless.ClientType, st
 }
 
 // registerHuman is called above in RegisterClient
-func (g *Game) registerHuman(id, name string) (output, error) {
+func (g *Game) registerHuman(id, name string, t endless.ClientType) (output, error) {
 	// accessing some maps, gotta lock
 	out := output{
 		id:       id,
@@ -138,38 +138,49 @@ func (g *Game) registerHuman(id, name string) (output, error) {
 	var err error
 	var msg *endless.Output
 
-	if len(g.players)+1 <= 4 {
-		log.Printf("client is player")
-		out.isPlayer = true
-		g.players[out] = true
-		msg, err = g.registerPlayer(id, name)
-		log.Printf("player registered")
-	} else {
-		g.audience[out] = true
-		msg, err = g.registerAudience(id)
+	switch t {
+	case endless.ClientType_ClientPlayer:
+		if !g.started && len(g.players)+1 <= 4 {
+			out, msg, err = g.registerPlayer(id, name, out)
+		} else {
+			out, msg, err = g.registerAudience(id, out)
+		}
+	case endless.ClientType_ClientDisplay:
+		out, msg, err = g.registerDisplay(id, out)
+	default:
+		out, msg, err = g.registerAudience(id, out)
 	}
-
-	time.AfterFunc(time.Millisecond*100, func() {
-		g.output <- msg
-	})
+	if msg != nil {
+		time.AfterFunc(time.Millisecond*100, func() {
+			g.output <- msg
+		})
+	}
 	return out, err
 }
 
+// registerDisplay ...
+func (g *Game) registerDisplay(id string, out output) (output, *endless.Output, error) {
+	out.isDisplay = true
+	g.displayClients[out] = true
+	return out, nil, nil
+}
+
 // registerPlayer ...
-func (g *Game) registerPlayer(id, name string) (*endless.Output, error) {
+func (g *Game) registerPlayer(id, name string, out output) (output, *endless.Output, error) {
 	g.playerIds[id] = 1
 	g.playerCharacters[id] = nil
 	g.playerNames[id] = name
 
 	isVip := false
-	if len(g.players) == 1 || id == g.vipPlayer {
+	log.Printf("players connected: %v, first player? %v -- is vip? %v", len(g.players), len(g.players) == 0, id == g.vipPlayer)
+	if len(g.players) == 0 || id == g.vipPlayer {
 		isVip = true
 		g.vipPlayer = id
 	}
 
 	log.Printf("registered player, id: %v, vip: %v", id, isVip)
 
-	out := &endless.Output{
+	msg := &endless.Output{
 		Data: &endless.Output_Joined{
 			Joined: &endless.JoinedGame{
 				Id:         id,
@@ -180,12 +191,15 @@ func (g *Game) registerPlayer(id, name string) (*endless.Output, error) {
 		},
 	}
 
-	return out, nil
+	out.isPlayer = true
+	g.players[out] = true
+
+	return out, msg, nil
 }
 
 // registerAudience ...
-func (g *Game) registerAudience(id string) (*endless.Output, error) {
-	out := &endless.Output{
+func (g *Game) registerAudience(id string, out output) (output, *endless.Output, error) {
+	msg := &endless.Output{
 		Data: &endless.Output_Joined{
 			Joined: &endless.JoinedGame{
 				Id:         id,
@@ -195,5 +209,8 @@ func (g *Game) registerAudience(id string) (*endless.Output, error) {
 		},
 	}
 
-	return out, nil
+	out.isAudience = true
+	g.audience[out] = true
+
+	return out, msg, nil
 }
