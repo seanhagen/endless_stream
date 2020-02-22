@@ -81,6 +81,8 @@ type Game struct {
 	// the class won't be a key in the map.
 	characters map[endless.ClassType]string
 
+	displayClients map[output]bool
+
 	// players is a map of output -> bool, to keep track of connected players
 	players map[output]bool
 	// playerIds is a map of string -> int, meant to keep track of player ids
@@ -117,9 +119,6 @@ type Game struct {
 	audienceCheer int
 	audienceBoo   int
 
-	closingClients chan output
-	newClients     chan output
-
 	// lock is to protect against datat races for the maps
 	lock *sync.Mutex
 
@@ -145,6 +144,10 @@ type Game struct {
 	//   - disconnect the client
 	running bool
 
+	// Started is true if the VIP has started the game. This is to prevent people
+	// from joining the game and taking over AI players.
+	started bool
+
 	entityCollection EntityCollection
 }
 
@@ -163,6 +166,8 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 		playerInput:   make(chan input, inputLength),
 		audienceInput: make(chan input, audienceInputLength),
 
+		displayClients: map[output]bool{},
+
 		players:          map[output]bool{},
 		playerIds:        map[string]int{},
 		playerCharacters: map[string]*player{},
@@ -171,9 +176,6 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 		selectedCharacters: map[endless.ClassType]string{},
 
 		audience: map[output]bool{},
-
-		closingClients: make(chan output, 5),
-		newClients:     make(chan output, 5),
 
 		lock: &sync.Mutex{},
 
