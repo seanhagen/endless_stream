@@ -32,9 +32,11 @@ const inputLength = 100
 const audienceInputLength = inputLength
 
 type output struct {
-	id       string
-	out      chan *endless.Output
-	isPlayer bool
+	id         string
+	out        chan *endless.Output
+	isPlayer   bool
+	isAudience bool
+	isDisplay  bool
 }
 
 type input struct {
