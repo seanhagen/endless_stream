@@ -9,12 +9,19 @@ func (g *Game) unregisterHuman(o output) error {
 	defer g.Unlock()
 
 	g.connected--
+	close(o.out)
 	if o.isPlayer {
-		close(o.out)
 		delete(g.players, o)
 		g.playerIds[o.id]--
-	} else {
+	}
+
+	if o.isAudience {
 		delete(g.audience, o)
+		delete(g.audienceIds, o.id)
+	}
+
+	if o.isDisplay {
+		delete(g.displayClients, o)
 	}
 
 	log.Printf("human unregistered")

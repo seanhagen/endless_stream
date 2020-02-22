@@ -6,15 +6,30 @@ import (
 
 // output ...
 func (g *Game) sendOutput(o *endless.Output) {
-	g.Lock()
-	defer g.Unlock()
+	// g.Lock()
+	// defer g.Unlock()
 
-	// log.Printf("####### sending output to %v players", len(g.players))
 	if len(g.players) > 0 {
-		for c := range g.players {
-			// log.Printf("player '%v' (isPlayer: %v)", c.id, c.isPlayer)
-			c.out <- o
-			// log.Printf("sent update to %v", c.id)
+		for c, b := range g.players {
+			if b {
+				c.out <- o
+			}
+		}
+	}
+
+	if len(g.audience) > 0 {
+		for a, b := range g.audience {
+			if b {
+				a.out <- o
+			}
+		}
+	}
+
+	if len(g.displayClients) > 0 {
+		for d, b := range g.displayClients {
+			if b {
+				d.out <- o
+			}
 		}
 	}
 }
