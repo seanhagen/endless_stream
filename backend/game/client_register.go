@@ -10,7 +10,7 @@ import (
 )
 
 // RegisterClient ...
-func (g *Game) RegisterClient(id, name string, stream endless.Game_StateServer) error {
+func (g *Game) RegisterClient(id, name string, clientType endless.ClientType, stream endless.Game_StateServer) error {
 	g.Lock()
 	g.connected++
 	log.Printf("client connected: %v, registering client", id)
