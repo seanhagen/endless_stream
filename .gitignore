@@ -5,3 +5,4 @@
 /backend/node_proxy/node_modules/
 /.gobincache/
 /.log/
+/backend/deploy/server
