@@ -3,15 +3,41 @@ Endless Stream
 
 This repo contains the site & the game for Endless Stream.
 
-## Game
+## Player UI
+
+A ReactJS app that runs in a browser. Responsive, should work on desktops &
+mobile devices.
+
+## Game UI
+
+An [Ebiten](https://github.com/hajimehoshi/ebiten) game that displays the shared
+game info ( current wave, what monsters are being fought, health bars, etc ) and
+state ( fighting a wave, in the store, new wave coming, etc ).
 
 ## Backend
 
-### Server
+A game server that users GRPC to expose a bi-directional stream for game clients
+( player & game UI ). Manages the state of the game.
 
-Future plans:
+### Matchmaking
 
-- separate service that creates games from actual game handler
-- creating a game should spin up a docker container for just that game
-  - route incoming streams to proper container using tags or services ( TODO: figure this out)
-- container only has streaming route for handling input/output
+Use [Agones](https://agones.dev/site/) to manage game servers, with
+[OpenMatch](https://open-match.dev/site/) for connecting game clients to the
+right server.
+
+*TODO*
+
+- set up minikube, so I can run the full set of backend services on a single
+  machine for development
+
+## Backend TODO
+
+- determine RAM/CPU usage of a single game, figure out if a server can handle
+  more than one game in progress or if it's better to just have one game per server
+- in-game "store" status -- need to store this for players who have paid, so
+  they can upgrade their store over time
+- "demo" vs "paid" -- demo mode is the game up until the first boss, then it
+  goes back to the main screen ( after showing a "please support our game" )
+  - "paid" can mean bought on steam, supported on patreon, or backed
+    kickstarter, so need way for "demo" copies to register ( as well as having a
+    )
