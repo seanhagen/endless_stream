@@ -13,6 +13,8 @@ import (
 	"google.golang.org/grpc"
 )
 
+const grpcListen = "8000"
+
 // createGRPCServer creates a GRPC server from the config
 func (ba *Base) createGRPCServer(ctx context.Context, conf grpcConfig) error {
 	listenPort := shouldEnv("PORT", grpcListen)

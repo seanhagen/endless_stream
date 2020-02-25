@@ -4,8 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
+	agones "agones.dev/agones/sdks/go"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/seanhagen/endless_stream/backend/game"
 	"github.com/seanhagen/endless_stream/backend/grpc"
@@ -34,9 +38,14 @@ func main() {
 	log.SetOutput(new(logWriter))
 	log.Println("Starting server")
 
+	sdk, err := agones.NewSDK()
+	if err != nil {
+		log.Fatalf("failed to get agones sdk: %v", err)
+	}
+
 	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+	ctx, cnl := context.WithCancel(ctx)
+	defer cnl()
 
 	srv, err := setup(ctx)
 	if err != nil {
@@ -58,15 +67,47 @@ func main() {
 		log.Fatalf("Unable to setup all game entities: %v", err)
 	}
 
-	err = service.Setup(ctx, srv, ec)
+	svc, err := service.Setup(ctx, srv, ec, sdk)
 	if err != nil {
 		log.Fatalf("Unable to initialize game server: %v", err)
 	}
 
-	err = srv.Start(ctx, cancel)
-	if err != nil {
-		log.Fatalf("Error starting or shutting down app: %v", err)
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGABRT)
+
+	go func() {
+		// t, err := sdk.GameServer()
+		// if err != nil {
+		// 	log.Printf("Unable to get game server info from Agones")
+		// 	sigChan <- syscall.SIGTERM
+		// 	return
+		// }
+
+		log.Print("Marking this server as ready")
+		if err := sdk.Ready(); err != nil {
+			log.Printf("Could not send ready message")
+			sigChan <- syscall.SIGTERM
+			return
+		}
+
+		err = srv.Start(ctx, cnl)
+		if err != nil {
+			log.Printf("Error starting or shutting down app: %v", err)
+			sigChan <- syscall.SIGTERM
+		}
+	}()
+
+	_ = <-sigChan
+	if err = sdk.Shutdown(); err != nil {
+		log.Printf("Unable to send shutdown message: %v", err)
 	}
+
+	ctx, cancel := context.WithTimeout(ctx, time.Second*15)
+	svc.Shutdown(ctx)
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Printf("")
+	}
+	cancel()
 
 	log.Printf("server shutdown complete")
 }
