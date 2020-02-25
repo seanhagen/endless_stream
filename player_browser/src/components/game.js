@@ -10,6 +10,9 @@ import io from "socket.io-client";
 import { ClientType, CharSelect, Register, Input } from "../grpc/input_pb";
 import { Display, Class, ClassType } from "../grpc/util_pb";
 
+import { GameClient } from "../grpc/endless_pb_service";
+import { grpc } from "grpc-web-client";
+
 console.log("class type: ", ClassType);
 
 const emitInput = "input";
@@ -44,26 +47,50 @@ export class Game extends Component {
     this.unselectCharacter = this.unselectCharacter.bind(this);
     this.handleJoin = this.handleJoin.bind(this);
 
-    const s = io(process.env.REACT_APP_GAME_SERVER);
-    s.on("connect", () => {
-      const reg = new Register();
-      reg.setId(pid);
-      reg.setName(name);
-      reg.setCode(this.state.code);
-      reg.setType(ClientType.CLIENTPLAYER);
+    const gc = new GameClient("https://localhost:9443", {
+      transport: new grpc.WebsocketTransport()
+    });
+    const stream = gc.state({});
+    stream.on("data", data => {
+      console.log("grpc stream data: ", data.toObject());
+    });
+    stream.on("status", st => {
+      console.log("grpc stream status: ", st);
+    });
+    stream.on("end", () => {
+      console.log("grpc stream ended");
+    });
 
-      const inp = new Input();
-      inp.setRegister(reg);
-      s.emit(emitInput, inp.toObject());
-    });
-    s.on("data", this.processData);
-    s.on("error", e => {
-      console.error("error from socket: ", e);
-    });
-    s.on("disconnect", () => {
-      console.log("disconnected");
-    });
-    this.socket = s;
+    const reg = new Register();
+    reg.setId(pid);
+    reg.setName(name);
+    reg.setCode(this.state.code);
+    reg.setType(ClientType.CLIENTPLAYER);
+
+    const inp = new Input();
+    inp.setRegister(reg);
+    stream.write(inp);
+
+    // const s = io(process.env.REACT_APP_GAME_SERVER);
+    // s.on("connect", () => {
+    //   const reg = new Register();
+    //   reg.setId(pid);
+    //   reg.setName(name);
+    //   reg.setCode(this.state.code);
+    //   reg.setType(ClientType.CLIENTPLAYER);
+
+    //   const inp = new Input();
+    //   inp.setRegister(reg);
+    //   s.emit(emitInput, inp.toObject());
+    // });
+    // s.on("data", this.processData);
+    // s.on("error", e => {
+    //   console.error("error from socket: ", e);
+    // });
+    // s.on("disconnect", () => {
+    //   console.log("disconnected");
+    // });
+    // this.socket = s;
   }
 
   processData(msg) {
@@ -99,7 +126,7 @@ export class Game extends Component {
   }
 
   componentWillUnmount() {
-    this.socket.close();
+    // this.socket.close();
   }
 
   renderJoining(code) {
@@ -157,7 +184,7 @@ export class Game extends Component {
     selected.selected[pid] = s;
     game.selected = selected;
     this.setState({ game: game });
-    this.socket.emit(emitInput, inp.toObject());
+    // this.socket.emit(emitInput, inp.toObject());
   }
 
   unselectCharacter(ev) {
@@ -174,7 +201,7 @@ export class Game extends Component {
     delete selected.selected[pid];
     game.selected = selected;
     this.setState({ game: game });
-    this.socket.emit(emitInput, inp.toObject());
+    // this.socket.emit(emitInput, inp.toObject());
   }
 
   makeCharSelectButton(cl, selected) {
