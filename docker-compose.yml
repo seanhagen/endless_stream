@@ -48,21 +48,21 @@ services:
     depends_on:
       - game_server
 
-  # grpcweb:
-  #   image: gcr.io/cave-goblin-network/grpcweb-proxy:20200214-0
-  #   command: [
-  #   "--server_tls_cert_file=/misc/localhost.crt",
-  #   "--server_tls_key_file=/misc/localhost.key",
-  #   "--backend_addr=game_server:8000",
-  #   "--backend_tls_noverify",
-  #   "--use_websockets",
-  #   "--allow_all_origins"
-  #   ]
-  #   environment:
-  #     GRPC_GO_LOG_SEVERITY_LEVEL: warning
-  #     GRPC_GO_LOG_VERBOSITY_LEVEL: 0
-  #   depends_on:
-  #       - game_server
-  #   ports:
-  #     - "8080:8080"
-  #     - "8443:8443"
+  grpcweb:
+    image: gcr.io/cave-goblin-network/grpcweb-proxy:20200214-0
+    command: [
+    "--server_tls_cert_file=/misc/localhost.crt",
+    "--server_tls_key_file=/misc/localhost.key",
+    "--backend_addr=game_server:8000",
+    "--backend_tls_noverify",
+    "--use_websockets",
+    "--allow_all_origins"
+    ]
+    environment:
+      GRPC_GO_LOG_SEVERITY_LEVEL: warning
+      GRPC_GO_LOG_VERBOSITY_LEVEL: 0
+    depends_on:
+        - game_server
+    ports:
+      - "9090:8080"
+      - "9443:8443"
