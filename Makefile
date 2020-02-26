@@ -95,22 +95,24 @@ clnsrv:
 clnproto:
 	rm -rf $(GO_PROTO_TARGET_DIR)
 
-run: clnsrv server
-	docker-compose up --build
+# run: clnsrv server
+# 	docker-compose up --build
 
-rebuild: clnsrv server
-	docker-compose up -d --no-deps --build $(SERVICE)
+rebuild: clnsrv server container
+	@echo Container updated
 
-reproxy:
-	docker-compose build --no-cache nodeproxy
-	docker-compose up -d --no-deps nodeproxy
+# reproxy:
+# 	docker-compose build --no-cache nodeproxy
+# 	docker-compose up -d --no-deps nodeproxy
 
 GOOG_CMD=gcloud --project=$(GOOG_PROJECT)
 CONTAINER_TAG=gcr.io/$(GOOG_PROJECT)/$(BINARY):$(VERSION)-$(NOW)
 CONTAINER_LATEST_TAG=gcr.io/$(GOOG_PROJECT)/$(BINARY):latest
-
 container:
-	$(GOOG_CMD) builds submit --tag $(CONTAINER_TAG) $(SERVER_SRC)/deploy
+	@echo Submitting build to Google Cloud Build
+	@$(GOOG_CMD) builds submit --tag $(CONTAINER_TAG) $(SERVER_SRC)/deploy
+	@echo Build complete, tagging
 	$(GOOG_CMD) container images add-tag $(CONTAINER_TAG) $(CONTAINER_LATEST_TAG) --quiet
+	@echo Build tagged with $(CONTAINER_TAG) and $(CONTAINER_LATEST_TAG)
 
 clean: clnsrv clnproto
