@@ -210,6 +210,11 @@ message CurrentState {
   CharacterSelected selected =8;
 }
 
+enum ProgressBarType {
+  CountdownGameStarting = 0;
+  CountdownTurnEnd = 1;
+}
+
 // Tick is a message that's sent out on a set schedule
 // that informs things like countdown timers and whatnot
 message Tick {
@@ -219,7 +224,10 @@ message Tick {
   // Progress is null if there is no progress bar, but if it's present it counts from 100 down to 0
   // so that the clients know that there is a countdown in progress ( such as the game saying that
   // it's about to make a descision for a player in battle, or that the store is about to go away, etc)
-  google.protobuf.Int32Value progress = 2;
+
+  // Progress is a map of type->count. It is used to keep track of any progress bars that are ticking down,
+  // where the string name matches a ProgressBarType value.
+  map<string, int32> progress = 2;
 }
 
 message JoinedGame {
