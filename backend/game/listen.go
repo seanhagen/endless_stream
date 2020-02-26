@@ -4,9 +4,6 @@ import (
 	"context"
 	"log"
 	"time"
-
-	"github.com/golang/protobuf/ptypes"
-	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
 // Listen ...
@@ -38,12 +35,6 @@ func (g *Game) Listen() {
 				log.Printf("unable to to tick: %v", err)
 			}
 			cancel()
-			ts, _ := ptypes.TimestampProto(t)
-			g.output <- &endless.Output{
-				Data: &endless.Output_Tick{
-					Tick: &endless.Tick{Time: ts},
-				},
-			}
 		default:
 		}
 

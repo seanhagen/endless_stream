@@ -2,61 +2,29 @@ package game
 
 import (
 	"context"
+	"log"
 	"time"
+
+	"github.com/golang/protobuf/ptypes"
+	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
 // tick ...
 func (g *Game) tick(ctx context.Context, t time.Time) error {
 	g.Lock()
 	defer g.Unlock()
+	defer g.tickOut(t)
 
-	if len(g.players) == 0 {
-		g.idleTime++
-	}
-
-	// run all the ai scripts
+	// run any AI scripts
 
 	// get player inputs
-	playerInputs := map[string][]input{}
-	l := len(g.playerInput)
-	// log.Printf("player inputs to be processed: %v", l)
-	if l > 0 {
-		for i := 0; i < l; i++ {
-			pi := <-g.playerInput
-			id := pi.in.GetPlayerId()
-			ins, ok := playerInputs[id]
-			if !ok {
-				ins = []input{}
-			}
-			ins = append(ins, pi)
-			playerInputs[id] = ins
-		}
-	}
+	playerInputs := g.getPlayerInput()
 
 	// get audience inputs
-	audienceInputs := []input{}
-	l = len(g.audienceInput)
-	// log.Printf("audience inputs: %v", l)
-	for i := 0; i < l; i++ {
-		ai := <-g.audienceInput
-		if y := ai.in.GetAudience(); y != nil {
-			audienceInputs = append(audienceInputs, ai)
-		}
-	}
+	audienceInputs := g.getAudienceInputs()
+	log.Printf("got %v audience inputs", len(audienceInputs))
 
-	// check tickCountdown timers
-	cds := g.tickCountdowns[g.tickCounterIdx]
-	// log.Printf("countdowns to process: %v", len(cds))
-	for _, c := range cds {
-		c(ctx)
-	}
-	// remove those counters
-	g.tickCountdowns[g.tickCounterIdx] = []countdownFunc{}
-	// decrement counter
-	g.tickCounterIdx--
-	if g.tickCounterIdx < tickCounterMin { // loop back around if we've hit min ( ie, 0 )
-		g.tickCounterIdx = tickCounterMax
-	}
+	g.handleTickCountdowns(ctx)
 
 	// log.Printf("processing game state")
 	switch g.screenState.MustState().(GameState) {
@@ -68,6 +36,11 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 		// if there are fewer than 4 players, create AI players to fill the slots
 		// set up next wave
 		// run all round counters
+		err := g.setupNewWave(ctx)
+		if err != nil {
+			log.Printf("unable to setup next wave: %v", err)
+			return err
+		}
 	case StateWave:
 	// check
 	//  if players are all dead, go to 'Defeat' state
@@ -109,5 +82,33 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 		// when timer over or vip sends quit message, quit game
 	}
 	// log.Printf("tick over")
+
 	return nil
+}
+
+// tickOut ...
+func (g *Game) tickOut(t time.Time) {
+	ts, _ := ptypes.TimestampProto(t)
+	g.output <- &endless.Output{
+		Data: &endless.Output_Tick{
+			Tick: &endless.Tick{
+				Time:     ts,
+				Progress: g.outputCountdowns,
+			},
+		},
+	}
+}
+
+// handleTickCountdowns ...
+func (g *Game) handleTickCountdowns(ctx context.Context) {
+	idx := 0
+	for _, tk := range g.tickCountdowns {
+		tk.counter--
+		if tk.counter == 0 {
+			tk.fn(ctx)
+			tk = nil
+			idx++
+		}
+	}
+	g.tickCountdowns = g.tickCountdowns[:idx]
 }

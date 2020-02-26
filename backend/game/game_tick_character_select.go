@@ -2,25 +2,20 @@ package game
 
 import (
 	"log"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 // stateCharSelect ...
 func (g *Game) stateCharSelect(input map[string][]input) error {
-	startingGame := false
-	// updateSelected := false
-
-	if len(input) > 0 {
-		spew.Dump(input)
-	}
+	// startingGame := g.started
 
 	for pid, inputs := range input {
 		for _, i := range inputs {
 			// check to see if there are any 'start game' inputs from the VIP player
-			if pid == g.vipPlayer {
+			if pid == g.vipPlayer && !g.started {
 				if x := i.in.GetGameStart(); x != nil {
-					startingGame = true
+					log.Printf("VIP has started the game")
+					g.started = true
+					// startingGame = true
 					break
 				}
 			}
@@ -34,7 +29,6 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 						if v == pid {
 							log.Printf("Player %v has un-selected their previous choice", pid)
 							delete(g.selectedCharacters, k)
-							// updateSelected = true
 							break
 						}
 					}
@@ -53,15 +47,26 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 					//   if the class is not taken, assign it to this player
 					log.Printf("Player %v selected a character: %v", pid, c)
 					g.selectedCharacters[ct] = pid
-					// updateSelected = true
 				}
 			}
 		}
 	}
 
-	if startingGame {
+	if g.started {
 		// do the state transition!
-		log.Printf("VIP has started the game")
+
+		c, ok := g.outputCountdowns["startGameCountdown"]
+		if !ok {
+			c = tick30Seconds + 1
+		}
+
+		c--
+		if c == 0 {
+			delete(g.outputCountdowns, "startGameCountdown")
+			g.screenState.Fire(TriggerStartGame)
+			return nil
+		}
+		g.outputCountdowns["startGameCountdown"] = c
 	}
 
 	return nil

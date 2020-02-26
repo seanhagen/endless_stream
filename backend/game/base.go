@@ -21,6 +21,9 @@ const stateLen = time.Second * 5
 const roundCounterMax int32 = 30
 const roundCounterMin int32 = 0
 
+const turnCounterMax int32 = 300
+const turnCounterMin int32 = 0
+
 // max number of ticks ahead something can schedule: 60 seconds, or 300 ticks
 const tickCounterMax int32 = 300
 const tickCounterMin int32 = 0
@@ -45,6 +48,11 @@ type input struct {
 }
 
 type countdownFunc func(context.Context)
+
+type countdown struct {
+	counter int32
+	fn      countdownFunc
+}
 
 type Box interface {
 	Find(string) ([]byte, error)
@@ -107,7 +115,7 @@ type Game struct {
 
 	screenState *stateless.StateMachine
 
-	waveStateMachine  *stateless.StateMachine
+	waveState         *waveState
 	currentWaveNumber int
 	waves             map[int]*endless.Wave
 
@@ -130,12 +138,17 @@ type Game struct {
 	msgId int32
 
 	// round countdowns are functions that wait a specific number of rounds before executing
-	roundCounterIdx int32
-	roundCountdowns map[int32][]countdownFunc
+	roundCountdowns []*countdown
+
+	// turn countdowns are functions that wait a specific number of turns before executing.
+	// they only count down for the creature who specified the countdown, eg, if a goblin creates a
+	// turn countdown that will execute in 2 turns, it'll only count down on that specific goblin's turn
+	turnCountdowns map[string][]*countdown
 
 	// tick countdowns are functions that wait a specific number of ticks before executing
-	tickCounterIdx int32
-	tickCountdowns map[int32][]countdownFunc
+	tickCountdowns []*countdown
+
+	outputCountdowns map[string]int32
 
 	// Running is true if the game is running, or false if it's not
 	// if a game isn't running, when a client connects it should
@@ -149,6 +162,8 @@ type Game struct {
 	started bool
 
 	entityCollection EntityCollection
+
+	memory map[string]interface{}
 }
 
 func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) {
@@ -158,6 +173,8 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 		cancelFn: cancel,
 		code:     id,
 		msgId:    0,
+
+		memory: map[string]interface{}{},
 
 		entityCollection: ec,
 
@@ -189,11 +206,11 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 		currentWaveNumber: 1,
 		waves:             setupWaves(),
 
-		roundCounterIdx: roundCounterMax,
-		roundCountdowns: setupRoundCountdowns(),
+		roundCountdowns: []*countdown{},
+		turnCountdowns:  map[string][]*countdown{},
+		tickCountdowns:  []*countdown{},
 
-		tickCounterIdx: tickCounterMax,
-		tickCountdowns: setupTickCountdowns(),
+		outputCountdowns: map[string]int32{},
 	}
 
 	return g, nil
@@ -201,66 +218,47 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 
 // addRoundCountdown ...
 func (g *Game) addRoundCountdown(numRounds int32, fn countdownFunc) error {
-	return addCountdown(
-		numRounds,
-		roundCounterMin,
-		roundCounterMax,
-		g.roundCounterIdx,
-		fn,
-		g.roundCountdowns,
-	)
+	cd, err := addCountdown(numRounds, roundCounterMin, roundCounterMax, fn, g.roundCountdowns)
+	if err != nil {
+		return err
+	}
+	g.roundCountdowns = cd
+	return nil
 }
 
 // addTickCountdown ...
 func (g *Game) addTickCountdown(numRounds int32, fn countdownFunc) error {
-	return addCountdown(
-		numRounds,
-		tickCounterMin,
-		tickCounterMax,
-		g.tickCounterIdx,
-		fn,
-		g.tickCountdowns,
-	)
-}
-
-// addCountdown ...
-func addCountdown(numRounds, min, max, cur int32, fn countdownFunc, cdowns map[int32][]countdownFunc) error {
-	if numRounds > max {
-		return fmt.Errorf("'%v' is greater than max counter '%v'", numRounds, max)
+	cd, err := addCountdown(numRounds, tickCounterMin, tickCounterMax, fn, g.tickCountdowns)
+	if err != nil {
+		return err
 	}
-
-	if numRounds < min {
-		return fmt.Errorf("'%v' is smaller than min counter '%v'", numRounds, min)
-	}
-
-	idx := cur - numRounds
-	if idx < 0 {
-		idx += max
-	}
-
-	c, ok := cdowns[idx]
-	if !ok {
-		c = []countdownFunc{}
-	}
-	c = append(c, fn)
-	cdowns[idx] = c
+	g.tickCountdowns = cd
 	return nil
 }
 
-func setupRoundCountdowns() map[int32][]countdownFunc {
-	return setupCountdowns(roundCounterMin, roundCounterMax)
-}
-
-func setupTickCountdowns() map[int32][]countdownFunc {
-	return setupCountdowns(tickCounterMin, tickCounterMax)
-}
-
-func setupCountdowns(min, max int32) map[int32][]countdownFunc {
-	out := map[int32][]countdownFunc{}
-	for i := min; i <= max; i++ {
-		out[i] = []countdownFunc{}
+// addTurnCountdown ...
+func (g *Game) addTurnCountdown(pid string, numRounds int32, fn countdownFunc) error {
+	cd := g.turnCountdowns[pid]
+	cd, err := addCountdown(numRounds, turnCounterMin, turnCounterMax, fn, cd)
+	if err != nil {
+		return err
 	}
-	return out
+	g.turnCountdowns[pid] = cd
+	return nil
+}
+
+// addCountdown ...
+func addCountdown(numRounds, min, max int32, fn countdownFunc, cdowns []*countdown) ([]*countdown, error) {
+	if numRounds > max {
+		return cdowns, fmt.Errorf("'%v' is greater than max counter '%v'", numRounds, max)
+	}
+
+	if numRounds < min {
+		return cdowns, fmt.Errorf("'%v' is smaller than min counter '%v'", numRounds, min)
+	}
+
+	cdowns = append(cdowns, &countdown{counter: numRounds, fn: fn})
+	return cdowns, nil
 }
 
 // setupWaves ...

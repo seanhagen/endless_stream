@@ -14,6 +14,42 @@ func (g *Game) handleInput(in input) {
 	}
 }
 
+// getPlayerInput ...
+func (g *Game) getPlayerInput() map[string][]input {
+	out := map[string][]input{}
+	l := len(g.playerInput)
+	// log.Printf("player inputs to be processed: %v", l)
+	if l > 0 {
+		for i := 0; i < l; i++ {
+			pi := <-g.playerInput
+			id := pi.in.GetPlayerId()
+			ins, ok := out[id]
+			if !ok {
+				ins = []input{}
+			}
+			ins = append(ins, pi)
+			out[id] = ins
+		}
+	}
+	return out
+}
+
+// getAudienceInputs ...
+func (g *Game) getAudienceInputs() []input {
+	out := []input{}
+	l := len(g.audienceInput)
+	if l > 0 {
+		for i := 0; i < l; i++ {
+			ai := <-g.audienceInput
+			if y := ai.in.GetAudience(); y != nil {
+				out = append(out, ai)
+			}
+		}
+	}
+
+	return out
+}
+
 // // handlePlayerInput ...
 // func (g *Game) handlePlayerInput(ctx context.Context, in *endless.Input) (*endless.Output, error) {
 // 	id := in.GetPlayerId()
