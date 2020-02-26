@@ -21,8 +21,8 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 	playerInputs := g.getPlayerInput()
 
 	// get audience inputs
-	audienceInputs := g.getAudienceInputs()
-	log.Printf("got %v audience inputs", len(audienceInputs))
+	// audienceInputs := g.getAudienceInputs()
+	// log.Printf("got %v audience inputs", len(audienceInputs))
 
 	g.handleTickCountdowns(ctx)
 
