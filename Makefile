@@ -82,7 +82,7 @@ $(SERVER_TARGET):
 	$(GO_BUILD_CMD) ./$(SERVER_SRC)
 
 server: $(SERVER_TARGET)
-
+reserver: clnsrv $(SERVER_TARGET)
 
 PROTOC_GEN_TS_PATH=
 
