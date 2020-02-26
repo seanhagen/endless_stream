@@ -15,9 +15,16 @@ import (
 	"google.golang.org/grpc"
 )
 
-const host = "localhost:8000"
+// const host = "172.17.0.2:7654"
 
 func main() {
+	if len(os.Args) < 2 {
+		log.Fatal("require server address as first argument")
+	}
+	host := os.Args[1]
+	// spew.Dump(os.Args)
+	// os.Exit(1)
+
 	ctx := context.Background()
 
 	fmt.Printf("Connecting to server: %v\n", host)

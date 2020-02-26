@@ -13,8 +13,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-const grpcListen = "10001"
-
 // DefaultTimeout is the timeout used when the grpc-gateway sends requests
 // to the grpc server. The default is 0 -- no timeout.
 var DefaultTimeout = 0 * time.Second

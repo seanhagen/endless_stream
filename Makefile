@@ -28,7 +28,7 @@ IMPORTS=-I"./${PROTO_DIR}/" -I"./vendor"
 PROTOC=$(PROTOCMD) $(IMPORTS)
 
 SERVER_SRC=backend
-SERVER_TARGET=$(SERVER_SRC)/server
+SERVER_TARGET=$(SERVER_SRC)/deploy/server
 GO_PROTO_TARGET_DIR=backend/endless
 
 PROTO_IN=$(shell find "$(PROTO_DIR)" -name '*.proto')
@@ -82,6 +82,7 @@ $(SERVER_TARGET):
 	$(GO_BUILD_CMD) ./$(SERVER_SRC)
 
 server: $(SERVER_TARGET)
+
 reserver: clnsrv $(SERVER_TARGET)
 
 PROTOC_GEN_TS_PATH=
@@ -103,5 +104,13 @@ rebuild: clnsrv server
 reproxy:
 	docker-compose build --no-cache nodeproxy
 	docker-compose up -d --no-deps nodeproxy
+
+GOOG_CMD=gcloud --project=$(GOOG_PROJECT)
+CONTAINER_TAG=gcr.io/$(GOOG_PROJECT)/$(BINARY):$(VERSION)-$(NOW)
+CONTAINER_LATEST_TAG=gcr.io/$(GOOG_PROJECT)/$(BINARY):latest
+
+container:
+	$(GOOG_CMD) builds submit --tag $(CONTAINER_TAG) $(SERVER_SRC)/deploy
+	$(GOOG_CMD) container images add-tag $(CONTAINER_TAG) $(CONTAINER_LATEST_TAG) --quiet
 
 clean: clnsrv clnproto
