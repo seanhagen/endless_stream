@@ -59,7 +59,6 @@ func createMonster(id string, in monsterBase, script string) monster {
 		Script:       script,
 		Position:     &p,
 	}
-
 	cr.init()
 
 	var t endless.Type
@@ -139,7 +138,7 @@ func calcMonster(cr creature, costMod, mod int32, goldMod, xpMod float64, isBoss
 }
 
 // spawn takes the base monster and creates a copy with it's 'brain' all ready to go
-func (m monster) spawn() monster {
+func (m monster) spawn() *monster {
 
-	return monster{}
+	return &monster{}
 }

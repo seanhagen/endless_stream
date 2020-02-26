@@ -4,18 +4,6 @@ import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
-type player struct {
-	creature
-
-	class endless.Class
-
-	isAI  bool
-	level int32
-
-	skills    map[string]skill
-	inventory map[string]item
-}
-
 type action interface {
 	isItem() bool
 	isSkill() bool
@@ -29,13 +17,9 @@ type actor interface {
 	// round is called at the start of every round
 	round() error
 	// getAction is called when it's this actors turn in iniative order
-	getAction() action
+	getAction(*endless.Input) (action, error)
 	// iniative determines iniative order, lower goes earlier in a round
 	initiative() int
-
-	OnHit()
-	OnMove()
-	OnDeath()
 }
 
 // outputState ...
