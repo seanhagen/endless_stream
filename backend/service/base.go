@@ -63,6 +63,16 @@ func (s *Srv) background() {
 				log.Printf("unable to send health check: %v", err)
 			}
 		case t := <-tick.C:
+			var err error
+			if len(s.games) > 0 {
+				err = s.sdk.Allocate()
+			} else {
+				err = s.sdk.Ready()
+			}
+			if err != nil {
+				log.Printf("Unable to signal Agones SDK: %v", err)
+			}
+
 			for id, g := range s.games {
 				if !g.IsRunning(t) {
 					s.l.Lock()
