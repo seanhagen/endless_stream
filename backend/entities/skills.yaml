@@ -1,5 +1,5 @@
 skills:
-  cleric:
+  Cleric:
     942f437b-925d-4371-8565-37ba54560473:
       name: Attack
       type: Basic
@@ -47,7 +47,7 @@ skills:
       script: cleric-united
       #  onActivate: cleric-united
 
-  fighter:
+  Fighter:
     b4615553-5f54-4c3f-87f9-a1d49b7069b4:
       name: Attack
       type: Basic
@@ -95,7 +95,7 @@ skills:
       script: fighter-end-them
       #onActivate: fighter-end-them
 
-  ranger:
+  Ranger:
     68c58d95-7477-4cd2-ab13-28c753dacd50:
       name: Attack
       type: Basic
@@ -142,7 +142,7 @@ skills:
       cost: 5
       script: ranger-clear-room
 
-  wizard:
+  Wizard:
     38abfd77-1258-4879-8625-5bf653720231:
       name: Attack
       type: Basic

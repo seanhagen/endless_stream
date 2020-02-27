@@ -1,0 +1,43 @@
+classes:
+  bdd4880e-c141-49f5-92c9-04d7e44ec7ed:
+    name: Fighter
+    description: He's good at punch
+    strength: 4
+    intelligence: 1
+    agility: 3
+    script: fighter-base
+    ai: fighter-ai
+    startingItems:
+      - e943b199-67de-4991-8441-faaedd87bdfc
+      - 9b9cfbbe-47d6-4478-ac11-a91312dcc724
+      - 30830ad3-0178-4b07-8885-0a914d046fed
+  4d88eb1a-2654-4409-8f44-2344fd30c7da:
+    name: Ranger
+    description: They are good with a bow
+    strength: 2
+    intelligence: 2
+    agility: 4
+    script: ranger-base
+    ai: ranger-ai
+    startingItems:
+      - e943b199-67de-4991-8441-faaedd87bdfc
+  b5f0a73d-6434-4371-8423-52bc8307ea49:
+    name: Cleric
+    description: She's got a god on her side
+    strength: 3
+    intelligence: 3
+    agility: 2
+    script: cleric-base
+    ai: cleric-ai
+    startingItems:
+      - e943b199-67de-4991-8441-faaedd87bdfc
+  dfdf07cc-7319-4fb1-a461-52ab1d46104c:
+    name: Wizard
+    description: Can do big magic
+    strength: 1
+    intelligence: 4
+    agility: 1
+    script: wizard-base
+    ai: wizard-ai
+    startingItems:
+      - e943b199-67de-4991-8441-faaedd87bdfc

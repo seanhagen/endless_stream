@@ -54,20 +54,19 @@ func (g *Game) outputState() *endless.Output {
 		d = endless.Display_ScreenLoading
 	}
 
-	sc := map[string]endless.ClassType{}
-	if len(g.selectedCharacters) > 0 {
-		for k, v := range g.selectedCharacters {
-			sc[v] = k
-		}
-	}
 	// log.Printf("selected: %v", spew.Sdump(sc, g.selectedCharacters))
 
 	return &endless.Output{
 		Data: &endless.Output_State{
 			State: &endless.CurrentState{
-				Display:  d,
-				Selected: &endless.CharacterSelected{Selected: sc},
-				// Wave: g.waveNumber,
+				Display:       d,
+				Selected:      &endless.CharacterSelected{Selected: g.selectedCharacters},
+				AudienceCount: int64(len(g.audienceIds)),
+				//Players: map[string]*endless.Player,
+				//Monsters: []*endless.Monster,
+				//CurrentPlayer: *wrappers.StringValue, // the uuid of the current player
+				//CurrentWave: *endless.Wave,
+				//UpcomingWaves: map[int32]*endless.Wave,
 			},
 		},
 	}

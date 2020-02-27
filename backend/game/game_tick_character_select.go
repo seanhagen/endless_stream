@@ -6,8 +6,6 @@ import (
 
 // stateCharSelect ...
 func (g *Game) stateCharSelect(input map[string][]input) error {
-	// startingGame := g.started
-
 	for pid, inputs := range input {
 		for _, i := range inputs {
 			// check to see if there are any 'start game' inputs from the VIP player
@@ -15,7 +13,6 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 				if x := i.in.GetGameStart(); x != nil {
 					log.Printf("VIP has started the game")
 					g.started = true
-					// startingGame = true
 					break
 				}
 			}
@@ -24,11 +21,13 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 			if x := i.in.GetCharSelect(); x != nil {
 				c := x.GetChoice()
 				if c == nil {
+					delete(g.selectedCharacters, pid)
+
 					// if nil, player has 'unselected' the class, so remove their selection
-					for k, v := range g.selectedCharacters {
+					for k, v := range g.characters {
 						if v == pid {
 							log.Printf("Player %v has un-selected their previous choice", pid)
-							delete(g.selectedCharacters, k)
+							delete(g.characters, k)
 							break
 						}
 					}
@@ -37,16 +36,17 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 
 				// got a character select input, x.GetChoice() -> nil or class
 				ct := c.GetClass()
-				if _, ok := g.selectedCharacters[ct]; !ok {
+				if _, ok := g.characters[ct]; !ok {
 					//   if the player had previously selected a class, delete that from the selected character map
-					for k, v := range g.selectedCharacters {
+					for k, v := range g.characters {
 						if v == pid {
-							delete(g.selectedCharacters, k)
+							delete(g.characters, k)
 						}
 					}
 					//   if the class is not taken, assign it to this player
 					log.Printf("Player %v selected a character: %v", pid, c)
-					g.selectedCharacters[ct] = pid
+					g.characters[ct] = pid
+					g.selectedCharacters[pid] = ct
 				}
 			}
 		}
@@ -54,7 +54,6 @@ func (g *Game) stateCharSelect(input map[string][]input) error {
 
 	if g.started {
 		// do the state transition!
-
 		c, ok := g.outputCountdowns["startGameCountdown"]
 		if !ok {
 			c = tick30Seconds + 1

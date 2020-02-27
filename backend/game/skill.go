@@ -10,7 +10,9 @@ type skill struct {
 	ls     *lua.LState
 }
 
-type skillMap map[string]skill
+type charSkillMap map[string]skill
+
+type skillMap map[string]charSkillMap
 
 type skillConfig struct {
 	Name        string
@@ -42,16 +44,25 @@ func (sc skillsConfig) toClassSkills() map[string][]string {
 	return out
 }
 
-// toSkillMap ...
-func (sc skillsConfig) toSkillMap(scriptLoad func(string) string) skillMap {
+// loadScripts ...
+func (sc skillsConfig) loadScripts(scriptLoad func(string) string) skillMap {
 	out := skillMap{}
 
-	for _, skills := range sc {
+	for class, skills := range sc {
+		cm, ok := out[class]
+		if !ok {
+			cm = charSkillMap{}
+		}
 		for id, s := range skills {
 			script := scriptLoad(s.Script)
-			out[id] = skill{skillConfig: s, script: script}
+			cm[id] = skill{skillConfig: s, script: script}
 		}
+		out[class] = cm
 	}
-
 	return out
+}
+
+// getClassSkills ...
+func (sc skillMap) getClassSkills(c string) charSkillMap {
+	return sc[c]
 }

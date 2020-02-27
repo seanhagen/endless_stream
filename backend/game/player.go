@@ -10,8 +10,8 @@ type player struct {
 	isAI  bool
 	level int32
 
-	skills    map[string]skill
-	inventory map[string]item
+	skills    charSkillMap
+	inventory inventory
 }
 
 /*

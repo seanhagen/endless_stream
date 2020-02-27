@@ -30,7 +30,7 @@ type monsterBase struct {
 	Script       string
 }
 
-type monsterList map[string]monster
+type monsterMap map[string]monster
 
 const eqThres = 1e-9
 

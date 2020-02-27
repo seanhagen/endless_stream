@@ -3,3 +3,11 @@ items:
     name: Basic Health Potion
     description: Drink this to get back 10% of your health
     script: basic-health-potion
+  9b9cfbbe-47d6-4478-ac11-a91312dcc724:
+    name: Basic Armor
+    description: It's almost just rags, really
+    script: basic-armor
+  30830ad3-0178-4b07-8885-0a914d046fed:
+    name: Wooden Club
+    description: Use it to hit stuff
+    script: wooden-club
