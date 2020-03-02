@@ -163,6 +163,7 @@ type Game struct {
 
 	entityCollection EntityCollection
 
+	// used when running an action
 	memory map[string]interface{}
 }
 

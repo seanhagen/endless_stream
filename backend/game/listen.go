@@ -15,7 +15,6 @@ func (g *Game) Listen() {
 		// multiple select statements ( with default cases ) allows go to do more
 		// than one thing each iteration, so a tick won't have to wait because
 		// there's an update to send out or a player has connected
-
 		select {
 		case update := <-g.output:
 			g.sendOutput(update)

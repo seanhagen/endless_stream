@@ -122,7 +122,7 @@ container:
 	@echo Submitting build to Google Cloud Build
 	@$(GOOG_CMD) builds submit --tag $(CONTAINER_TAG) $(SERVER_SRC)/deploy
 	@echo Build complete, tagging
-	$(GOOG_CMD) container images add-tag $(CONTAINER_TAG) $(CONTAINER_LATEST_TAG) --quiet
+	@$(GOOG_CMD) container images add-tag $(CONTAINER_TAG) $(CONTAINER_LATEST_TAG) --quiet
 	@echo Build tagged with $(CONTAINER_TAG) and $(CONTAINER_LATEST_TAG)
 
 clean: clnsrv clnproto
