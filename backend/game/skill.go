@@ -18,7 +18,7 @@ type skillConfig struct {
 	Name        string
 	Description map[int]string
 	Type        string
-	Cost        int
+	Cost        int32
 	Script      string
 }
 

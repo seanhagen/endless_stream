@@ -4,24 +4,6 @@ import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
-type action interface {
-	isItem() bool
-	isSkill() bool
-	isSkip() bool
-	do(*Game)
-}
-
-type actor interface {
-	// tick is called every tick
-	tick() error
-	// round is called at the start of every round
-	round() error
-	// getAction is called when it's this actors turn in iniative order
-	getAction(*endless.Input) (action, error)
-	// iniative determines iniative order, lower goes earlier in a round
-	initiative() int
-}
-
 // outputState ...
 func (g *Game) outputState() *endless.Output {
 	g.Lock()

@@ -4,11 +4,15 @@ import (
 	"bytes"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/seanhagen/endless_stream/backend/endless"
 	lua "github.com/yuin/gopher-lua"
 	"github.com/yuin/gopher-lua/parse"
 	luar "layeh.com/gopher-luar"
 )
+
+var _ actor = &creature{}
+var _ entity = &creature{}
 
 type creature struct {
 	Id          string
@@ -47,10 +51,15 @@ type creature struct {
 
 	proto *lua.FunctionProto
 
+	level    int32
+	mType    endless.Type
+	isFlying bool
+
 	haveTick       bool
 	haveGetAction  bool
 	haveRound      bool
 	haveInitiative bool
+	haveTakeDmg    bool
 	luaFns         map[string]lua.LValue
 }
 
@@ -161,6 +170,11 @@ func (c *creature) parse() error {
 		c.luaFns["initiative"] = l.GetGlobal("initiative")
 	}
 
+	if checkForFunction("takeDamage", l) {
+		c.haveTakeDmg = true
+		c.luaFns["takeDamage"] = l.GetGlobal("takeDamage")
+	}
+
 	return nil
 }
 
@@ -170,70 +184,142 @@ func checkForFunction(name string, state *lua.LState) bool {
 	return !lua.LVIsFalse(fn) && fn.Type() == lua.LTFunction
 }
 
-// tick ...
-func (c *creature) tick() error {
-	if c.haveTick {
-		c.ls.SetGlobal("creature", luar.New(c.ls, c))
-		call := lua.P{
-			Fn:      c.luaFns["tick"],
-			NRet:    1,
-			Protect: true,
-		}
-
-		if err := c.ls.CallByParam(call); err != nil {
-			return err
-		}
-
-		ret := c.ls.Get(-1)
-		c.ls.Pop(1)
-		log.Printf("creature tick output: %#v", ret)
+// callFn ...
+func (c *creature) callFn(name string, numRet int, args ...interface{}) ([]lua.LValue, error) {
+	c.ls.SetGlobal("creature", luar.New(c.ls, *c))
+	call := lua.P{
+		Fn:      c.luaFns[name],
+		NRet:    numRet,
+		Protect: true,
 	}
-	return nil
+
+	out := []lua.LValue{}
+
+	inArgs := []lua.LValue{}
+	if len(args) > 0 {
+		for _, v := range args {
+			switch x := v.(type) {
+			case string:
+				inArgs = append(inArgs, lua.LString(x))
+			case int:
+				inArgs = append(inArgs, lua.LNumber(x))
+			case float32:
+				inArgs = append(inArgs, lua.LNumber(x))
+			case float64:
+				inArgs = append(inArgs, lua.LNumber(x))
+			case int32:
+				inArgs = append(inArgs, lua.LNumber(x))
+			}
+		}
+	}
+
+	if err := c.ls.CallByParam(call, inArgs...); err != nil {
+		return out, err
+	}
+
+	for i := numRet; i > 0; i-- {
+		ret := c.ls.Get(-1)
+		out = append(out, ret)
+		c.ls.Pop(1)
+	}
+	return out, nil
 }
 
-// getAction ...
-func (c *creature) getAction(inp *endless.Input) (action, error) {
-	if c.haveGetAction {
-		c.ls.SetGlobal("creature", luar.New(c.ls, c))
-		call := lua.P{
-			Fn:      c.luaFns["getAction"],
-			NRet:    1,
-			Protect: true,
-		}
-
-		if err := c.ls.CallByParam(call, luar.New(c.ls, inp)); err != nil {
+// tick ...
+func (c *creature) tick() (*endless.EventMessage, error) {
+	if c.haveTick {
+		out, err := c.callFn("tick", 1)
+		if err != nil {
 			return nil, err
 		}
-
-		ret := c.ls.Get(-1)
-		c.ls.Pop(1)
-		log.Printf("creature getAction output: %#v", ret)
+		log.Printf("creature tick, result: %v", spew.Sdump(out))
 	}
 	return nil, nil
 }
 
 // round ...
-func (c *creature) round() error {
-	return nil
+func (c *creature) round() (*endless.EventMessage, error) {
+	if c.haveRound {
+		out, err := c.callFn("round", 1)
+		if err != nil {
+			return nil, err
+		}
+		log.Printf("creature round, result: %v", spew.Sdump(out))
+	}
+	return nil, nil
 }
 
 // iniative ...
-func (c *creature) iniative() int {
+func (c *creature) initiative() int {
 	if c.haveInitiative {
-		c.ls.SetGlobal("creature", luar.New(c.ls, c))
-		call := lua.P{
-			Fn:      c.luaFns["initiative"],
-			NRet:    1,
-			Protect: true,
+		out, err := c.callFn("initiative", 1)
+		if err != nil {
+			log.Printf("unable to get initiative: %v", err)
+			return 20
 		}
-		if err := c.ls.CallByParam(call); err != nil {
-			return 0
+		if len(out) <= 0 {
+			return 20
 		}
-		ret := c.ls.Get(-1)
-		c.ls.Pop(1)
-		if i, ok := ret.(lua.LNumber); ok {
-			return int(i)
+		if lua.LVIsFalse(out[0]) {
+			return 20
 		}
+		return int(lua.LVAsNumber(out[0]))
 	}
-	return 1
+	return 20
 }
+
+// health ...
+func (c *creature) health() (int32, int32) {
+	return c.CurrentVitality, c.MaxVitality
+}
+
+// takeDamage ...
+func (c *creature) takeDamage(amount, accuracy int32) *endless.EventMessage {
+	if c.haveTakeDmg {
+		out, err := c.callFn("takeDamage", 1, amount, accuracy)
+		if err != nil {
+			log.Printf("Unable to take damage using function: %v", err)
+			return nil
+		}
+		if len(out) <= 0 {
+			log.Printf("takeDamage function didn't return ammount")
+			return nil
+		}
+		dmg := lua.LVAsNumber(out[0])
+		c.CurrentVitality -= int32(dmg)
+		return nil
+	}
+	if accuracy >= c.Evasion {
+		c.CurrentVitality -= amount
+	}
+	return nil
+}
+
+// apply ...
+func (cr *creature) apply(am actionMessage, g *Game) error {
+	return nil
+}
+
+// act ...
+func (cr *creature) act() actionMessage {
+	return skipMsg{}
+}
+
+// // getAction ...
+// func (c *creature) getAction(inp *endless.Input) (action, error) {
+// 	if c.haveGetAction {
+// 		c.ls.SetGlobal("creature", luar.New(c.ls, c))
+// 		call := lua.P{
+// 			Fn:      c.luaFns["getAction"],
+// 			NRet:    1,
+// 			Protect: true,
+// 		}
+// 		if err := c.ls.CallByParam(call, luar.New(c.ls, inp)); err != nil {
+// 			return nil, err
+// 		}
+// 		ret := c.ls.Get(-1)
+// 		c.ls.Pop(1)
+// 		log.Printf("creature getAction output: %#v", ret)
+// 	}
+// 	return nil, nil
+// }

@@ -8,10 +8,8 @@ import (
 
 type monster struct {
 	creature
-	mType    endless.Type
-	isFlying bool
-	isBoss   bool
-	cost     int32
+	isBoss bool
+	cost   int32
 }
 
 type monsterBase struct {
@@ -48,6 +46,10 @@ func createMonster(id string, in monsterBase, script string) monster {
 		in.GoldMod = 2.0
 	}
 
+	var t endless.Type
+	if x, ok := endless.Type_value[in.Type]; ok {
+		t = endless.Type(x)
+	}
 	p := endless.Position_Right
 	cr := creature{
 		Id:           id,
@@ -58,13 +60,10 @@ func createMonster(id string, in monsterBase, script string) monster {
 		Agility:      in.Agility,
 		Script:       script,
 		Position:     &p,
+		mType:        t,
+		isFlying:     in.IsFlying,
 	}
 	cr.init()
-
-	var t endless.Type
-	if x, ok := endless.Type_value[in.Type]; ok {
-		t = endless.Type(x)
-	}
 
 	mod := in.Mod + (cr.Strength - 3)
 	// fmt.Printf("mod = m_mod ( str - 3 ) = %v + ( %v - 3 ) = %v\n", in.Mod, cr.Strength, mod)
@@ -75,8 +74,6 @@ func createMonster(id string, in monsterBase, script string) monster {
 
 	return monster{
 		creature: cr,
-		mType:    t,
-		isFlying: in.IsFlying,
 		isBoss:   in.IsBoss,
 		cost:     cost,
 	}

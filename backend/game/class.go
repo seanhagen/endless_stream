@@ -42,6 +42,7 @@ func (c class) getPlayer(cid string, isAI bool, ec EntityCollection) *player {
 		Agility:      c.Agility,
 		Position:     &p,
 		Modifiers:    map[string]int32{},
+		level:        1,
 	}
 	cr.init()
 
@@ -50,7 +51,6 @@ func (c class) getPlayer(cid string, isAI bool, ec EntityCollection) *player {
 		creature:  cr,
 		class:     cl,
 		isAI:      isAI,
-		level:     1,
 		skills:    ec.Skills.getClassSkills(c.Name),
 		inventory: inventory{},
 	}

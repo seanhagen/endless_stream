@@ -1,52 +1,57 @@
 package game
 
-import "github.com/seanhagen/endless_stream/backend/endless"
+import (
+	"github.com/seanhagen/endless_stream/backend/endless"
+)
+
+var _ actor = &player{}
+var _ entity = &player{}
 
 type player struct {
 	creature
 
-	class endless.Class
-
-	isAI  bool
-	level int32
-
+	class     endless.Class
+	isAI      bool
 	skills    charSkillMap
 	inventory inventory
+
+	nextAction actionMessage
 }
 
-/*
-type actor interface {
-  // tick is called every tick
-  tick() error
-  // round is called at the start of every round
-  round() error
-  // getAction is called when it's this actors turn in iniative order
-  getAction() action
-  // iniative determines iniative order, lower goes earlier in a round
-  initiative() int
-}
-
-*/
-
+// Entity interface methods
+// round, initiative, & health are covered by creature
+// health is covered by creature struct
 // tick ...
-func (p *player) tick() error {
+func (p *player) tick() (*endless.EventMessage, error) {
 	if p.isAI {
 		return p.creature.tick()
 	}
+	return nil, nil
+}
+
+// setAction ...
+func (p *player) setAction(inp *endless.Input) {
+	var next actionMessage
+	switch v := inp.GetInput().(type) {
+	case *endless.Input_Skill:
+		next = p.setActionSkill(v)
+
+	case *endless.Input_Item:
+		next = p.setActionItem(v)
+
+	case *endless.Input_Move:
+		next = p.setActionMove(v)
+	}
+	p.nextAction = next
+}
+
+// Actor interface methods
+// apply ...
+func (p *player) apply(am actionMessage, g *Game) error {
 	return nil
 }
 
-// getAction ...
-func (p *player) getAction(inp *endless.Input) action {
-	return nil
-}
-
-// round ...
-func (p *player) round() error {
-	return nil
-}
-
-// initiative ...
-func (p *player) initiative() int {
-	return p.creature.iniative()
+// act ...
+func (p *player) act() actionMessage {
+	return p.nextAction
 }
