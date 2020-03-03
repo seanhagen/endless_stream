@@ -1,9 +1,5 @@
 package game
 
-import (
-	"github.com/seanhagen/endless_stream/backend/endless"
-)
-
 // handleInput ...
 func (g *Game) handleInput(in input) {
 	// log.Printf("got player/audience input: %#v", in)
@@ -103,22 +99,3 @@ func (g *Game) getAudienceInputs() []input {
 // 	}
 // 	return nil, nil
 // }
-
-// createPlayerCharacter ...
-func createPlayerCharacter(id string, c endless.Class) *player {
-	var p endless.Position
-	p = endless.Position_Left
-
-	return &player{
-		creature: creature{
-			Id:        id,
-			Position:  &p,
-			Modifiers: map[string]int32{},
-		},
-		class:     c,
-		isAI:      false,
-		level:     1,
-		skills:    map[string]skill{},
-		inventory: map[string]item{},
-	}
-}

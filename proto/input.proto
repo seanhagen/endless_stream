@@ -30,8 +30,10 @@ message CharSelect {
 message GameStart {}
 
 message UseSkill {
+  // skillId is the uuid of the skill to be used
   string skill_id = 1;
-  string target_id = 2;
+  // targetIds is a slice of uuids of who the skill is targeting
+  repeated string target_ids = 2;
 }
 
 message UseItem {
@@ -66,25 +68,41 @@ message EndGame {}
 // advance to the next state )
 message Continue {}
 
+// LevelUp is sent when a player has decided what attribute or skill to level up
+message LevelUp {}
+
+
 message AudienceYell {
   bool is_cheering = 1;
   bool is_booing = 2;
   int32 amount = 3;
 }
 
+
 message Input {
   string player_id = 1;
   oneof input {
+    // any player during pre-game:
     Register register = 10;
     CharSelect char_select = 20;
     GameStart game_start = 30;
+    // registered players, during game:
     UseSkill skill = 40;
     UseItem item = 50;
     Move move = 60;
+    // game ui, after finishing animation
     ActionComplete action_complete = 70;
+    // during store screen
     Purchase purchase = 80;
+    // on level-up screen
+    LevelUp level_up = 81;
+
+    // vip during store or new wave screens
     Continue continue = 90;
+    // vip on defeat screen
     EndGame end_game = 100;
+
+    // audience on any page
     AudienceYell audience = 110;
   }
 }

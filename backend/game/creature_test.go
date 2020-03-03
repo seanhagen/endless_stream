@@ -65,9 +65,10 @@ func TestCreatureInitiative(t *testing.T) {
 		script     string
 		expectInit int
 	}{
-		{"no initiative", "initBase = 0", 1},
+		{"no initiative", "initBase = 0", 20},
 		{"simple intiative", `function initiative() return 3 end`, 3},
 		{"complex initiative", `function initiative() return 11 + creature.Initiative end`, 8},
+		{"bad initiative script", `function initiative() end`, 20},
 	}
 
 	for _, x := range tests {
@@ -85,9 +86,65 @@ func TestCreatureInitiative(t *testing.T) {
 				t.Fatalf("unable to spawn active creature: %v", err)
 			}
 
-			init := cr.iniative()
+			init := cr.initiative()
 			if init != tt.expectInit {
 				t.Errorf("invalid value, expected '%v' got '%v'", tt.expectInit, init)
+			}
+		})
+	}
+}
+
+func TestCreatureTakeDamage(t *testing.T) {
+	simpleScript := `function takeDamage(amt, acc)
+if acc > creature.Evasion then
+  return amt
+end
+return 0
+end`
+
+	armorReduce := `function takeDamage(amt, acc)
+if acc > creature.Evasion then
+  return amt - 2
+end
+return 0
+end`
+
+	tests := []struct {
+		name         string
+		script       string
+		evasion      int32
+		health       int32
+		accuracy     int32
+		amount       int32
+		expectHealth int32
+	}{
+		{"simple", "noDamageFn = 1", 5, 10, 6, 5, 5},
+		{"simple script", simpleScript, 5, 10, 6, 5, 5},
+		{"armor script", armorReduce, 5, 10, 6, 5, 7},
+		{"armor no dmg", armorReduce, 5, 10, 6, 2, 10},
+		{"simple script miss", simpleScript, 5, 10, 3, 9, 10},
+	}
+
+	for _, x := range tests {
+		tt := x
+		t.Run(fmt.Sprintf("tests %v", tt.name), func(t *testing.T) {
+			p := endless.Position_Right
+			b := &creature{Script: tt.script, Position: &p}
+			err := b.init()
+			if err != nil {
+				t.Fatalf("unable to initialize creature: %v", err)
+			}
+			cr, err := b.spawn()
+			if err != nil {
+				t.Fatalf("unable to spawn active creature: %v", err)
+			}
+			cr.CurrentVitality = tt.health
+			cr.Evasion = tt.evasion
+
+			cr.takeDamage(tt.amount, tt.accuracy)
+
+			if cr.CurrentVitality != tt.expectHealth {
+				t.Errorf("expected health to be '%v', got '%v'", tt.expectHealth, cr.CurrentVitality)
 			}
 		})
 	}

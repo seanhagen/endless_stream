@@ -88,6 +88,8 @@ type Game struct {
 	// characters is a map of Class -> player ID. If a charcter hasn't been selected yet,
 	// the class won't be a key in the map.
 	characters map[endless.ClassType]string
+	// selected characters is the reverse map of player id -> class, for sending out as part of the state
+	selectedCharacters map[string]endless.ClassType
 
 	displayClients map[output]bool
 
@@ -105,8 +107,6 @@ type Game struct {
 	playerCharacters map[string]*player
 	playerNames      map[string]string
 	currentPlayer    *string
-
-	selectedCharacters map[endless.ClassType]string
 
 	// vipPlayer is the player who connected first
 	vipPlayer string
@@ -191,7 +191,8 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 		playerCharacters: map[string]*player{},
 		playerNames:      map[string]string{},
 
-		selectedCharacters: map[endless.ClassType]string{},
+		characters:         map[endless.ClassType]string{},
+		selectedCharacters: map[string]endless.ClassType{},
 
 		audience: map[output]bool{},
 

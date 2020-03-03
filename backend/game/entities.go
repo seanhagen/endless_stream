@@ -10,12 +10,11 @@ import (
 )
 
 type EntityCollection struct {
-	AI          map[string]interface{}
-	Items       itemMap
-	Monsters    monsterList
-	Skills      skillMap
-	ClassSkills map[string][]string
-	Statuses    baseStatuses
+	Items    itemMap
+	Monsters monsterMap
+	Skills   skillMap
+	Classes  classMap
+	Statuses baseStatuses
 }
 
 const EntityDir = "entities"
@@ -85,7 +84,7 @@ func SetupEntityCollection(scripts, entities Box) (EntityCollection, error) {
 				return out, err
 			}
 
-			monsters := monsterList{}
+			monsters := monsterMap{}
 			for k, m := range ms {
 				sc := loadScript("monsters", m.Script, scripts)
 				monsters[k] = createMonster(k, m, sc)
@@ -98,11 +97,9 @@ func SetupEntityCollection(scripts, entities Box) (EntityCollection, error) {
 			if err != nil {
 				return out, err
 			}
-			sk := sl.toSkillMap(func(n string) string {
+			out.Skills = sl.loadScripts(func(n string) string {
 				return loadScript("skills", n, scripts)
 			})
-			out.Skills = sk
-			out.ClassSkills = sl.toClassSkills()
 
 		case "items":
 			im := itemMap{}
@@ -117,7 +114,18 @@ func SetupEntityCollection(scripts, entities Box) (EntityCollection, error) {
 
 			out.Items = im
 
-		case "ai":
+		case "classes":
+			cm := classMap{}
+			err := v.UnmarshalKey(t, &cm)
+			if err != nil {
+				return out, err
+			}
+			for k, i := range cm {
+				i.baseScript = loadScript("class", i.ScriptName, scripts)
+				i.aiScript = loadScript("ai", i.AIScriptName, scripts)
+				cm[k] = i
+			}
+			out.Classes = cm
 		}
 	}
 
