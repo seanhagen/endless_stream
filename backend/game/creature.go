@@ -12,7 +12,6 @@ import (
 )
 
 var _ actor = &creature{}
-var _ entity = &creature{}
 
 type creature struct {
 	Id          string
@@ -303,6 +302,11 @@ func (cr *creature) apply(am actionMessage, g *Game) error {
 // act ...
 func (cr *creature) act() actionMessage {
 	return skipMsg{}
+}
+
+// id ...
+func (cr *creature) id() string {
+	return cr.Id
 }
 
 // // getAction ...

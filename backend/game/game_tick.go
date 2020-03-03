@@ -48,9 +48,10 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 	//  otherwise
 	//
 	case StateWaveInput:
-		// get current actor
-		//   get input
-		//   if valid, store and continue
+		if err := g.getCurrentPlayerInput(); err != nil {
+			log.Printf("error getting input of current player: %v", err)
+			return err
+		}
 	case StateWaveProcess:
 		// process current actor action
 		//   if action is move or skill, advance iniative

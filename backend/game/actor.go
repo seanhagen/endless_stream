@@ -33,10 +33,9 @@ type actor interface {
 	// apply takes an action message and applies the message as required
 	apply(actionMessage, *Game) error
 	act() actionMessage
-}
 
-// entity is a player character or a monster, something that takes turn within a wave
-type entity interface {
+	id() string
+
 	// tick is called on every tick
 	tick() (*endless.EventMessage, error)
 	// round is called at the start of every round, and should do things like:
@@ -49,5 +48,6 @@ type entity interface {
 	// health returns the current and max health of the entity
 	health() (int32, int32)
 
+	// tells the entity it has to take damage
 	takeDamage(amount, accuracy int32) *endless.EventMessage
 }

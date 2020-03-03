@@ -97,9 +97,13 @@ func SetupEntityCollection(scripts, entities Box) (EntityCollection, error) {
 			if err != nil {
 				return out, err
 			}
-			out.Skills = sl.loadScripts(func(n string) string {
+			st, err := sl.loadScripts(func(n string) string {
 				return loadScript("skills", n, scripts)
 			})
+			if err != nil {
+				return out, err
+			}
+			out.Skills = st
 
 		case "items":
 			im := itemMap{}

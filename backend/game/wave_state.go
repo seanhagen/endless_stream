@@ -19,3 +19,9 @@ type waveState struct {
 	// That information is stored here.
 	monsterData map[string]interface{}
 }
+
+// current ...
+func (ws waveState) current() actor {
+	cs := ws.current_initiative_step
+	return ws.initiative[ws.current_initiative][cs]
+}

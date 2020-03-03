@@ -33,7 +33,7 @@ func (cm classMap) getPlayer(cid string, isAI bool, ec EntityCollection) *player
 // getPlayer ...
 func (c class) getPlayer(cid string, isAI bool, ec EntityCollection) *player {
 	p := endless.Position_Left
-	cr := creature{
+	cr := &creature{
 		Id:           cid,
 		Name:         c.Name,
 		Description:  c.Description,

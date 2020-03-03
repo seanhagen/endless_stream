@@ -6,8 +6,10 @@ import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
+var _ actor = &monster{}
+
 type monster struct {
-	creature
+	*creature
 	isBoss bool
 	cost   int32
 }
@@ -51,7 +53,7 @@ func createMonster(id string, in monsterBase, script string) monster {
 		t = endless.Type(x)
 	}
 	p := endless.Position_Right
-	cr := creature{
+	cr := &creature{
 		Id:           id,
 		Name:         in.Name,
 		Description:  in.Description,
@@ -67,11 +69,7 @@ func createMonster(id string, in monsterBase, script string) monster {
 
 	mod := in.Mod + (cr.Strength - 3)
 	// fmt.Printf("mod = m_mod ( str - 3 ) = %v + ( %v - 3 ) = %v\n", in.Mod, cr.Strength, mod)
-	xp, gold, cost := calcMonster(cr, in.CostMod, mod, in.GoldMod, in.XPMod, in.IsBoss)
-
-	cr.XP = xp
-	cr.Gold = gold
-
+	cost := calcMonster(cr, in.CostMod, mod, in.GoldMod, in.XPMod, in.IsBoss)
 	return monster{
 		creature: cr,
 		isBoss:   in.IsBoss,
@@ -79,7 +77,7 @@ func createMonster(id string, in monsterBase, script string) monster {
 	}
 }
 
-func calcMonster(cr creature, costMod, mod int32, goldMod, xpMod float64, isBoss bool) (int32, int32, int32) {
+func calcMonster(cr *creature, costMod, mod int32, goldMod, xpMod float64, isBoss bool) int32 {
 	var tmp int32 = cr.MaxVitality +
 		mod +
 		cr.MaxFocus +
@@ -131,11 +129,17 @@ func calcMonster(cr creature, costMod, mod int32, goldMod, xpMod float64, isBoss
 	xp := int32(math.Ceil(xpTmp))
 	gold := int32(math.Ceil(goldTmp))
 
-	return xp, gold, cost
+	cr.XP = xp
+	cr.Gold = gold
+
+	return cost
 }
 
 // spawn takes the base monster and creates a copy with it's 'brain' all ready to go
-func (m monster) spawn() *monster {
-
-	return &monster{}
+func (m monster) spawn() (*monster, error) {
+	cc, err := m.creature.spawn()
+	if err != nil {
+		return nil, err
+	}
+	return &monster{creature: cc, isBoss: m.isBoss, cost: m.cost}, nil
 }

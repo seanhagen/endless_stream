@@ -5,10 +5,9 @@ import (
 )
 
 var _ actor = &player{}
-var _ entity = &player{}
 
 type player struct {
-	creature
+	*creature
 
 	class     endless.Class
 	isAI      bool
@@ -48,7 +47,7 @@ func (p *player) setAction(inp *endless.Input) {
 // Actor interface methods
 // apply ...
 func (p *player) apply(am actionMessage, g *Game) error {
-	return nil
+	return am.apply(p.creature, g)
 }
 
 // act ...

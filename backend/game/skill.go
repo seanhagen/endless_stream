@@ -1,19 +1,5 @@
 package game
 
-import lua "github.com/yuin/gopher-lua"
-
-type skill struct {
-	skillConfig
-
-	level  int
-	script string
-	ls     *lua.LState
-}
-
-type charSkillMap map[string]skill
-
-type skillMap map[string]charSkillMap
-
 type skillConfig struct {
 	Name        string
 	Description map[int]string
@@ -45,7 +31,7 @@ func (sc skillsConfig) toClassSkills() map[string][]string {
 }
 
 // loadScripts ...
-func (sc skillsConfig) loadScripts(scriptLoad func(string) string) skillMap {
+func (sc skillsConfig) loadScripts(scriptLoad func(string) string) (skillMap, error) {
 	out := skillMap{}
 
 	for class, skills := range sc {
@@ -55,14 +41,14 @@ func (sc skillsConfig) loadScripts(scriptLoad func(string) string) skillMap {
 		}
 		for id, s := range skills {
 			script := scriptLoad(s.Script)
-			cm[id] = skill{skillConfig: s, script: script}
+
+			sk := skill{skillConfig: s, script: script}
+			if err := sk.init(); err != nil {
+				return nil, err
+			}
+			cm[id] = sk
 		}
 		out[class] = cm
 	}
-	return out
-}
-
-// getClassSkills ...
-func (sc skillMap) getClassSkills(c string) charSkillMap {
-	return sc[c]
+	return out, nil
 }

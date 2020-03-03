@@ -93,6 +93,9 @@ type Game struct {
 
 	displayClients map[output]bool
 
+	// vipPlayer is the player who connected first
+	vipPlayer string
+
 	// players is a map of output -> bool, to keep track of connected players
 	players map[output]bool
 	// playerIds is a map of string -> int, meant to keep track of player ids
@@ -107,9 +110,7 @@ type Game struct {
 	playerCharacters map[string]*player
 	playerNames      map[string]string
 	currentPlayer    *string
-
-	// vipPlayer is the player who connected first
-	vipPlayer string
+	currentAction    actionMessage
 
 	display endless.Level
 
