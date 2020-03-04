@@ -30,17 +30,21 @@ type actionResult struct {
 
 // actor is something that can act or be acted upon
 type actor interface {
-	// apply takes an action message and applies the message as required
-	apply(actionMessage, *Game) error
+	// apply takes the following:
+	//   - the creature causing the action
+	//   - the action itself
+	//   - the current game state
+	apply(*creature, actionMessage, *Game) error
 	act() actionMessage
-
-	id() string
 
 	// tick is called on every tick
 	tick() (*endless.EventMessage, error)
 	// round is called at the start of every round, and should do things like:
 	//  - run any status scripts ( apply poison effect, etc )
 	round() (*endless.EventMessage, error)
+
+	id() string
+
 	// initiative is called at the start of a wave to determine initiative order.
 	// lower is better ( initiative counts 0->20 )
 	initiative() int

@@ -9,8 +9,7 @@ var _ actor = &player{}
 type player struct {
 	*creature
 
-	class     endless.Class
-	isAI      bool
+	class     endless.ClassType
 	skills    charSkillMap
 	inventory inventory
 
@@ -22,9 +21,6 @@ type player struct {
 // health is covered by creature struct
 // tick ...
 func (p *player) tick() (*endless.EventMessage, error) {
-	if p.isAI {
-		return p.creature.tick()
-	}
 	return nil, nil
 }
 
@@ -46,8 +42,8 @@ func (p *player) setAction(inp *endless.Input) {
 
 // Actor interface methods
 // apply ...
-func (p *player) apply(am actionMessage, g *Game) error {
-	return am.apply(p.creature, g)
+func (p *player) apply(from *creature, am actionMessage, g *Game) error {
+	return am.apply(from, p.creature, g)
 }
 
 // act ...

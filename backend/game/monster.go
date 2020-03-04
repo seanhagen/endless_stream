@@ -65,7 +65,7 @@ func createMonster(id string, in monsterBase, script string) monster {
 		mType:        t,
 		isFlying:     in.IsFlying,
 	}
-	cr.init()
+	cr.setup()
 
 	mod := in.Mod + (cr.Strength - 3)
 	// fmt.Printf("mod = m_mod ( str - 3 ) = %v + ( %v - 3 ) = %v\n", in.Mod, cr.Strength, mod)
@@ -136,8 +136,8 @@ func calcMonster(cr *creature, costMod, mod int32, goldMod, xpMod float64, isBos
 }
 
 // spawn takes the base monster and creates a copy with it's 'brain' all ready to go
-func (m monster) spawn() (*monster, error) {
-	cc, err := m.creature.spawn()
+func (m monster) spawn(g *Game) (*monster, error) {
+	cc, err := m.creature.spawn(g)
 	if err != nil {
 		return nil, err
 	}

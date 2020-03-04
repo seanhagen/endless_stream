@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/seanhagen/endless_stream/backend/endless"
+	lua "github.com/yuin/gopher-lua"
+	luar "layeh.com/gopher-luar"
 )
 
 func TestCreatureInit(t *testing.T) {
@@ -34,7 +36,7 @@ func TestCreatureInit(t *testing.T) {
 				Agility:      tt.agi,
 			}
 
-			cr.init()
+			cr.setup()
 			if cr.MaxVitality != tt.vit {
 				t.Errorf("Wrong vitality, expected %v got %v", tt.vit, cr.MaxVitality)
 			}
@@ -71,17 +73,19 @@ func TestCreatureInitiative(t *testing.T) {
 		{"bad initiative script", `function initiative() end`, 20},
 	}
 
+	g := &Game{}
+
 	for _, x := range tests {
 		tt := x
 		t.Run(fmt.Sprintf("test %v", tt.name), func(t *testing.T) {
 			p := endless.Position_Right
 			b := &creature{Script: tt.script, Position: &p}
-			err := b.init()
+			err := b.setup()
 			if err != nil {
 				t.Fatalf("unable to initialize creature: %v", err)
 			}
 
-			cr, err := b.spawn()
+			cr, err := b.spawn(g)
 			if err != nil {
 				t.Fatalf("unable to spawn active creature: %v", err)
 			}
@@ -124,17 +128,17 @@ end`
 		{"armor no dmg", armorReduce, 5, 10, 6, 2, 10},
 		{"simple script miss", simpleScript, 5, 10, 3, 9, 10},
 	}
-
+	g := &Game{}
 	for _, x := range tests {
 		tt := x
 		t.Run(fmt.Sprintf("tests %v", tt.name), func(t *testing.T) {
 			p := endless.Position_Right
 			b := &creature{Script: tt.script, Position: &p}
-			err := b.init()
+			err := b.setup()
 			if err != nil {
 				t.Fatalf("unable to initialize creature: %v", err)
 			}
-			cr, err := b.spawn()
+			cr, err := b.spawn(g)
 			if err != nil {
 				t.Fatalf("unable to spawn active creature: %v", err)
 			}
@@ -147,5 +151,84 @@ end`
 				t.Errorf("expected health to be '%v', got '%v'", tt.expectHealth, cr.CurrentVitality)
 			}
 		})
+	}
+}
+
+func TestScriptArgs(t *testing.T) {
+	script := `function testMe(creature, game)
+creature.Modifiers.other_bonus = 4
+if haveKey("cultists_killed", game.Memory) then
+  game.Memory.cultists_killed  = game.Memory.cultists_killed +1
+else
+  game.Memory.cultists_killed = 1
+end
+end`
+
+	l := lua.NewState()
+	if err := l.DoString(script); err != nil {
+		t.Fatalf("unable to parse lua script: %v", err)
+	}
+
+	fnCheck := func(L *lua.LState) int {
+		have := L.ToString(1)
+		mp := L.ToUserData(2)
+		if m, ok := mp.Value.(map[string]interface{}); ok {
+			_, ok = m[have]
+			L.Push(lua.LBool(ok))
+			return 1
+		}
+
+		L.Push(lua.LFalse)
+		return 1
+	}
+	l.SetGlobal("haveKey", l.NewFunction(fnCheck))
+
+	call := lua.P{
+		Fn:      l.GetGlobal("testMe"),
+		NRet:    0,
+		Protect: true,
+	}
+
+	cr := &creature{
+		Modifiers: map[string]int32{
+			"dex_bonus": 2,
+		},
+	}
+
+	game := &Game{Memory: map[string]interface{}{
+		"rounds": 0,
+		"thing":  "what",
+	}}
+
+	if err := l.CallByParam(call, luar.New(l, cr), luar.New(l, game)); err != nil {
+		t.Fatalf("unable to call func: %v", err)
+	}
+
+	b := "other_bonus"
+	var ex int32 = 4
+	cv, ok := cr.Modifiers[b]
+	if !ok {
+		t.Fatalf("creature didn't get modifier '%v'", b)
+	}
+
+	if cv != ex {
+		t.Errorf("bonus '%v' value not correct, expected '%#v' got '%#v'", b, ex, cv)
+	}
+
+	b = "cultists_killed"
+	gv, ok := game.Memory[b]
+	if !ok {
+		t.Fatalf("game didn't get memory value '%v'", b)
+	}
+
+	var ex2 int = 1
+	tmp, ok := gv.(float64)
+	if !ok {
+		t.Fatalf("game memory value not a float, got type: %T", gv)
+	}
+	i := int(tmp)
+
+	if i != ex2 {
+		t.Errorf("wrong value in game memory, expected '%v' got '%v'", ex2, i)
 	}
 }

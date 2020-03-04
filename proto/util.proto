@@ -49,6 +49,8 @@ enum Type {
   Vampire = 132;
 
   Eldritch = 140;
+
+  HumanPlayer = 9999;
 }
 
 // Class is an enum that represents what class a character is

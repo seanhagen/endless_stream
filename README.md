@@ -32,12 +32,27 @@ right server.
 
 ## Backend TODO
 
+### Code
+
+#### Skills
+
+- how does a skill attach a status effect to the targeted creature
+- what happens to an actor when it 'dies' ( players? monsters? )
+- 
+
+### DevOps
+
 - determine RAM/CPU usage of a single game, figure out if a server can handle
   more than one game in progress or if it's better to just have one game per server
 - in-game "store" status -- need to store this for players who have paid, so
   they can upgrade their store over time
+  
+### BizDev
+
 - "demo" vs "paid" -- demo mode is the game up until the first boss, then it
   goes back to the main screen ( after showing a "please support our game" )
   - "paid" can mean bought on steam, supported on patreon, or backed
     kickstarter, so need way for "demo" copies to register ( as well as having a
     )
+
+

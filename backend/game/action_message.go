@@ -13,12 +13,15 @@ type actionMessage interface {
 	// is a free action, and so would allow the actor to do something else their turn )
 	cost() (int32, actionType)
 
-	// apply is used by an actor to apply the action to itself
-	apply(*creature, *Game) error
+	// apply takes the creature that created the action, and the creature it's being applied to,
+	// as well as the current game state and does the thing
+	apply(from, to *creature, g *Game) error
 
 	// if the action requires the game to output a message
 	output() *endless.EventMessage
 }
+
+var _ actionMessage = &skipMsg{}
 
 // skipMsg is a message returned when
 type skipMsg struct {
@@ -36,7 +39,7 @@ func (s skipMsg) cost() (int32, actionType) {
 }
 
 // apply ...
-func (s skipMsg) apply(_ *creature, _ *Game) error {
+func (s skipMsg) apply(_, _ *creature, _ *Game) error {
 	return nil
 }
 
@@ -49,6 +52,8 @@ func (s skipMsg) output() *endless.EventMessage {
 		Msg: s.reason,
 	}
 }
+
+var _ actionMessage = &basicAttack{}
 
 type basicAttack struct {
 	target   string
@@ -68,7 +73,13 @@ func (ba basicAttack) cost() (int32, actionType) {
 }
 
 // apply ...
-func (ba basicAttack) apply(cr *creature, g *Game) error {
-	cr.takeDamage(ba.damage, ba.accuracy)
+func (ba basicAttack) apply(from, to *creature, g *Game) error {
+	from.CurrentFocus -= ba.cst
+	to.takeDamage(ba.damage, ba.accuracy)
+	return nil
+}
+
+// output ...
+func (ba basicAttack) output() *endless.EventMessage {
 	return nil
 }

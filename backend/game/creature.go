@@ -62,10 +62,10 @@ type creature struct {
 	luaFns         map[string]lua.LValue
 }
 
-// init should be called when first loading in the script. It creates a "base copy" of the creature,
+// setup should be called when first loading in the script. It creates a "base copy" of the creature,
 // with all the stats set up and the script read in. The lua State isn't set up yet though -- that's
 // what `spawn()` is for -- it copies the creature and calls `parse()`.
-func (c *creature) init() error {
+func (c *creature) setup() error {
 	c.Statuses = []Status{}
 	c.Modifiers = map[string]int32{}
 
@@ -101,7 +101,7 @@ func (c *creature) init() error {
 }
 
 // spawn creates a 'live' copy of the creature, where the lua script has been initialized
-func (c *creature) spawn() (*creature, error) {
+func (c *creature) spawn(g *Game) (*creature, error) {
 	po := *c.Position
 	cr := &creature{
 		Id:          c.Id,
@@ -132,7 +132,7 @@ func (c *creature) spawn() (*creature, error) {
 		proto:     c.proto,
 		luaFns:    map[string]lua.LValue{},
 	}
-	err := cr.parse()
+	err := cr.parse(g)
 	if err != nil {
 		return nil, err
 	}
@@ -140,9 +140,11 @@ func (c *creature) spawn() (*creature, error) {
 }
 
 // parse uses the function proto to set up the lua state
-func (c *creature) parse() error {
+func (c *creature) parse(g *Game) error {
 	//lua.NewState(opts ...lua.Options) *lua.LState
 	l := lua.NewState()
+	g.setupFunctions(l)
+
 	lfunc := l.NewFunctionFromProto(c.proto)
 	l.Push(lfunc)
 	if err := l.PCall(0, lua.MultRet, nil); err != nil {
@@ -224,6 +226,16 @@ func (c *creature) callFn(name string, numRet int, args ...interface{}) ([]lua.L
 	return out, nil
 }
 
+// apply ...
+func (cr *creature) apply(from *creature, am actionMessage, g *Game) error {
+	return am.apply(from, cr, g)
+}
+
+// act is here so that it'll catch if an monster or player doesn't implement this method
+func (cr *creature) act() actionMessage {
+	return skipMsg{}
+}
+
 // tick ...
 func (c *creature) tick() (*endless.EventMessage, error) {
 	if c.haveTick {
@@ -238,7 +250,11 @@ func (c *creature) tick() (*endless.EventMessage, error) {
 
 // round ...
 func (c *creature) round() (*endless.EventMessage, error) {
+	// apply any status effects ( remove any that are finished )
+	// if the creature has died, return a message
+	// if it hasn't died:
 	if c.haveRound {
+		// it has a round script, run it
 		out, err := c.callFn("round", 1)
 		if err != nil {
 			return nil, err
@@ -246,6 +262,11 @@ func (c *creature) round() (*endless.EventMessage, error) {
 		log.Printf("creature round, result: %v", spew.Sdump(out))
 	}
 	return nil, nil
+}
+
+// id ...
+func (cr *creature) id() string {
+	return cr.Id
 }
 
 // iniative ...
@@ -293,37 +314,3 @@ func (c *creature) takeDamage(amount, accuracy int32) *endless.EventMessage {
 	}
 	return nil
 }
-
-// apply ...
-func (cr *creature) apply(am actionMessage, g *Game) error {
-	return nil
-}
-
-// act ...
-func (cr *creature) act() actionMessage {
-	return skipMsg{}
-}
-
-// id ...
-func (cr *creature) id() string {
-	return cr.Id
-}
-
-// // getAction ...
-// func (c *creature) getAction(inp *endless.Input) (action, error) {
-// 	if c.haveGetAction {
-// 		c.ls.SetGlobal("creature", luar.New(c.ls, c))
-// 		call := lua.P{
-// 			Fn:      c.luaFns["getAction"],
-// 			NRet:    1,
-// 			Protect: true,
-// 		}
-// 		if err := c.ls.CallByParam(call, luar.New(c.ls, inp)); err != nil {
-// 			return nil, err
-// 		}
-// 		ret := c.ls.Get(-1)
-// 		c.ls.Pop(1)
-// 		log.Printf("creature getAction output: %#v", ret)
-// 	}
-// 	return nil, nil
-// }

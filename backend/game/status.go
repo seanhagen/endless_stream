@@ -21,23 +21,23 @@ type Status struct {
 }
 
 // assignStatusToCreature ...
-func (bs baseStatuses) assignStatusToCreature(id string, c *creature) error {
+func (bs baseStatuses) assignStatusToCreature(id string, c *creature) (*Status, error) {
 	s, ok := bs[id]
 	if !ok {
-		return fmt.Errorf("no status with id '%v'", id)
+		return nil, fmt.Errorf("no status with id '%v'", id)
 	}
-	return s.build(c)
+	return s.spawn(c)
 }
 
 // build ...
-func (s Status) build(c *creature) error {
+func (s Status) spawn(c *creature) (*Status, error) {
 	x := Status{cr: c}
 	err := x.loadScript(s.script)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	c.Statuses = append(c.Statuses, x)
-	return nil
+	return &x, nil
 }
 
 // loadScript ...

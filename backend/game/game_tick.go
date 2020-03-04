@@ -32,10 +32,6 @@ func (g *Game) tick(ctx context.Context, t time.Time) error {
 		g.stateCharSelect(playerInputs)
 
 	case StateNewWave:
-		// if player hasn't selected a class, assign random from classes left over
-		// if there are fewer than 4 players, create AI players to fill the slots
-		// set up next wave
-		// run all round counters
 		err := g.setupNewWave(ctx)
 		if err != nil {
 			log.Printf("unable to setup next wave: %v", err)

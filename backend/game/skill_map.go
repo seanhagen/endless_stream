@@ -1,18 +1,24 @@
 package game
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/seanhagen/endless_stream/backend/endless"
 	lua "github.com/yuin/gopher-lua"
+	"github.com/yuin/gopher-lua/parse"
 )
+
+var _ actionMessage = &runSkill{}
 
 type skill struct {
 	skillConfig
 
 	level  int
 	script string
-	ls     *lua.LState
+
+	proto *lua.FunctionProto
+	ls    *lua.LState
 }
 
 type charSkillMap map[string]skill
@@ -26,38 +32,61 @@ func (sc skillMap) getClassSkills(c string) charSkillMap {
 
 // init ...
 func (s *skill) init() error {
-	l := lua.NewState()
-	if err := l.DoString(s.script); err != nil {
+	bits := bytes.NewBufferString(s.script)
+	chunk, err := parse.Parse(bits, fmt.Sprintf("skill-%v", s.skillConfig.Name))
+	if err != nil {
 		return err
 	}
 
+	proto, err := lua.Compile(chunk, s.skillConfig.Name)
+	if err != nil {
+		return err
+	}
+
+	s.proto = proto
+	return nil
+}
+
+// spawn ...
+func (s *skill) spawn(g *Game) error {
+	l := lua.NewState()
+	g.setupFunctions(l)
+	lfunc := l.NewFunctionFromProto(s.proto)
+	l.Push(lfunc)
 	if !checkForFunction("activate", l) {
 		return fmt.Errorf("skill script requires function 'activate', not found in script")
 	}
 	return nil
 }
 
+// cost ...
+func (s *skill) cost() (int32, actionType) {
+	return s.Cost, action_basic
+}
+
+// apply ...
+func (s *skill) apply(from, to *creature, g *Game) error {
+	// from/to.Statuses -- list of statuses affecting the creature
+	// from/to.Modifiers map[string]int32 modifiers for various attributes
+	return nil
+}
+
+// output ...
+func (s *skill) output() *endless.EventMessage {
+	return nil
+}
+
+// getRunSkill ...
+func (s *skill) getRunSkill(targets []string) runSkill {
+	return runSkill{s, targets}
+}
+
 type runSkill struct {
+	*skill
 	tgts []string
-	cst  int32
 }
 
 // targets ...
 func (rs runSkill) targets() []string {
 	return rs.tgts
-}
-
-// cost ...
-func (rs runSkill) cost() (int32, actionType) {
-	return rs.cst, action_basic
-}
-
-// apply ...
-func (rs runSkill) apply(cr *creature, g *Game) error {
-	return nil
-}
-
-// output ...
-func (rs runSkill) output() *endless.EventMessage {
-	return nil
 }

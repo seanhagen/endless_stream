@@ -21,7 +21,7 @@ function tick() count = 0 end`, true},
 		tt := x
 		t.Run(fmt.Sprintf("test %v", i), func(t *testing.T) {
 			s := Status{script: tt.script}
-			err := s.build(c)
+			_, err := s.spawn(c)
 			if tt.valid && err != nil {
 				t.Fatalf("expected valid status, got error: %v", err)
 			}
@@ -56,8 +56,9 @@ function tick()
    return false
 end
 `
-	s := Status{script: testScript}
-	err := s.build(&c)
+
+	tmp := Status{script: testScript}
+	s, err := tmp.spawn(&c)
 	if err != nil {
 		t.Fatalf("unable to setup status: %v", err)
 	}

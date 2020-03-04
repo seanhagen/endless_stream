@@ -77,11 +77,9 @@ $(GO_PB_FILES): $(GO_PROTO_TARGET_DIR)/%.pb.go: $(PROTO_DIR)/%.proto
 	@echo "Generating GRPC protobuf $@ from $<"
 	@$(PROTOC) --go_out=plugins=grpc,paths=source_relative,logtostderr=true:$(GO_PROTO_TARGET_DIR) $<
 
-go_pb: $(GO_PROTO_TARGET_DIR) $(PB_FILES)
-go_srv: $(GO_PROTO_TARGET_DIR) $(SRV_PB_FILES)
+go_pb: $(GO_PROTO_TARGET_DIR) $(GO_PB_FILES)
+go_srv: $(GO_PROTO_TARGET_DIR) $(GO_SRV_PB_FILES)
 go_desc: $(GRPC_DESCRIPTOR)
-
-
 
 proto: go_pb go_srv go_desc
 	@echo "Fixing imports"

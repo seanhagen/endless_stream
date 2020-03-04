@@ -112,6 +112,8 @@ type Game struct {
 	currentPlayer    *string
 	currentAction    actionMessage
 
+	aiPlayers map[string]*player_ai
+
 	display endless.Level
 
 	screenState *stateless.StateMachine
@@ -165,7 +167,7 @@ type Game struct {
 	entityCollection EntityCollection
 
 	// used when running an action
-	memory map[string]interface{}
+	Memory map[string]interface{}
 }
 
 func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) {
@@ -176,7 +178,7 @@ func Create(ctx context.Context, id string, ec EntityCollection) (*Game, error) 
 		code:     id,
 		msgId:    0,
 
-		memory: map[string]interface{}{},
+		Memory: map[string]interface{}{},
 
 		entityCollection: ec,
 
