@@ -6,6 +6,19 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
+func stringSliceEq(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i := range a {
+		if b[i] != a[i] {
+			return false
+		}
+	}
+	return true
+}
+
 // luaMapToTable converts a Go map to a lua table
 func luaMapToTable(m map[string]interface{}) *lua.LTable {
 	// Main table pointer

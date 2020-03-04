@@ -129,10 +129,10 @@ end`
 		{"simple script miss", simpleScript, 5, 10, 3, 9, 10},
 	}
 	g := &Game{}
+	p := endless.Position_Right
 	for _, x := range tests {
 		tt := x
 		t.Run(fmt.Sprintf("tests %v", tt.name), func(t *testing.T) {
-			p := endless.Position_Right
 			b := &creature{Script: tt.script, Position: &p}
 			err := b.setup()
 			if err != nil {
@@ -231,4 +231,71 @@ end`
 	if i != ex2 {
 		t.Errorf("wrong value in game memory, expected '%v' got '%v'", ex2, i)
 	}
+}
+
+func TestCreatureAct(t *testing.T) {
+	script := `
+function getAction(waveState)
+  waveState.MonsterData.test = 1
+  return "skill-2", {"monster-1","monster-2"}
+end`
+
+	skScript := `
+function activate()
+  print("skill activated")
+end`
+
+	g := &Game{}
+
+	skt := skill{skillConfig: skillConfig{Name: "test"}, script: skScript}
+	if err := skt.init(); err != nil {
+		t.Fatalf("unable to initialize skill: %v", err)
+	}
+	sk, err := skt.spawn(g)
+	if err != nil {
+		t.Fatalf("unable to setup skill: %v", err)
+	}
+	sk.Level = 1
+	p := endless.Position_Right
+	tmp := &creature{
+		Id:       "1",
+		Script:   script,
+		Position: &p,
+		Skills: charSkillMap{
+			"skill-2": sk,
+		},
+	}
+
+	err = tmp.setup()
+	if err != nil {
+		t.Fatalf("unable to setup creature: %v", err)
+	}
+	cr, err := tmp.spawn(g)
+	if err != nil {
+		t.Fatalf("unable to spawn creature: %v", err)
+	}
+
+	ws := newWaveState()
+	act := cr.act(ws)
+
+	expectTgts := []string{"monster-1", "monster-2"}
+	tgts := act.targets()
+
+	if !stringSliceEq(expectTgts, tgts) {
+		t.Errorf("wrong targets, expected %#v, got %#v", expectTgts, tgts)
+	}
+}
+
+func makeTestMonster(t *testing.T, g *Game, id, script string, pos endless.Position) *monster {
+	t.Helper()
+
+	mb := monsterBase{
+		Script: script,
+	}
+
+	m, err := createMonster(id, mb)
+	if err != nil {
+		t.Fatalf("unable to create monster: %v", err)
+	}
+	return m
 }

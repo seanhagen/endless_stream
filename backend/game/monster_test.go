@@ -46,7 +46,10 @@ func TestMonsterInit(t *testing.T) {
 				IsBoss:       tt.isBoss,
 			}
 
-			monster := createMonster(tn, mb, "")
+			monster, err := createMonster(tn, mb)
+			if err != nil {
+				t.Fatalf("unable to create monster: %v", err)
+			}
 
 			if monster.Gold != tt.gold {
 				t.Errorf("Wrong gold amount, expected %v got %v", tt.gold, monster.Gold)

@@ -87,7 +87,12 @@ func SetupEntityCollection(scripts, entities Box) (EntityCollection, error) {
 			monsters := monsterMap{}
 			for k, m := range ms {
 				sc := loadScript("monsters", m.Script, scripts)
-				monsters[k] = createMonster(k, m, sc)
+				m.Script = sc
+				mon, err := createMonster(k, m)
+				if err != nil {
+					return out, err
+				}
+				monsters[k] = mon
 			}
 			out.Monsters = monsters
 

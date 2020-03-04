@@ -30,12 +30,18 @@ type actionResult struct {
 
 // actor is something that can act or be acted upon
 type actor interface {
+	ID() string
+	// health returns the current and max health of the entity
+	Health() (int32, int32)
+	// type returns the type of the actor
+	Type() endless.Type
+
 	// apply takes the following:
 	//   - the creature causing the action
 	//   - the action itself
 	//   - the current game state
 	apply(*creature, actionMessage, *Game) error
-	act() actionMessage
+	act(*waveState) actionMessage
 
 	// tick is called on every tick
 	tick() (*endless.EventMessage, error)
@@ -43,14 +49,9 @@ type actor interface {
 	//  - run any status scripts ( apply poison effect, etc )
 	round() (*endless.EventMessage, error)
 
-	id() string
-
 	// initiative is called at the start of a wave to determine initiative order.
 	// lower is better ( initiative counts 0->20 )
 	initiative() int
-
-	// health returns the current and max health of the entity
-	health() (int32, int32)
 
 	// tells the entity it has to take damage
 	takeDamage(amount, accuracy int32) *endless.EventMessage

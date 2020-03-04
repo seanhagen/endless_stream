@@ -10,7 +10,6 @@ type player struct {
 	*creature
 
 	class     endless.ClassType
-	skills    charSkillMap
 	inventory inventory
 
 	nextAction actionMessage
@@ -47,6 +46,6 @@ func (p *player) apply(from *creature, am actionMessage, g *Game) error {
 }
 
 // act ...
-func (p *player) act() actionMessage {
+func (p *player) act(_ *waveState) actionMessage {
 	return p.nextAction
 }

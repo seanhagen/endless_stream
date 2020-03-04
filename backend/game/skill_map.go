@@ -14,14 +14,14 @@ var _ actionMessage = &runSkill{}
 type skill struct {
 	skillConfig
 
-	level  int
+	Level  int
 	script string
 
 	proto *lua.FunctionProto
 	ls    *lua.LState
 }
 
-type charSkillMap map[string]skill
+type charSkillMap map[string]*skill
 
 type skillMap map[string]charSkillMap
 
@@ -48,15 +48,28 @@ func (s *skill) init() error {
 }
 
 // spawn ...
-func (s *skill) spawn(g *Game) error {
+func (s *skill) spawn(g *Game) (*skill, error) {
 	l := lua.NewState()
 	g.setupFunctions(l)
 	lfunc := l.NewFunctionFromProto(s.proto)
 	l.Push(lfunc)
-	if !checkForFunction("activate", l) {
-		return fmt.Errorf("skill script requires function 'activate', not found in script")
+	if err := l.PCall(0, lua.MultRet, nil); err != nil {
+		return nil, err
 	}
-	return nil
+
+	if !checkForFunction("activate", l) {
+		return nil, fmt.Errorf("skill script requires function 'activate', not found in script")
+	}
+
+	ns := skill{
+		skillConfig: s.skillConfig,
+		Level:       0,
+		script:      s.script,
+		proto:       s.proto,
+		ls:          l,
+	}
+
+	return &ns, nil
 }
 
 // cost ...

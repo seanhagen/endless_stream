@@ -10,6 +10,7 @@ var _ actor = &monster{}
 
 type monster struct {
 	*creature
+
 	isBoss bool
 	cost   int32
 }
@@ -30,7 +31,7 @@ type monsterBase struct {
 	Script       string
 }
 
-type monsterMap map[string]monster
+type monsterMap map[string]*monster
 
 const eqThres = 1e-9
 
@@ -39,7 +40,7 @@ func equalEnough(a, b float64) bool {
 }
 
 // createMonster reads in the configuration and builds the creature stats
-func createMonster(id string, in monsterBase, script string) monster {
+func createMonster(id string, in monsterBase) (*monster, error) {
 	if equalEnough(in.XPMod, 0.0) {
 		in.XPMod = 1
 	}
@@ -60,21 +61,24 @@ func createMonster(id string, in monsterBase, script string) monster {
 		Strength:     in.Strength,
 		Intelligence: in.Intelligence,
 		Agility:      in.Agility,
-		Script:       script,
+		Script:       in.Script,
 		Position:     &p,
-		mType:        t,
-		isFlying:     in.IsFlying,
+		MType:        t,
+		IsFlying:     in.IsFlying,
 	}
-	cr.setup()
+	err := cr.setup()
+	if err != nil {
+		return nil, err
+	}
 
 	mod := in.Mod + (cr.Strength - 3)
 	// fmt.Printf("mod = m_mod ( str - 3 ) = %v + ( %v - 3 ) = %v\n", in.Mod, cr.Strength, mod)
 	cost := calcMonster(cr, in.CostMod, mod, in.GoldMod, in.XPMod, in.IsBoss)
-	return monster{
+	return &monster{
 		creature: cr,
 		isBoss:   in.IsBoss,
 		cost:     cost,
-	}
+	}, nil
 }
 
 func calcMonster(cr *creature, costMod, mod int32, goldMod, xpMod float64, isBoss bool) int32 {

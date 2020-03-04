@@ -17,9 +17,9 @@ type waveState struct {
 	// For example, when a cultist dies it increments a counter -- when the counter hits 7, a shoggoth is summoned.
 	//
 	// That information is stored here.
-	monsterData map[string]interface{}
+	MonsterData map[string]interface{}
 
-	entities map[string]actor
+	Entities map[string]actor
 
 	currentAction actionMessage
 
@@ -33,14 +33,14 @@ func newWaveState() *waveState {
 		current_initiative_step: 0,
 		max_initiative:          30,
 		initiative:              map[int][]actor{},
-		monsterData:             map[string]interface{}{},
-		entities:                map[string]actor{},
+		MonsterData:             map[string]interface{}{},
+		Entities:                map[string]actor{},
 	}
 }
 
 // waveStart ...
 func (ws *waveState) waveStart() error {
-	for _, actr := range ws.entities {
+	for _, actr := range ws.Entities {
 		i := actr.initiative()
 		ini, ok := ws.initiative[i]
 		if !ok {
@@ -59,22 +59,21 @@ func (ws waveState) current() actor {
 }
 
 // tick ...
-func (ws waveState) tick() error {
+func (ws *waveState) tick() error {
 	// get current actor
 	actr := ws.current()
 
 	// get input
-	if act := actr.act(); act != nil {
-		// if valid, store and continue
-
+	if act := actr.act(ws); act != nil {
 		// check that all targets are entities that are currently in the wave
 		valid := true
 		for _, t := range act.targets() {
-			if _, ok := ws.entities[t]; !ok {
+			if _, ok := ws.Entities[t]; !ok {
 				valid = false
 			}
 		}
 
+		// if valid, store and continue
 		if valid {
 			ws.currentAction = act
 		}

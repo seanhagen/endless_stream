@@ -46,13 +46,15 @@ type creature struct {
 
 	Script string
 
+	Skills charSkillMap
+
 	ls *lua.LState
 
 	proto *lua.FunctionProto
 
-	level    int32
-	mType    endless.Type
-	isFlying bool
+	Level    int32
+	MType    endless.Type
+	IsFlying bool
 
 	haveTick       bool
 	haveGetAction  bool
@@ -65,115 +67,116 @@ type creature struct {
 // setup should be called when first loading in the script. It creates a "base copy" of the creature,
 // with all the stats set up and the script read in. The lua State isn't set up yet though -- that's
 // what `spawn()` is for -- it copies the creature and calls `parse()`.
-func (c *creature) setup() error {
-	c.Statuses = []Status{}
-	c.Modifiers = map[string]int32{}
+func (cr *creature) setup() error {
+	cr.Statuses = []Status{}
+	cr.Modifiers = map[string]int32{}
 
-	c.MaxVitality = vitalityForStat(c.Strength)
-	c.CurrentVitality = c.MaxVitality
+	cr.MaxVitality = vitalityForStat(cr.Strength)
+	cr.CurrentVitality = cr.MaxVitality
 
-	c.CurrentFocus = focusForStat(c.Agility)
-	c.MaxFocus = c.CurrentFocus
-	c.Evasion = evasionForStat(c.Agility)
+	cr.CurrentFocus = focusForStat(cr.Agility)
+	cr.MaxFocus = cr.CurrentFocus
+	cr.Evasion = evasionForStat(cr.Agility)
 
-	c.Willpower = willForStat(c.Intelligence)
-	c.Accuracy = statToMod[c.Agility]
+	cr.Willpower = willForStat(cr.Intelligence)
+	cr.Accuracy = statToMod[cr.Agility]
 
-	c.FocusRegen = statToMod[c.Intelligence]
-	c.CombatDamageBase = statToMod[c.Strength]
-	c.VitalityRegen = statToMod[c.Strength]
-	c.Initiative = statToMod[c.Agility]
+	cr.FocusRegen = statToMod[cr.Intelligence]
+	cr.CombatDamageBase = statToMod[cr.Strength]
+	cr.VitalityRegen = statToMod[cr.Strength]
+	cr.Initiative = statToMod[cr.Agility]
 
-	c.luaFns = map[string]lua.LValue{}
+	cr.luaFns = map[string]lua.LValue{}
 
-	bits := bytes.NewBufferString(c.Script)
-	chunk, err := parse.Parse(bits, c.Name)
+	bits := bytes.NewBufferString(cr.Script)
+	chunk, err := parse.Parse(bits, cr.Name)
 	if err != nil {
 		return err
 	}
-	proto, err := lua.Compile(chunk, c.Name)
+	proto, err := lua.Compile(chunk, cr.Name)
 	if err != nil {
 		return err
 	}
-	c.proto = proto
-
+	cr.proto = proto
 	return nil
 }
 
 // spawn creates a 'live' copy of the creature, where the lua script has been initialized
-func (c *creature) spawn(g *Game) (*creature, error) {
-	po := *c.Position
-	cr := &creature{
-		Id:          c.Id,
-		Name:        c.Name,
-		Description: c.Description,
+func (cr *creature) spawn(g *Game) (*creature, error) {
+	po := *cr.Position
+	crn := &creature{
+		Id:          cr.Id,
+		Name:        cr.Name,
+		Description: cr.Description,
 		Position:    &po,
 		Statuses:    []Status{},
 
-		Strength:        c.Strength,
-		MaxVitality:     c.MaxVitality,
-		CurrentVitality: c.CurrentVitality,
-		VitalityRegen:   c.VitalityRegen,
+		Strength:        cr.Strength,
+		MaxVitality:     cr.MaxVitality,
+		CurrentVitality: cr.CurrentVitality,
+		VitalityRegen:   cr.VitalityRegen,
 
-		Intelligence: c.Intelligence,
-		CurrentFocus: c.CurrentFocus,
-		MaxFocus:     c.MaxFocus,
-		Willpower:    c.Willpower,
-		FocusRegen:   c.FocusRegen,
+		Intelligence: cr.Intelligence,
+		CurrentFocus: cr.CurrentFocus,
+		MaxFocus:     cr.MaxFocus,
+		Willpower:    cr.Willpower,
+		FocusRegen:   cr.FocusRegen,
 
-		Agility:    c.Agility,
-		Evasion:    c.Evasion,
-		Accuracy:   c.Accuracy,
-		Initiative: c.Initiative,
+		Agility:    cr.Agility,
+		Evasion:    cr.Evasion,
+		Accuracy:   cr.Accuracy,
+		Initiative: cr.Initiative,
 
 		Modifiers: map[string]int32{},
-		Gold:      c.Gold,
-		XP:        c.XP,
-		proto:     c.proto,
+		Gold:      cr.Gold,
+		XP:        cr.XP,
+		proto:     cr.proto,
 		luaFns:    map[string]lua.LValue{},
+
+		Skills: cr.Skills,
 	}
-	err := cr.parse(g)
+	err := crn.parse(g)
 	if err != nil {
 		return nil, err
 	}
-	return cr, nil
+	return crn, nil
 }
 
 // parse uses the function proto to set up the lua state
-func (c *creature) parse(g *Game) error {
+func (cr *creature) parse(g *Game) error {
 	//lua.NewState(opts ...lua.Options) *lua.LState
 	l := lua.NewState()
 	g.setupFunctions(l)
 
-	lfunc := l.NewFunctionFromProto(c.proto)
+	lfunc := l.NewFunctionFromProto(cr.proto)
 	l.Push(lfunc)
 	if err := l.PCall(0, lua.MultRet, nil); err != nil {
 		return err
 	}
-	c.ls = l
+	cr.ls = l
 	if checkForFunction("tick", l) {
-		c.haveTick = true
-		c.luaFns["tick"] = l.GetGlobal("tick")
+		cr.haveTick = true
+		cr.luaFns["tick"] = l.GetGlobal("tick")
 	}
 
 	if checkForFunction("getAction", l) {
-		c.haveGetAction = true
-		c.luaFns["getAction"] = l.GetGlobal("getAction")
+		cr.haveGetAction = true
+		cr.luaFns["getAction"] = l.GetGlobal("getAction")
 	}
 
 	if checkForFunction("round", l) {
-		c.haveRound = true
-		c.luaFns["round"] = l.GetGlobal("round")
+		cr.haveRound = true
+		cr.luaFns["round"] = l.GetGlobal("round")
 	}
 
 	if checkForFunction("initiative", l) {
-		c.haveInitiative = true
-		c.luaFns["initiative"] = l.GetGlobal("initiative")
+		cr.haveInitiative = true
+		cr.luaFns["initiative"] = l.GetGlobal("initiative")
 	}
 
 	if checkForFunction("takeDamage", l) {
-		c.haveTakeDmg = true
-		c.luaFns["takeDamage"] = l.GetGlobal("takeDamage")
+		cr.haveTakeDmg = true
+		cr.luaFns["takeDamage"] = l.GetGlobal("takeDamage")
 	}
 
 	return nil
@@ -186,15 +189,15 @@ func checkForFunction(name string, state *lua.LState) bool {
 }
 
 // callFn ...
-func (c *creature) callFn(name string, numRet int, args ...interface{}) ([]lua.LValue, error) {
-	c.ls.SetGlobal("creature", luar.New(c.ls, *c))
+func (cr *creature) callFn(name string, numRet int, args ...interface{}) ([]interface{}, error) {
+	cr.ls.SetGlobal("creature", luar.New(cr.ls, *cr))
 	call := lua.P{
-		Fn:      c.luaFns[name],
+		Fn:      cr.luaFns[name],
 		NRet:    numRet,
 		Protect: true,
 	}
 
-	out := []lua.LValue{}
+	out := []interface{}{}
 
 	inArgs := []lua.LValue{}
 	if len(args) > 0 {
@@ -210,18 +213,29 @@ func (c *creature) callFn(name string, numRet int, args ...interface{}) ([]lua.L
 				inArgs = append(inArgs, lua.LNumber(x))
 			case int32:
 				inArgs = append(inArgs, lua.LNumber(x))
+			default:
+				inArgs = append(inArgs, luar.New(cr.ls, x))
 			}
 		}
 	}
 
-	if err := c.ls.CallByParam(call, inArgs...); err != nil {
+	if err := cr.ls.CallByParam(call, inArgs...); err != nil {
 		return out, err
 	}
 
-	for i := numRet; i > 0; i-- {
-		ret := c.ls.Get(-1)
-		out = append(out, ret)
-		c.ls.Pop(1)
+	for i := 0; i < numRet; i++ {
+		ret := cr.ls.Get(-1)
+		switch ret.Type().String() {
+		case "table":
+			t := cr.ls.CheckTable(-1)
+			// spew.Dump(t)
+			out = append(out, t)
+		default:
+			out = append(out, ret)
+		}
+
+		// fmt.Printf("return value %v is %v\n", i, ret.Type().String())
+		cr.ls.Pop(1)
 	}
 	return out, nil
 }
@@ -232,14 +246,51 @@ func (cr *creature) apply(from *creature, am actionMessage, g *Game) error {
 }
 
 // act is here so that it'll catch if an monster or player doesn't implement this method
-func (cr *creature) act() actionMessage {
+func (cr *creature) act(ws *waveState) actionMessage {
+	if cr.haveGetAction {
+		// getAction should return: id of skill to use, array of target ids
+		out, err := cr.callFn("getAction", 2, ws)
+		if err != nil {
+			log.Printf("unable to get action from script: %v", err)
+			return skipMsg{}
+		}
+
+		if len(out) != 2 {
+			log.Printf("should have 2 results from getAction, have %v", len(out))
+			return skipMsg{}
+		}
+
+		st := out[1].(lua.LValue)
+		skillId := lua.LVAsString(st)
+
+		targets := []string{}
+
+		tbl := out[0].(*lua.LTable)
+		tbl.ForEach(func(_, v lua.LValue) {
+			targets = append(targets, lua.LVAsString(v))
+			// fmt.Printf("table forEach: \n\ta: %v\tb: %v\n\n", spew.Sdump(a), spew.Sdump(b))
+		})
+
+		sk, ok := cr.Skills[skillId]
+		if !ok {
+			log.Printf("creature has no skill %v", skillId)
+			return skipMsg{}
+		}
+
+		if sk.Level <= 0 {
+			log.Printf("skill has no level")
+			return skipMsg{}
+		}
+
+		return sk.getRunSkill(targets)
+	}
 	return skipMsg{}
 }
 
 // tick ...
-func (c *creature) tick() (*endless.EventMessage, error) {
-	if c.haveTick {
-		out, err := c.callFn("tick", 1)
+func (cr *creature) tick() (*endless.EventMessage, error) {
+	if cr.haveTick {
+		out, err := cr.callFn("tick", 1)
 		if err != nil {
 			return nil, err
 		}
@@ -249,13 +300,13 @@ func (c *creature) tick() (*endless.EventMessage, error) {
 }
 
 // round ...
-func (c *creature) round() (*endless.EventMessage, error) {
+func (cr *creature) round() (*endless.EventMessage, error) {
 	// apply any status effects ( remove any that are finished )
 	// if the creature has died, return a message
 	// if it hasn't died:
-	if c.haveRound {
+	if cr.haveRound {
 		// it has a round script, run it
-		out, err := c.callFn("round", 1)
+		out, err := cr.callFn("round", 1)
 		if err != nil {
 			return nil, err
 		}
@@ -264,15 +315,25 @@ func (c *creature) round() (*endless.EventMessage, error) {
 	return nil, nil
 }
 
-// id ...
-func (cr *creature) id() string {
+// ID ...
+func (cr *creature) ID() string {
 	return cr.Id
 }
 
+// Health ...
+func (cr *creature) Health() (int32, int32) {
+	return cr.CurrentVitality, cr.MaxVitality
+}
+
+// Type ...
+func (cr *creature) Type() endless.Type {
+	return cr.MType
+}
+
 // iniative ...
-func (c *creature) initiative() int {
-	if c.haveInitiative {
-		out, err := c.callFn("initiative", 1)
+func (cr *creature) initiative() int {
+	if cr.haveInitiative {
+		out, err := cr.callFn("initiative", 1)
 		if err != nil {
 			log.Printf("unable to get initiative: %v", err)
 			return 20
@@ -280,23 +341,19 @@ func (c *creature) initiative() int {
 		if len(out) <= 0 {
 			return 20
 		}
-		if lua.LVIsFalse(out[0]) {
+		v := out[0].(lua.LValue)
+		if lua.LVIsFalse(v) {
 			return 20
 		}
-		return int(lua.LVAsNumber(out[0]))
+		return int(lua.LVAsNumber(v))
 	}
 	return 20
 }
 
-// health ...
-func (c *creature) health() (int32, int32) {
-	return c.CurrentVitality, c.MaxVitality
-}
-
 // takeDamage ...
-func (c *creature) takeDamage(amount, accuracy int32) *endless.EventMessage {
-	if c.haveTakeDmg {
-		out, err := c.callFn("takeDamage", 1, amount, accuracy)
+func (cr *creature) takeDamage(amount, accuracy int32) *endless.EventMessage {
+	if cr.haveTakeDmg {
+		out, err := cr.callFn("takeDamage", 1, amount, accuracy)
 		if err != nil {
 			log.Printf("Unable to take damage using function: %v", err)
 			return nil
@@ -305,12 +362,13 @@ func (c *creature) takeDamage(amount, accuracy int32) *endless.EventMessage {
 			log.Printf("takeDamage function didn't return ammount")
 			return nil
 		}
-		dmg := lua.LVAsNumber(out[0])
-		c.CurrentVitality -= int32(dmg)
+		v := out[0].(lua.LValue)
+		dmg := lua.LVAsNumber(v)
+		cr.CurrentVitality -= int32(dmg)
 		return nil
 	}
-	if accuracy >= c.Evasion {
-		c.CurrentVitality -= amount
+	if accuracy >= cr.Evasion {
+		cr.CurrentVitality -= amount
 	}
 	return nil
 }

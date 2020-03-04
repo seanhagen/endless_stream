@@ -75,8 +75,8 @@ func (c class) createCreature(pid, script string, g *Game) (*creature, error) {
 		Position:     &p,
 		Modifiers:    map[string]int32{},
 		Script:       script,
-		level:        1,
-		mType:        endless.Type_HumanPlayer,
+		Level:        1,
+		MType:        endless.Type_HumanPlayer,
 	}
 	cr.setup()
 	return cr.spawn(g)
@@ -88,10 +88,11 @@ func (c class) getPlayer(pid string, ct endless.ClassType, g *Game) (*player, er
 	if err != nil {
 		return nil, err
 	}
+	cr.Skills = g.entityCollection.Skills.getClassSkills(c.Name)
+
 	pl := player{
 		creature:  cr,
 		class:     ct,
-		skills:    g.entityCollection.Skills.getClassSkills(c.Name),
 		inventory: inventory{},
 	}
 

@@ -12,7 +12,7 @@ func (p *player) setActionSkill(sk *endless.Input_Skill) actionMessage {
 	sk.Skill.GetSkillId()
 	// sk.Skill.GetTargetId()
 
-	s, ok := p.skills[sk.Skill.GetSkillId()]
+	s, ok := p.Skills[sk.Skill.GetSkillId()]
 	if !ok {
 		log.Printf("skill %v not found for player =(", sk.Skill.GetSkillId())
 		return skipMsg{}

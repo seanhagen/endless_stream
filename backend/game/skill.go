@@ -46,7 +46,7 @@ func (sc skillsConfig) loadScripts(scriptLoad func(string) string) (skillMap, er
 			if err := sk.init(); err != nil {
 				return nil, err
 			}
-			cm[id] = sk
+			cm[id] = &sk
 		}
 		out[class] = cm
 	}
