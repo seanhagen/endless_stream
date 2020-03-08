@@ -103,6 +103,11 @@ func (cr *creature) setup() error {
 
 // spawn creates a 'live' copy of the creature, where the lua script has been initialized
 func (cr *creature) spawn(g *Game) (*creature, error) {
+	skills, err := g.entityCollection.Skills.getClassSkills(cr.Name, g)
+	if err != nil {
+		return nil, err
+	}
+
 	po := *cr.Position
 	crn := &creature{
 		Id:          cr.Id,
@@ -133,9 +138,9 @@ func (cr *creature) spawn(g *Game) (*creature, error) {
 		proto:     cr.proto,
 		luaFns:    map[string]lua.LValue{},
 
-		Skills: cr.Skills,
+		Skills: skills,
 	}
-	err := crn.parse(g)
+	err = crn.parse(g)
 	if err != nil {
 		return nil, err
 	}
@@ -248,8 +253,12 @@ func (cr *creature) apply(from *creature, am actionMessage, g *Game) error {
 // act is here so that it'll catch if an monster or player doesn't implement this method
 func (cr *creature) act(ws *waveState) actionMessage {
 	if cr.haveGetAction {
+		//lua.LFunction
+
+		fn := cr.ls.NewFunction(ws.EntityKeys)
+
 		// getAction should return: id of skill to use, array of target ids
-		out, err := cr.callFn("getAction", 2, ws)
+		out, err := cr.callFn("getAction", 2, ws, fn)
 		if err != nil {
 			log.Printf("unable to get action from script: %v", err)
 			return skipMsg{}
@@ -264,7 +273,6 @@ func (cr *creature) act(ws *waveState) actionMessage {
 		skillId := lua.LVAsString(st)
 
 		targets := []string{}
-
 		tbl := out[0].(*lua.LTable)
 		tbl.ForEach(func(_, v lua.LValue) {
 			targets = append(targets, lua.LVAsString(v))

@@ -88,7 +88,7 @@ func (c class) getPlayer(pid string, ct endless.ClassType, g *Game) (*player, er
 	if err != nil {
 		return nil, err
 	}
-	cr.Skills = g.entityCollection.Skills.getClassSkills(c.Name)
+	// cr.Skills = g.entityCollection.Skills.getClassSkills(c.Name)
 
 	pl := player{
 		creature:  cr,
@@ -106,9 +106,9 @@ func (c class) getAIPlayer(pid string, ct endless.ClassType, g *Game) (*player_a
 		return nil, err
 	}
 	pl := player_ai{
-		creature:  cr,
-		class:     ct,
-		skills:    g.entityCollection.Skills.getClassSkills(c.Name),
+		creature: cr,
+		class:    ct,
+		// skills:    g.entityCollection.Skills.getClassSkills(c.Name),
 		inventory: inventory{},
 	}
 	return &pl, nil

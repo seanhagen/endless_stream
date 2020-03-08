@@ -26,8 +26,18 @@ type charSkillMap map[string]*skill
 type skillMap map[string]charSkillMap
 
 // getClassSkills ...
-func (sc skillMap) getClassSkills(c string) charSkillMap {
-	return sc[c]
+func (sc skillMap) getClassSkills(c string, g *Game) (charSkillMap, error) {
+	out := charSkillMap{} // map[string]*skill
+
+	for id, sk := range sc[c] {
+		ns, err := sk.spawn(g)
+		if err != nil {
+			return nil, err
+		}
+
+		out[id] = ns
+	}
+	return out, nil
 }
 
 // init ...
@@ -63,7 +73,7 @@ func (s *skill) spawn(g *Game) (*skill, error) {
 
 	ns := skill{
 		skillConfig: s.skillConfig,
-		Level:       0,
+		Level:       s.Level,
 		script:      s.script,
 		proto:       s.proto,
 		ls:          l,
@@ -71,6 +81,11 @@ func (s *skill) spawn(g *Game) (*skill, error) {
 
 	return &ns, nil
 }
+
+// // activate ...
+// func (s *skill) activate() error {
+// 	return nil
+// }
 
 // cost ...
 func (s *skill) cost() (int32, actionType) {

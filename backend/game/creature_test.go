@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 
 	"github.com/seanhagen/endless_stream/backend/endless"
@@ -286,6 +287,64 @@ end`
 	}
 }
 
+func TestCreatureActTarget(t *testing.T) {
+	ws := newWaveState()
+
+	g := &Game{}
+
+	ms1 := `function getAction(waveState, enFn)
+print("got wave state: ", waveState, waveState.Entities)
+keys = enFn()
+
+print("keys: ", keys)
+
+
+return "skill1", {"monster-2"}
+end`
+
+	mid1 := "monster-1"
+	m1 := makeTestMonster(t, g, mid1, ms1, endless.Position_Right)
+
+	sksc := `function activate()
+  print("script activated")
+end`
+
+	sk := makeTestSkill(t, g, sksc, 1)
+	m1.creature.Skills = charSkillMap{
+		"skill1": sk,
+	}
+
+	mid2 := "monster-2"
+
+	m2 := makeTestMonster(t, g, mid2, "", endless.Position_Right)
+
+	ws.Entities[mid1] = m1
+	ws.Entities[mid2] = m2
+
+	am := m1.act(ws)
+
+	st := reflect.TypeOf(runSkill{})
+	at := reflect.TypeOf(am)
+	if st.String() != at.String() {
+		t.Fatalf("wrong action message type, expected '%v', got '%v'", st.String(), at.String())
+	}
+
+	tag := am.targets()
+	ex := []string{mid2}
+
+	if !stringSliceEq(tag, ex) {
+		t.Fatalf("wrong targets, expected '%#v', got '%#v'", ex, tag)
+	}
+
+	if err := am.apply(m1.creature, m2.creature, g); err != nil {
+		t.Fatalf("unable to apply skill to target: %v", err)
+	}
+
+	//spew.Dump(am)
+	t.Errorf("not yet")
+
+}
+
 func makeTestMonster(t *testing.T, g *Game, id, script string, pos endless.Position) *monster {
 	t.Helper()
 
@@ -293,9 +352,30 @@ func makeTestMonster(t *testing.T, g *Game, id, script string, pos endless.Posit
 		Script: script,
 	}
 
-	m, err := createMonster(id, mb)
+	mt, err := createMonster(id, mb)
 	if err != nil {
 		t.Fatalf("unable to create monster: %v", err)
 	}
+
+	m, err := mt.spawn(g)
+	if err != nil {
+		t.Fatalf("unable to spawn monster: %v", err)
+	}
 	return m
+}
+
+func makeTestSkill(t *testing.T, g *Game, script string, level int) *skill {
+	st := &skill{
+		Level:  level,
+		script: script,
+	}
+	if err := st.init(); err != nil {
+		t.Fatalf("unable to initialize skill: %v", err)
+	}
+
+	sk, err := st.spawn(g)
+	if err != nil {
+		t.Fatalf("unable to spawn skill: %v", err)
+	}
+	return sk
 }

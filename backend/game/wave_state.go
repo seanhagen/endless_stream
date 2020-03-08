@@ -1,6 +1,9 @@
 package game
 
-import "github.com/seanhagen/endless_stream/backend/endless"
+import (
+	"github.com/seanhagen/endless_stream/backend/endless"
+	lua "github.com/yuin/gopher-lua"
+)
 
 type waveState struct {
 	current_initiative_step int
@@ -36,6 +39,28 @@ func newWaveState() *waveState {
 		MonsterData:             map[string]interface{}{},
 		Entities:                map[string]actor{},
 	}
+}
+
+// EntityKeys ...
+func (ws waveState) EntityKeys(l *lua.LState) int {
+	//out := []string{}
+
+	out := l.NewTable()
+	for k, _ := range ws.Entities {
+		//out = append(out, k)
+		out.Append(lua.LString(k))
+	}
+
+	// t := l.ToTable(out)
+	// l.Push(t)
+
+	//lua.LTable
+
+	l.Push(out)
+
+	//return out
+
+	return 1
 }
 
 // waveStart ...
@@ -80,6 +105,11 @@ func (ws *waveState) tick() error {
 	}
 
 	return nil
+}
+
+// getFns ...
+func (ws waveState) getFns() {
+
 }
 
 // proceed ...
