@@ -236,9 +236,21 @@ end`
 
 func TestCreatureAct(t *testing.T) {
 	script := `
-function getAction(waveState)
+function getAction()
   waveState.MonsterData.test = 1
-  return "skill-2", {"monster-1","monster-2"}
+
+  targets = {}
+  idx = 0
+
+  keys = entityKeys()
+  for i,l in pairs(keys) do
+    if l ~= creature.Id then
+      targets[idx] = l
+      idx = idx+1
+    end
+  end
+
+  return "skill-2", targets
 end`
 
 	skScript := `
@@ -246,40 +258,33 @@ function activate()
   print("skill activated")
 end`
 
-	g := &Game{}
-
-	skt := skill{skillConfig: skillConfig{Name: "test"}, script: skScript}
-	if err := skt.init(); err != nil {
+	sk := skill{skillConfig: skillConfig{Name: "test"}, script: skScript, Level: 1}
+	if err := sk.init(); err != nil {
 		t.Fatalf("unable to initialize skill: %v", err)
 	}
-	sk, err := skt.spawn(g)
-	if err != nil {
-		t.Fatalf("unable to setup skill: %v", err)
-	}
-	sk.Level = 1
-	p := endless.Position_Right
-	tmp := &creature{
-		Id:       "1",
-		Script:   script,
-		Position: &p,
-		Skills: charSkillMap{
-			"skill-2": sk,
+
+	g := &Game{
+		entityCollection: EntityCollection{
+			Skills: skillMap{
+				"Basic": charSkillMap{
+					"skill-2": &sk,
+				},
+			},
 		},
 	}
 
-	err = tmp.setup()
-	if err != nil {
-		t.Fatalf("unable to setup creature: %v", err)
-	}
-	cr, err := tmp.spawn(g)
-	if err != nil {
-		t.Fatalf("unable to spawn creature: %v", err)
-	}
+	m1 := makeTestMonster(t, g, "Basic", "c9864b71-11fa-44ec-a54b-0a3c8189e370", script, endless.Position_Right)
+	m2 := makeTestMonster(t, g, "Basic", "a204ca97-bb3d-43d4-8830-1773543f5eac", "", endless.Position_Right)
+	m3 := makeTestMonster(t, g, "Basic", "0fbc9de9-7aac-4811-b633-c0ff81b9bb30", "", endless.Position_Right)
 
 	ws := newWaveState()
-	act := cr.act(ws)
+	ws.Entities[m1.Id] = m1
+	ws.Entities[m2.Id] = m2
+	ws.Entities[m3.Id] = m3
 
-	expectTgts := []string{"monster-1", "monster-2"}
+	act := m1.act(ws)
+
+	expectTgts := []string{m2.Id, m3.Id}
 	tgts := act.targets()
 
 	if !stringSliceEq(expectTgts, tgts) {
@@ -292,31 +297,47 @@ func TestCreatureActTarget(t *testing.T) {
 
 	g := &Game{}
 
-	ms1 := `function getAction(waveState, enFn)
-print("got wave state: ", waveState, waveState.Entities)
-keys = enFn()
-
-print("keys: ", keys)
-
-
-return "skill1", {"monster-2"}
-end`
-
-	mid1 := "monster-1"
-	m1 := makeTestMonster(t, g, mid1, ms1, endless.Position_Right)
-
-	sksc := `function activate()
-  print("script activated")
+	sksc := `function activate(from, to)
+  to.CurrentVitality = to.CurrentVitality - 1
 end`
 
 	sk := makeTestSkill(t, g, sksc, 1)
-	m1.creature.Skills = charSkillMap{
-		"skill1": sk,
+	// m1.creature.Skills = charSkillMap{
+	// 	"skill1": sk,
+	// }
+
+	g.entityCollection = EntityCollection{
+		Skills: skillMap{
+			"Monster 1": charSkillMap{
+				"skill-2": sk,
+			},
+			"Monster 2": charSkillMap{
+				"skill-3": sk,
+			},
+		},
 	}
+
+	ms1 := `function getAction()
+  keys = entityKeys()
+
+  targets = {}
+  idx = 0
+  for i,l in pairs(keys) do
+    if l ~= creature.Id then
+      targets[idx] = l
+      idx = idx+1
+    end
+  end
+
+  return "skill-2", targets
+end`
+
+	mid1 := "monster-1"
+	m1 := makeTestMonster(t, g, "Monster 1", mid1, ms1, endless.Position_Right)
 
 	mid2 := "monster-2"
 
-	m2 := makeTestMonster(t, g, mid2, "", endless.Position_Right)
+	m2 := makeTestMonster(t, g, "Monster 2", mid2, "", endless.Position_Right)
 
 	ws.Entities[mid1] = m1
 	ws.Entities[mid2] = m2
@@ -340,15 +361,17 @@ end`
 		t.Fatalf("unable to apply skill to target: %v", err)
 	}
 
-	//spew.Dump(am)
-	t.Errorf("not yet")
-
+	var exH int32 = 4
+	if cH := m2.creature.CurrentVitality; cH != exH {
+		t.Errorf("wrong health, expected %v got %v", exH, cH)
+	}
 }
 
-func makeTestMonster(t *testing.T, g *Game, id, script string, pos endless.Position) *monster {
+func makeTestMonster(t *testing.T, g *Game, name, id, script string, pos endless.Position) *monster {
 	t.Helper()
 
 	mb := monsterBase{
+		Name:   name,
 		Script: script,
 	}
 

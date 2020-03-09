@@ -3,6 +3,7 @@ package game
 import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 	lua "github.com/yuin/gopher-lua"
+	luar "layeh.com/gopher-luar"
 )
 
 type waveState struct {
@@ -41,26 +42,36 @@ func newWaveState() *waveState {
 	}
 }
 
+// EntityByKey ...
+func (ws waveState) EntityByKey(l *lua.LState) int {
+	id := l.ToString(1)
+	if e, ok := ws.Entities[id]; ok {
+		o := luar.New(l, e)
+		l.Push(o)
+		return 1
+	}
+
+	return 0
+}
+
 // EntityKeys ...
 func (ws waveState) EntityKeys(l *lua.LState) int {
-	//out := []string{}
-
 	out := l.NewTable()
 	for k, _ := range ws.Entities {
-		//out = append(out, k)
 		out.Append(lua.LString(k))
 	}
 
-	// t := l.ToTable(out)
-	// l.Push(t)
-
-	//lua.LTable
-
 	l.Push(out)
-
-	//return out
-
 	return 1
+}
+
+// register ...
+func (ws waveState) register(cr *creature) {
+	ek := cr.ls.NewFunction(ws.EntityKeys)
+	ebk := cr.ls.NewFunction(ws.EntityByKey)
+	cr.ls.SetGlobal("entityKeys", ek)
+	cr.ls.SetGlobal("entityByKey", ebk)
+	cr.ls.SetGlobal("waveState", luar.New(cr.ls, ws))
 }
 
 // waveStart ...

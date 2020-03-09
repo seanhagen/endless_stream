@@ -6,6 +6,7 @@ type skillConfig struct {
 	Type        string
 	Cost        int32
 	Script      string
+	Level       int
 }
 
 type charSkillConfig map[string]skillConfig
@@ -42,7 +43,7 @@ func (sc skillsConfig) loadScripts(scriptLoad func(string) string) (skillMap, er
 		for id, s := range skills {
 			script := scriptLoad(s.Script)
 
-			sk := skill{skillConfig: s, script: script}
+			sk := skill{skillConfig: s, script: script, Level: s.Level}
 			if err := sk.init(); err != nil {
 				return nil, err
 			}

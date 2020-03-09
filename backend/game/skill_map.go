@@ -7,6 +7,7 @@ import (
 	"github.com/seanhagen/endless_stream/backend/endless"
 	lua "github.com/yuin/gopher-lua"
 	"github.com/yuin/gopher-lua/parse"
+	luar "layeh.com/gopher-luar"
 )
 
 var _ actionMessage = &runSkill{}
@@ -28,8 +29,12 @@ type skillMap map[string]charSkillMap
 // getClassSkills ...
 func (sc skillMap) getClassSkills(c string, g *Game) (charSkillMap, error) {
 	out := charSkillMap{} // map[string]*skill
+	sm, ok := sc[c]
+	if !ok {
+		return out, fmt.Errorf("no skills for class '%v'", c)
+	}
 
-	for id, sk := range sc[c] {
+	for id, sk := range sm {
 		ns, err := sk.spawn(g)
 		if err != nil {
 			return nil, err
@@ -96,7 +101,19 @@ func (s *skill) cost() (int32, actionType) {
 func (s *skill) apply(from, to *creature, g *Game) error {
 	// from/to.Statuses -- list of statuses affecting the creature
 	// from/to.Modifiers map[string]int32 modifiers for various attributes
-	return nil
+
+	f := luar.New(s.ls, from)
+	t := luar.New(s.ls, to)
+	g.setupFunctions(s.ls)
+
+	s.ls.SetGlobal("skill", luar.New(s.ls, *s))
+	call := lua.P{
+		Fn:      s.ls.GetGlobal("activate"),
+		NRet:    0,
+		Protect: true,
+	}
+
+	return s.ls.CallByParam(call, f, t)
 }
 
 // output ...

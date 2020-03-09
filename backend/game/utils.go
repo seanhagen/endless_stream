@@ -1,12 +1,16 @@
 package game
 
 import (
+	"sort"
 	"time"
 
 	lua "github.com/yuin/gopher-lua"
 )
 
 func stringSliceEq(a, b []string) bool {
+	sort.Strings(a)
+	sort.Strings(b)
+
 	if len(a) != len(b) {
 		return false
 	}

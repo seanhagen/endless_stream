@@ -253,12 +253,10 @@ func (cr *creature) apply(from *creature, am actionMessage, g *Game) error {
 // act is here so that it'll catch if an monster or player doesn't implement this method
 func (cr *creature) act(ws *waveState) actionMessage {
 	if cr.haveGetAction {
-		//lua.LFunction
-
-		fn := cr.ls.NewFunction(ws.EntityKeys)
+		ws.register(cr)
 
 		// getAction should return: id of skill to use, array of target ids
-		out, err := cr.callFn("getAction", 2, ws, fn)
+		out, err := cr.callFn("getAction", 2)
 		if err != nil {
 			log.Printf("unable to get action from script: %v", err)
 			return skipMsg{}
@@ -324,8 +322,13 @@ func (cr *creature) round() (*endless.EventMessage, error) {
 }
 
 // ID ...
-func (cr *creature) ID() string {
-	return cr.Id
+func (cr *creature) ID(l *luar.LState) int {
+	// fmt.Printf("[GO] -- creature.ID()\n")
+	// spew.Dump(cr)
+
+	l.Push(lua.LString(cr.Id))
+	return 1
+	//return cr.Id
 }
 
 // Health ...

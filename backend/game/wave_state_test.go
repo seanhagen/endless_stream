@@ -54,8 +54,8 @@ func TestWaveStateTick(t *testing.T) {
 			mid := fmt.Sprintf("monster-1-%v", j)
 			mid2 := fmt.Sprintf("monster-2-%v", j)
 
-			m := makeTestMonster(t, g, mid, tt.monsterScript, endless.Position_Right)
-			m2 := makeTestMonster(t, g, mid2, "", endless.Position_Right)
+			m := makeTestMonster(t, g, "Monster", mid, tt.monsterScript, endless.Position_Right)
+			m2 := makeTestMonster(t, g, "Monster 2", mid2, "", endless.Position_Right)
 
 			ci := ws.current_initiative
 			ws.initiative[ci] = []actor{m, m2}
