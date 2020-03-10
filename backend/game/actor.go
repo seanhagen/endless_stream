@@ -2,7 +2,6 @@ package game
 
 import (
 	"github.com/seanhagen/endless_stream/backend/endless"
-	luar "layeh.com/gopher-luar"
 )
 
 // how this all works:
@@ -33,7 +32,7 @@ type actionResult struct {
 
 // actor is something that can act or be acted upon
 type actor interface {
-	ID(l *luar.LState) int
+	ID() string
 	// health returns the current and max health of the entity
 	Health() (int32, int32)
 	// type returns the type of the actor

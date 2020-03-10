@@ -270,6 +270,10 @@ func (cr *creature) act(ws *waveState) actionMessage {
 		st := out[1].(lua.LValue)
 		skillId := lua.LVAsString(st)
 
+		if skillId == "skip" {
+			return skipMsg{}
+		}
+
 		targets := []string{}
 		tbl := out[0].(*lua.LTable)
 		tbl.ForEach(func(_, v lua.LValue) {
@@ -322,13 +326,8 @@ func (cr *creature) round() (*endless.EventMessage, error) {
 }
 
 // ID ...
-func (cr *creature) ID(l *luar.LState) int {
-	// fmt.Printf("[GO] -- creature.ID()\n")
-	// spew.Dump(cr)
-
-	l.Push(lua.LString(cr.Id))
-	return 1
-	//return cr.Id
+func (cr *creature) ID() string {
+	return cr.Id
 }
 
 // Health ...

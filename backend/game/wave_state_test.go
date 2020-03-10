@@ -43,8 +43,11 @@ func TestWaveStateTick(t *testing.T) {
 			g := &Game{
 				entityCollection: EntityCollection{
 					Skills: skillMap{
-						"Rat": charSkillMap{
+						"Monster": charSkillMap{
 							"07f0def4-4fe3-426a-a500-4013f89506ab": &sk,
+						},
+						"Monster 2": charSkillMap{
+							"8d30a3cd-ec43-4142-b436-a4d245e80801": &sk,
 						},
 					},
 				},
@@ -95,11 +98,83 @@ func TestWaveStateTick(t *testing.T) {
 
 		})
 	}
+}
 
-	// m1 := makeCreature(t, g, mid, script, p)
-	// m2 := makeCreature(t, g, mid2, script, p)
-	// ws := newWaveState()
-	// ws.Entities[mid] = m1
-	// ws.Entities[mid2] = m2
-	//t.Errorf("not yet")
+func TestWaveStateGetPlayers(t *testing.T) {
+	t.Errorf("not yet")
+}
+
+func TestWaveStateSimpleBattle(t *testing.T) {
+	ws := newWaveState()
+
+	g := &Game{}
+
+	ratAtk := `function activate(from, to)
+to.CurrentVitality = to.CurrentVitality - 1
+end`
+
+	fightAtk := `function activate(from, to)
+to.CurrentVitality = to.CurrentVitality - 1
+end`
+
+	ratAtkSk := makeTestSkill(t, g, ratAtk, 1)
+	fightAtkSk := makeTestSkill(t, g, fightAtk, 1)
+
+	g.entityCollection = EntityCollection{
+		Skills: skillMap{
+			"Rat":     charSkillMap{"attack": ratAtkSk},
+			"Fighter": charSkillMap{"attack": fightAtkSk},
+		},
+		Classes: classMap{
+			"40f9a099-58e3-4769-8a1f-80f8bf0982fb": class{
+				Name: "Fighter",
+			},
+		},
+	}
+
+	ratAI := `function initiative() return 10 end
+function getAction()
+  return "skip", {}
+end
+`
+	rat := makeTestMonster(t, g, "Rat", "0c1f01dc-e21d-44ea-9d14-6f65c7c5ca46", ratAI, endless.Position_Right)
+
+	if err := ws.addActor(rat); err != nil {
+		t.Fatalf("unable to add rat to wave state: %v", err)
+	}
+
+	fightAI := `function initiative() return 5 end
+function getAction()
+  print("current position: ", creature.Position)
+  return "skip", {}
+end
+`
+	fighter := makeTestPlayer(t, g, endless.ClassType_Fighter, "4230a173-d0bc-4b64-b065-5810ebe2d928", fightAI, endless.Position_Left)
+
+	fighter.creature.CurrentVitality = 10
+	rat.creature.CurrentVitality = 5
+
+	if err := ws.addActor(fighter); err != nil {
+		t.Fatalf("unable to add fighter player to wave state: %v", err)
+	}
+
+	if err := ws.waveStart(); err != nil {
+		t.Fatalf("unable to trigger wave start: %v", err)
+	}
+
+	if err := ws.tick(); err != nil {
+		t.Fatalf("unable to tick: %v", err)
+	}
+
+	if ws.proceed() {
+		if err := ws.process(); err != nil {
+			t.Fatalf("unable to process wave state: %v", err)
+		}
+
+		if ws.waveComplete() || ws.waveFailed() {
+			t.Errorf("wave should not be complete or failed yet")
+		}
+
+	}
+
 }

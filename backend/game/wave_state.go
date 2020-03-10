@@ -1,6 +1,8 @@
 package game
 
 import (
+	"fmt"
+
 	"github.com/seanhagen/endless_stream/backend/endless"
 	lua "github.com/yuin/gopher-lua"
 	luar "layeh.com/gopher-luar"
@@ -42,6 +44,13 @@ func newWaveState() *waveState {
 	}
 }
 
+// addActor ...
+func (ws waveState) addActor(a actor) error {
+	id := a.ID()
+	ws.Entities[id] = a
+	return nil
+}
+
 // EntityByKey ...
 func (ws waveState) EntityByKey(l *lua.LState) int {
 	id := l.ToString(1)
@@ -65,12 +74,29 @@ func (ws waveState) EntityKeys(l *lua.LState) int {
 	return 1
 }
 
+// getPlayers ...
+func (ws waveState) getPlayers(l *lua.LState) int {
+
+	return 0
+}
+
+// getMonsters ...
+func (ws waveState) getMonsters(l *lua.LState) int {
+
+	return 0
+}
+
 // register ...
 func (ws waveState) register(cr *creature) {
 	ek := cr.ls.NewFunction(ws.EntityKeys)
 	ebk := cr.ls.NewFunction(ws.EntityByKey)
+	gp := cr.ls.NewFunction(ws.getPlayers)
+	gm := cr.ls.NewFunction(ws.getMonsters)
+
 	cr.ls.SetGlobal("entityKeys", ek)
 	cr.ls.SetGlobal("entityByKey", ebk)
+	cr.ls.SetGlobal("getPlayers", gp)
+	cr.ls.SetGlobal("getMonsters", gm)
 	cr.ls.SetGlobal("waveState", luar.New(cr.ls, ws))
 }
 
@@ -91,13 +117,21 @@ func (ws *waveState) waveStart() error {
 // current ...
 func (ws waveState) current() actor {
 	cs := ws.current_initiative_step
-	return ws.initiative[ws.current_initiative][cs]
+
+	if i, ok := ws.initiative[ws.current_initiative]; ok {
+		return i[cs]
+	}
+
+	return nil //ws.initiative[ws.current_initiative][cs]
 }
 
 // tick ...
 func (ws *waveState) tick() error {
 	// get current actor
 	actr := ws.current()
+	if actr == nil {
+		return fmt.Errorf("no current actor")
+	}
 
 	// get input
 	if act := actr.act(ws); act != nil {
@@ -118,12 +152,22 @@ func (ws *waveState) tick() error {
 	return nil
 }
 
-// getFns ...
-func (ws waveState) getFns() {
-
-}
-
 // proceed ...
 func (ws waveState) proceed() bool {
 	return ws.currentAction != nil
+}
+
+// process ...
+func (ws waveState) process() error {
+	return fmt.Errorf("not yet")
+}
+
+// roundOver ...
+func (ws waveState) waveComplete() bool {
+	return true
+}
+
+// waveFailed ...
+func (ws waveState) waveFailed() bool {
+	return true
 }

@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/seanhagen/endless_stream/backend/endless"
 	lua "github.com/yuin/gopher-lua"
 	luar "layeh.com/gopher-luar"
@@ -74,7 +75,13 @@ func TestCreatureInitiative(t *testing.T) {
 		{"bad initiative script", `function initiative() end`, 20},
 	}
 
-	g := &Game{}
+	g := &Game{
+		entityCollection: EntityCollection{
+			Skills: skillMap{
+				"": charSkillMap{},
+			},
+		},
+	}
 
 	for _, x := range tests {
 		tt := x
@@ -129,12 +136,19 @@ end`
 		{"armor no dmg", armorReduce, 5, 10, 6, 2, 10},
 		{"simple script miss", simpleScript, 5, 10, 3, 9, 10},
 	}
-	g := &Game{}
+	g := &Game{
+		entityCollection: EntityCollection{
+			Skills: skillMap{
+				"Basic": charSkillMap{},
+			},
+		},
+	}
 	p := endless.Position_Right
 	for _, x := range tests {
 		tt := x
 		t.Run(fmt.Sprintf("tests %v", tt.name), func(t *testing.T) {
-			b := &creature{Script: tt.script, Position: &p}
+
+			b := &creature{Name: "Basic", Script: tt.script, Position: &p}
 			err := b.setup()
 			if err != nil {
 				t.Fatalf("unable to initialize creature: %v", err)
@@ -365,6 +379,27 @@ end`
 	if cH := m2.creature.CurrentVitality; cH != exH {
 		t.Errorf("wrong health, expected %v got %v", exH, cH)
 	}
+}
+
+func makeTestPlayer(t *testing.T, g *Game, ct endless.ClassType, id, script string, pos endless.Position) *player {
+	t.Helper()
+
+	p, err := g.entityCollection.Classes.createPlayerClass(id, ct, g)
+	if err != nil {
+		spew.Dump(g.entityCollection.Classes)
+		t.Fatalf("unable to create player ai: %v", err)
+	}
+	return p
+}
+
+func makeTestPlayerAI(t *testing.T, g *Game, ct endless.ClassType, id, script string, pos endless.Position) *player_ai {
+	t.Helper()
+
+	p, err := g.entityCollection.Classes.createAI(id, ct, g)
+	if err != nil {
+		t.Fatalf("unable to create player ai: %v", err)
+	}
+	return p
 }
 
 func makeTestMonster(t *testing.T, g *Game, name, id, script string, pos endless.Position) *monster {
