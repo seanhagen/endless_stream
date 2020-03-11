@@ -45,8 +45,9 @@ func newWaveState() *waveState {
 }
 
 // addActor ...
-func (ws waveState) addActor(a actor) error {
+func (ws *waveState) addActor(a actor) error {
 	id := a.ID()
+	a.register(ws)
 	ws.Entities[id] = a
 	return nil
 }
@@ -76,8 +77,15 @@ func (ws waveState) EntityKeys(l *lua.LState) int {
 
 // getPlayers ...
 func (ws waveState) getPlayers(l *lua.LState) int {
+	out := l.NewTable()
 
-	return 0
+	for id, a := range ws.Entities {
+		if a.Type() == endless.Type_HumanPlayer {
+			out.Append(lua.LString(id))
+		}
+	}
+	l.Push(out)
+	return 1
 }
 
 // getMonsters ...
@@ -111,22 +119,50 @@ func (ws *waveState) waveStart() error {
 		ini = append(ini, actr)
 		ws.initiative[i] = ini
 	}
+
+	ws.current_initiative_step = 0
+	ws.current_initiative = 1
+
 	return nil
 }
 
 // current ...
-func (ws waveState) current() actor {
-	cs := ws.current_initiative_step
+func (ws *waveState) current() actor {
+	var a actor
+	idx := 0
+	for {
+		ci := ws.current_initiative
+		ins, ok := ws.initiative[ci]
 
-	if i, ok := ws.initiative[ws.current_initiative]; ok {
-		return i[cs]
+		cs := ws.current_initiative_step
+
+		// if the current initiative+step points to an actor, return that actor
+		if ok && cs <= len(ins) {
+			a = ins[cs]
+			break
+		}
+
+		if cs == len(ins) {
+			ws.current_initiative++
+			ws.current_initiative_step = 0
+		} else {
+			ws.current_initiative_step++
+		}
+		if ws.current_initiative >= ws.max_initiative {
+			ws.current_initiative = 0
+		}
+
+		// guard against infinite loop
+		idx++
+		if idx >= ws.max_initiative {
+			break
+		}
 	}
-
-	return nil //ws.initiative[ws.current_initiative][cs]
+	return a
 }
 
-// tick ...
-func (ws *waveState) tick() error {
+// act ...
+func (ws *waveState) act() error {
 	// get current actor
 	actr := ws.current()
 	if actr == nil {
@@ -148,7 +184,6 @@ func (ws *waveState) tick() error {
 			ws.currentAction = act
 		}
 	}
-
 	return nil
 }
 
@@ -158,16 +193,60 @@ func (ws waveState) proceed() bool {
 }
 
 // process ...
-func (ws waveState) process() error {
-	return fmt.Errorf("not yet")
+func (ws waveState) process(g *Game) error {
+	if ws.currentAction == nil {
+		return fmt.Errorf("no action")
+	}
+
+	ca := ws.current()
+	if ca == nil {
+		return fmt.Errorf("no current actor")
+	}
+	act := ws.currentAction
+
+	tgts := act.targets()
+
+	for _, id := range tgts {
+		a, ok := ws.Entities[id]
+		if !ok {
+			return fmt.Errorf("no entity with id '%v'", id)
+		}
+		cr := ca.getCreature()
+		a.apply(cr, act, g)
+	}
+
+	return nil
 }
 
 // roundOver ...
 func (ws waveState) waveComplete() bool {
-	return true
+	allMonstersDead := true
+	countPlayersDead := 0
+
+	for _, e := range ws.Entities {
+		switch e.Type() {
+		case endless.Type_HumanPlayer:
+			if c, _ := e.Health(); c <= 0 {
+				countPlayersDead++
+			}
+		default:
+			if c, _ := e.Health(); c >= 1 {
+				allMonstersDead = false
+			}
+		}
+	}
+	return (countPlayersDead < 4) && allMonstersDead
 }
 
 // waveFailed ...
 func (ws waveState) waveFailed() bool {
-	return true
+	countPlayersDead := 0
+	for _, e := range ws.Entities {
+		if e.Type() == endless.Type_HumanPlayer {
+			if c, _ := e.Health(); c <= 0 {
+				countPlayersDead++
+			}
+		}
+	}
+	return countPlayersDead == 4
 }

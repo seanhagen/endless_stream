@@ -53,7 +53,7 @@ func createMonster(id string, in monsterBase) (*monster, error) {
 	if x, ok := endless.Type_value[in.Type]; ok {
 		t = endless.Type(x)
 	}
-	p := endless.Position_Right
+
 	cr := &creature{
 		Id:           id,
 		Name:         in.Name,
@@ -62,7 +62,7 @@ func createMonster(id string, in monsterBase) (*monster, error) {
 		Intelligence: in.Intelligence,
 		Agility:      in.Agility,
 		Script:       in.Script,
-		Position:     &p,
+		Position:     endless.Position_Right,
 		MType:        t,
 		IsFlying:     in.IsFlying,
 	}

@@ -38,11 +38,17 @@ type actor interface {
 	// type returns the type of the actor
 	Type() endless.Type
 
+	register(*waveState) error
+
+	getCreature() *creature
+
 	// apply takes the following:
 	//   - the creature causing the action
 	//   - the action itself
 	//   - the current game state
 	apply(*creature, actionMessage, *Game) error
+
+	// act takes a waveState and returns the action the actor wishes to take
 	act(*waveState) actionMessage
 
 	// tick is called on every tick

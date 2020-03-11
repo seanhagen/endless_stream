@@ -18,7 +18,7 @@ type creature struct {
 	Name        string
 	Description string
 
-	Position *endless.Position
+	Position endless.Position
 	Statuses []Status
 
 	Strength         int32
@@ -108,12 +108,11 @@ func (cr *creature) spawn(g *Game) (*creature, error) {
 		return nil, err
 	}
 
-	po := *cr.Position
 	crn := &creature{
 		Id:          cr.Id,
 		Name:        cr.Name,
 		Description: cr.Description,
-		Position:    &po,
+		Position:    cr.Position,
 		Statuses:    []Status{},
 
 		Strength:        cr.Strength,
@@ -139,6 +138,10 @@ func (cr *creature) spawn(g *Game) (*creature, error) {
 		luaFns:    map[string]lua.LValue{},
 
 		Skills: skills,
+
+		Level:    cr.Level,
+		MType:    cr.MType,
+		IsFlying: cr.IsFlying,
 	}
 	err = crn.parse(g)
 	if err != nil {
@@ -245,6 +248,17 @@ func (cr *creature) callFn(name string, numRet int, args ...interface{}) ([]inte
 	return out, nil
 }
 
+// register ...
+func (cr *creature) register(ws *waveState) error {
+	ws.register(cr)
+	return nil
+}
+
+// creature ...
+func (cr *creature) getCreature() *creature {
+	return cr
+}
+
 // apply ...
 func (cr *creature) apply(from *creature, am actionMessage, g *Game) error {
 	return am.apply(from, cr, g)
@@ -269,6 +283,15 @@ func (cr *creature) act(ws *waveState) actionMessage {
 
 		st := out[1].(lua.LValue)
 		skillId := lua.LVAsString(st)
+
+		switch skillId {
+		case "skip":
+			return skipMsg{}
+		case "moveLeft":
+			return move{cid: cr.Id, dir: "left"}
+		case "moveRight":
+			return move{cid: cr.Id, dir: "right"}
+		}
 
 		if skillId == "skip" {
 			return skipMsg{}

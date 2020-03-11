@@ -64,7 +64,6 @@ func (cm classMap) getIdByName(ct endless.ClassType) string {
 
 // createCreature ...
 func (c class) createCreature(pid, script string, g *Game) (*creature, error) {
-	p := endless.Position_Left
 	cr := &creature{
 		Id:           pid,
 		Name:         c.Name,
@@ -72,7 +71,7 @@ func (c class) createCreature(pid, script string, g *Game) (*creature, error) {
 		Strength:     c.Strength,
 		Intelligence: c.Intelligence,
 		Agility:      c.Agility,
-		Position:     &p,
+		Position:     endless.Position_Left,
 		Modifiers:    map[string]int32{},
 		Script:       script,
 		Level:        1,

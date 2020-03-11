@@ -1,6 +1,8 @@
 package game
 
-import "github.com/seanhagen/endless_stream/backend/endless"
+import (
+	"github.com/seanhagen/endless_stream/backend/endless"
+)
 
 type actionMessage interface {
 	// targets returns a slice containing the ids of what this action
@@ -22,6 +24,58 @@ type actionMessage interface {
 }
 
 var _ actionMessage = &skipMsg{}
+var _ actionMessage = &move{}
+
+type move struct {
+	cid string
+	dir string
+}
+
+// targets ...
+func (m move) targets() []string {
+	return []string{m.cid}
+}
+
+// cost ...
+func (m move) cost() (int32, actionType) {
+	return 0, action_basic
+}
+
+// apply ...
+func (m move) apply(_, to *creature, _ *Game) error {
+	if m.dir == "left" {
+		m.moveLeft(to)
+	} else {
+		m.moveRight(to)
+	}
+	return nil
+}
+
+// output ...
+func (m move) output() *endless.EventMessage {
+	// TODO: output a message when a creature moves
+	return nil
+}
+
+// moveRight ...
+func (m move) moveRight(cr *creature) {
+	switch cr.Position {
+	case endless.Position_Left:
+		cr.Position = endless.Position_Middle
+	case endless.Position_Middle:
+		cr.Position = endless.Position_Right
+	}
+}
+
+// moveLeft ...
+func (m move) moveLeft(cr *creature) {
+	switch cr.Position {
+	case endless.Position_Middle:
+		cr.Position = endless.Position_Left
+	case endless.Position_Right:
+		cr.Position = endless.Position_Middle
+	}
+}
 
 // skipMsg is a message returned when
 type skipMsg struct {
