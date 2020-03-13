@@ -137,7 +137,7 @@ func (ws *waveState) current() actor {
 		cs := ws.current_initiative_step
 
 		// if the current initiative+step points to an actor, return that actor
-		if ok && cs <= len(ins) {
+		if ok && cs < len(ins) {
 			a = ins[cs]
 			break
 		}
@@ -179,6 +179,13 @@ func (ws *waveState) act() error {
 			}
 		}
 
+		cr := actr.getCreature()
+		cst, _ := act.cost()
+		if cst > cr.CurrentFocus {
+			// TODO: send message to player that they're out of focus
+			valid = false
+		}
+
 		// if valid, store and continue
 		if valid {
 			ws.currentAction = act
@@ -193,7 +200,7 @@ func (ws waveState) proceed() bool {
 }
 
 // process ...
-func (ws waveState) process(g *Game) error {
+func (ws *waveState) process(g *Game) error {
 	if ws.currentAction == nil {
 		return fmt.Errorf("no action")
 	}
@@ -202,8 +209,8 @@ func (ws waveState) process(g *Game) error {
 	if ca == nil {
 		return fmt.Errorf("no current actor")
 	}
+	cr := ca.getCreature()
 	act := ws.currentAction
-
 	tgts := act.targets()
 
 	for _, id := range tgts {
@@ -211,8 +218,14 @@ func (ws waveState) process(g *Game) error {
 		if !ok {
 			return fmt.Errorf("no entity with id '%v'", id)
 		}
-		cr := ca.getCreature()
 		a.apply(cr, act, g)
+	}
+
+	cst, typ := act.cost()
+	cr.CurrentFocus -= cst
+
+	if typ == action_basic {
+		ws.current_initiative_step++
 	}
 
 	return nil

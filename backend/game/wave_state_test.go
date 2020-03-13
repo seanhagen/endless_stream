@@ -496,21 +496,25 @@ end
 		t.Fatalf("unable to trigger wave start: %v", err)
 	}
 
-	if err := ws.act(); err != nil {
-		t.Fatalf("unable to act: %v", err)
-	}
+	maxTurns := 20
+	turn := 1
 
-	if ws.proceed() {
-		if err := ws.process(g); err != nil {
-			t.Fatalf("unable to process wave state: %v", err)
+	for i := turn; i < maxTurns; i++ {
+		if err := ws.act(); err != nil {
+			t.Fatalf("unable to act: %v", err)
 		}
+		if ws.proceed() {
+			if err := ws.process(g); err != nil {
+				t.Fatalf("unable to process wave state: %v", err)
+			}
 
-		if ws.waveComplete() || ws.waveFailed() {
-			t.Errorf("wave should not be complete or failed yet")
+			if ws.waveComplete() || ws.waveFailed() {
+				t.Errorf("wave should not be complete or failed yet")
+			}
+
+			fmt.Printf("fighter health: %v\n", fighter.creature.CurrentVitality)
+			fmt.Printf("rat health: %v\n", rat.creature.CurrentVitality)
 		}
-
-		fmt.Printf("fighter health: %v\n", fighter.creature.CurrentVitality)
-		fmt.Printf("rat health: %v\n", rat.creature.CurrentVitality)
 	}
 
 	t.Errorf("not yet")
