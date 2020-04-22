@@ -9,6 +9,8 @@ import (
 )
 
 type waveState struct {
+	new_round               bool
+	current_round           int
 	current_initiative_step int
 	current_initiative      int
 	max_initiative          int
@@ -20,13 +22,15 @@ type waveState struct {
 	// monsterData is a map of string -> data that is passed in when a creature
 	// performs various actions
 	//
-	// For example, when a cultist dies it increments a counter -- when the counter hits 7, a shoggoth is summoned.
+	// For example, when a cultist dies it increments a counter --
+	//    when the counter hits 7, a shoggoth is summoned.
 	//
 	// That information is stored here.
 	MonsterData map[string]interface{}
 
 	Entities map[string]actor
 
+	currentActor  actor
 	currentAction actionMessage
 
 	xpGained   int32
@@ -90,8 +94,15 @@ func (ws waveState) getPlayers(l *lua.LState) int {
 
 // getMonsters ...
 func (ws waveState) getMonsters(l *lua.LState) int {
+	out := l.NewTable()
 
-	return 0
+	for id, a := range ws.Entities {
+		if a.Type() != endless.Type_HumanPlayer {
+			out.Append(lua.LString(id))
+		}
+	}
+	l.Push(out)
+	return 1
 }
 
 // register ...
@@ -112,6 +123,8 @@ func (ws waveState) register(cr *creature) {
 func (ws *waveState) waveStart() error {
 	for _, actr := range ws.Entities {
 		i := actr.initiative()
+		fmt.Printf("creature %v -- initiative: %v\n", actr.getCreature().Name, i)
+
 		ini, ok := ws.initiative[i]
 		if !ok {
 			ini = []actor{}
@@ -122,42 +135,54 @@ func (ws *waveState) waveStart() error {
 
 	ws.current_initiative_step = 0
 	ws.current_initiative = 1
+	ws.current_round = 1
 
 	return nil
 }
 
 // current ...
 func (ws *waveState) current() actor {
+	if ws.currentActor != nil {
+		return ws.currentActor
+	}
+
 	var a actor
 	idx := 0
 	for {
 		ci := ws.current_initiative
 		ins, ok := ws.initiative[ci]
-
 		cs := ws.current_initiative_step
 
 		// if the current initiative+step points to an actor, return that actor
 		if ok && cs < len(ins) {
+			fmt.Printf("[waveState.current] current iniative now: %v\n", ws.current_initiative)
+			ws.current_initiative_step++
 			a = ins[cs]
 			break
 		}
 
-		if cs == len(ins) {
+		if cs >= len(ins) {
 			ws.current_initiative++
 			ws.current_initiative_step = 0
 		} else {
 			ws.current_initiative_step++
 		}
+
+		// fmt.Printf("step: %v\n", ws.current_initiative_step)
+
 		if ws.current_initiative >= ws.max_initiative {
 			ws.current_initiative = 0
+			ws.current_round++
 		}
 
 		// guard against infinite loop
 		idx++
-		if idx >= ws.max_initiative {
-			break
+		if idx > ws.max_initiative {
+			idx = 0
+			//break
 		}
 	}
+	ws.currentActor = a
 	return a
 }
 
@@ -168,6 +193,8 @@ func (ws *waveState) act() error {
 	if actr == nil {
 		return fmt.Errorf("no current actor")
 	}
+
+	fmt.Printf("[waveState.act] checking\n")
 
 	// get input
 	if act := actr.act(ws); act != nil {
@@ -186,6 +213,7 @@ func (ws *waveState) act() error {
 			valid = false
 		}
 
+		fmt.Printf("[waveState.act] valid: %v\n", valid)
 		// if valid, store and continue
 		if valid {
 			ws.currentAction = act
@@ -209,7 +237,9 @@ func (ws *waveState) process(g *Game) error {
 	if ca == nil {
 		return fmt.Errorf("no current actor")
 	}
+
 	cr := ca.getCreature()
+	fmt.Printf("round %v, creature %v\n", ws.current_round, cr.Name)
 	act := ws.currentAction
 	tgts := act.targets()
 
@@ -224,9 +254,15 @@ func (ws *waveState) process(g *Game) error {
 	cst, typ := act.cost()
 	cr.CurrentFocus -= cst
 
+	// fmt.Printf("action cost: %v\n", spew.Sdump(cst, typ, action_basic, typ == action_basic))
+
 	if typ == action_basic {
+		fmt.Printf("[waveState.process] cis now: %v\n", ws.current_initiative_step)
 		ws.current_initiative_step++
+		fmt.Printf("[waveState.process] action is basic, increment initiative step, now: %v\n", ws.current_initiative_step)
 	}
+
+	ws.currentActor = nil
 
 	return nil
 }

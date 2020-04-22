@@ -197,12 +197,12 @@ end`
 		t.Fatalf("unable to add rat to wave state: %v", err)
 	}
 
-	p1 := makeTestPlayer(t, g, endless.ClassType_Fighter, pid1, "", endless.Position_Left)
+	p1 := makeTestPlayer(t, g, endless.ClassType_Fighter, pid1, endless.Position_Left)
 	if err := ws.addActor(p1); err != nil {
 		t.Fatalf("unable to add player 1 to wave state: %v", err)
 	}
 
-	p2 := makeTestPlayer(t, g, endless.ClassType_Fighter, pid2, "", endless.Position_Left)
+	p2 := makeTestPlayer(t, g, endless.ClassType_Fighter, pid2, endless.Position_Left)
 	if err := ws.addActor(p2); err != nil {
 		t.Fatalf("unable to add player 2 to wave state: %v", err)
 	}
@@ -324,22 +324,22 @@ func TestWaveComplete(t *testing.T) {
 				t.Fatalf("unable to add rat to wave state: %v", err)
 			}
 
-			fighter := makeTestPlayer(t, g, endless.ClassType_Fighter, "fighter1", "", endless.Position_Left)
+			fighter := makeTestPlayer(t, g, endless.ClassType_Fighter, "fighter1", endless.Position_Left)
 			if err := ws.addActor(fighter); err != nil {
 				t.Fatalf("unable to add fighter player to wave state: %v", err)
 			}
 
-			cleric := makeTestPlayer(t, g, endless.ClassType_Cleric, "cleric1", "", endless.Position_Left)
+			cleric := makeTestPlayer(t, g, endless.ClassType_Cleric, "cleric1", endless.Position_Left)
 			if err := ws.addActor(cleric); err != nil {
 				t.Fatalf("unable to add cleric player to wave state: %v", err)
 			}
 
-			ranger := makeTestPlayer(t, g, endless.ClassType_Ranger, "ranger1", "", endless.Position_Left)
+			ranger := makeTestPlayer(t, g, endless.ClassType_Ranger, "ranger1", endless.Position_Left)
 			if err := ws.addActor(ranger); err != nil {
 				t.Fatalf("unable to add ranger player to wave state: %v", err)
 			}
 
-			wizard := makeTestPlayer(t, g, endless.ClassType_Wizard, "wizard1", "", endless.Position_Left)
+			wizard := makeTestPlayer(t, g, endless.ClassType_Wizard, "wizard1", endless.Position_Left)
 			if err := ws.addActor(wizard); err != nil {
 				t.Fatalf("unable to add wizard player to wave state: %v", err)
 			}
@@ -397,22 +397,22 @@ func TestWaveFailed(t *testing.T) {
 				t.Fatalf("unable to add rat to wave state: %v", err)
 			}
 
-			fighter := makeTestPlayer(t, g, endless.ClassType_Fighter, "fighter1", "", endless.Position_Left)
+			fighter := makeTestPlayer(t, g, endless.ClassType_Fighter, "fighter1", endless.Position_Left)
 			if err := ws.addActor(fighter); err != nil {
 				t.Fatalf("unable to add fighter player to wave state: %v", err)
 			}
 
-			cleric := makeTestPlayer(t, g, endless.ClassType_Cleric, "cleric1", "", endless.Position_Left)
+			cleric := makeTestPlayer(t, g, endless.ClassType_Cleric, "cleric1", endless.Position_Left)
 			if err := ws.addActor(cleric); err != nil {
 				t.Fatalf("unable to add cleric player to wave state: %v", err)
 			}
 
-			ranger := makeTestPlayer(t, g, endless.ClassType_Ranger, "ranger1", "", endless.Position_Left)
+			ranger := makeTestPlayer(t, g, endless.ClassType_Ranger, "ranger1", endless.Position_Left)
 			if err := ws.addActor(ranger); err != nil {
 				t.Fatalf("unable to add ranger player to wave state: %v", err)
 			}
 
-			wizard := makeTestPlayer(t, g, endless.ClassType_Wizard, "wizard1", "", endless.Position_Left)
+			wizard := makeTestPlayer(t, g, endless.ClassType_Wizard, "wizard1", endless.Position_Left)
 			if err := ws.addActor(wizard); err != nil {
 				t.Fatalf("unable to add wizard player to wave state: %v", err)
 			}
@@ -455,20 +455,42 @@ end`
 		Classes: classMap{
 			"40f9a099-58e3-4769-8a1f-80f8bf0982fb": class{
 				Name: "Fighter",
+				baseScript: `function initiative() return 5 end
+function getAction()
+  print("[SCRIPT] fighter ID: ", creature.Id)
+  print("[SCRIPT] fighter current position: ", creature.Position)
+
+  pids = getMonsters()
+  pl = entityByKey(pids[1])
+
+  print("[SCRIPT] figher checks rat position: ", pl.Position)
+
+  if pl.Position > creature.Position then
+    print("[SCRIPT] fighter moves")
+    return "moveRight", {}
+  end
+
+  print("[SCRIPT] fighter skips")
+  return "skip", {}
+end
+`,
 			},
 		},
 	}
 
 	ratAI := `function initiative() return 10 end
 function getAction()
+  print("[SCRIPT] rat ID: ", creature.Id)
   pids = getPlayers()
   pl = entityByKey(pids[1])
-  print("rat skips", pids[1], pl.Position, creature.Position)
 
+  print("\n[SCRIPT] rat position: ", creature.Position, "fighter position: ", pl.Position)
   if pl.Position < creature.Position then
-    return "moveRight", {}
+    print("[SCRIPT] rat moves")
+    return "moveLeft", {}
   end
 
+  print("[SCRIPT] rat skips", pids[1], pl.Position, creature.Position)
   return "skip", {}
 end
 `
@@ -477,14 +499,7 @@ end
 		t.Fatalf("unable to add rat to wave state: %v", err)
 	}
 
-	fightAI := `function initiative() return 5 end
-function getAction()
-  print("current position: ", creature.Position)
-  print("fighter skips")
-  return "skip", {}
-end
-`
-	fighter := makeTestPlayer(t, g, endless.ClassType_Fighter, "4230a173-d0bc-4b64-b065-5810ebe2d928", fightAI, endless.Position_Left)
+	fighter := makeTestPlayer(t, g, endless.ClassType_Fighter, "4230a173-d0bc-4b64-b065-5810ebe2d928", endless.Position_Left)
 	if err := ws.addActor(fighter); err != nil {
 		t.Fatalf("unable to add fighter player to wave state: %v", err)
 	}
@@ -500,10 +515,18 @@ end
 	turn := 1
 
 	for i := turn; i < maxTurns; i++ {
+		if ws.current_round == 2 {
+			t.Fatalf("one round done")
+		}
+
 		if err := ws.act(); err != nil {
 			t.Fatalf("unable to act: %v", err)
 		}
 		if ws.proceed() {
+
+			// ca := ws.current()
+			// fmt.Printf("current actor: %v\n", ca.ID())
+
 			if err := ws.process(g); err != nil {
 				t.Fatalf("unable to process wave state: %v", err)
 			}
@@ -514,7 +537,9 @@ end
 
 			fmt.Printf("fighter health: %v\n", fighter.creature.CurrentVitality)
 			fmt.Printf("rat health: %v\n", rat.creature.CurrentVitality)
+
 		}
+		fmt.Printf("[TEST] current_round: %v\n", ws.current_round)
 	}
 
 	t.Errorf("not yet")

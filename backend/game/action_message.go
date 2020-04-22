@@ -1,6 +1,8 @@
 package game
 
 import (
+	"fmt"
+
 	"github.com/seanhagen/endless_stream/backend/endless"
 )
 
@@ -43,6 +45,7 @@ func (m move) cost() (int32, actionType) {
 
 // apply ...
 func (m move) apply(_, to *creature, _ *Game) error {
+	fmt.Printf("%v is using 'move' -- %v\n", to.Name, m.dir)
 	if m.dir == "left" {
 		m.moveLeft(to)
 	} else {
@@ -59,12 +62,14 @@ func (m move) output() *endless.EventMessage {
 
 // moveRight ...
 func (m move) moveRight(cr *creature) {
+	fmt.Printf("creature position now: %v\n", cr.Position)
 	switch cr.Position {
 	case endless.Position_Left:
 		cr.Position = endless.Position_Middle
 	case endless.Position_Middle:
 		cr.Position = endless.Position_Right
 	}
+	fmt.Printf("creature position after move: %v\n", cr.Position)
 }
 
 // moveLeft ...

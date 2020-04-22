@@ -13,6 +13,8 @@ type player struct {
 	inventory inventory
 
 	nextAction actionMessage
+
+	is_ai bool
 }
 
 // Entity interface methods
@@ -46,6 +48,9 @@ func (p *player) apply(from *creature, am actionMessage, g *Game) error {
 }
 
 // act ...
-func (p *player) act(_ *waveState) actionMessage {
+func (p *player) act(ws *waveState) actionMessage {
+	if p.is_ai {
+		return p.creature.act(ws)
+	}
 	return p.nextAction
 }

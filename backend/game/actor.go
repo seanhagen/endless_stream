@@ -21,7 +21,7 @@ type actionType int32
 
 const (
 	action_free  actionType = 0
-	action_basic            = 1
+	action_basic actionType = 1
 )
 
 type actionResult struct {

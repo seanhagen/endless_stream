@@ -378,13 +378,14 @@ end`
 	}
 }
 
-func makeTestPlayer(t *testing.T, g *Game, ct endless.ClassType, id, script string, pos endless.Position) *player {
+func makeTestPlayer(t *testing.T, g *Game, ct endless.ClassType, id string, pos endless.Position) *player {
 	t.Helper()
 
 	p, err := g.entityCollection.Classes.createPlayerClass(id, ct, g)
 	if err != nil {
 		t.Fatalf("unable to create player ai: %v", err)
 	}
+	p.is_ai = true
 	return p
 }
 

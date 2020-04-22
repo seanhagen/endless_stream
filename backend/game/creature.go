@@ -2,6 +2,7 @@ package game
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 
 	"github.com/davecgh/go-spew/spew"
@@ -178,8 +179,11 @@ func (cr *creature) parse(g *Game) error {
 	}
 
 	if checkForFunction("initiative", l) {
+		fmt.Printf("creature %v has initiative function\n", cr.Name)
 		cr.haveInitiative = true
 		cr.luaFns["initiative"] = l.GetGlobal("initiative")
+	} else {
+		fmt.Printf("creature %v has NO initiative function:\n\n%v\n\n", cr.Name, cr.Script)
 	}
 
 	if checkForFunction("takeDamage", l) {
