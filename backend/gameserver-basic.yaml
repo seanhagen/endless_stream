@@ -1,0 +1,27 @@
+apiVersion: "agones.dev/v1"
+kind: GameServer
+metadata:
+  generateName: "endless-game-"
+spec:
+  ports:
+  - name: default
+    portPolicy: Dynamic
+    containerPort: 8000
+    protocol: TCP
+  template:
+    spec:
+      containers:
+      - name: endless-game
+        image: gcr.io/cave-goblin-network/endless:latest
+        imagePullPolicy: Always
+        imagePullSecrets:
+          - name: gcr-json-key
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "20m"
+          limits:
+            memory: "32Mi"
+            cpu: "20m"
+        environment:
+          - PORT: 8000

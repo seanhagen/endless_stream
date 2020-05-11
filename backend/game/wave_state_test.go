@@ -470,6 +470,10 @@ function getAction()
     return "moveRight", {}
   end
 
+  if pl.Position == creature.Position then
+    print("[SCRIPT] fighter attack rat")
+  end
+
   print("[SCRIPT] fighter skips")
   return "skip", {}
 end
@@ -488,6 +492,10 @@ function getAction()
   if pl.Position < creature.Position then
     print("[SCRIPT] rat moves")
     return "moveLeft", {}
+  end
+
+  if pl.Position == creature.Position then
+    print("[SCRIPT] rat attac")
   end
 
   print("[SCRIPT] rat skips", pids[1], pl.Position, creature.Position)
@@ -515,7 +523,7 @@ end
 	turn := 1
 
 	for i := turn; i < maxTurns; i++ {
-		if ws.current_round == 2 {
+		if ws.current_round == 3 {
 			t.Fatalf("one round done")
 		}
 
