@@ -10,9 +10,15 @@ mobile devices.
 
 ## Game UI
 
-An [Ebiten](https://github.com/hajimehoshi/ebiten) game that displays the shared
-game info ( current wave, what monsters are being fought, health bars, etc ) and
-state ( fighting a wave, in the store, new wave coming, etc ).
+A game that displays the shared game info ( current wave, what monsters are
+being fought, health bars, etc ) and state ( fighting a wave, in the store, new
+wave coming, etc ).
+
+Possible frameworks:
+
+* [Ebiten](https://github.com/hajimehoshi/ebiten)
+* Unity
+* ???
 
 ## Backend
 

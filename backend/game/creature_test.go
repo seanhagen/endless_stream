@@ -395,6 +395,8 @@ func makeTestPlayerAI(t *testing.T, g *Game, ct endless.ClassType, id, script st
 	if err != nil {
 		t.Fatalf("unable to create player ai: %v", err)
 	}
+
+	p.Position = pos
 	return p
 }
 
@@ -415,7 +417,7 @@ func makeTestMonster(t *testing.T, g *Game, name, id, script string, pos endless
 	if err != nil {
 		t.Fatalf("unable to spawn monster: %v", err)
 	}
-	m.creature.Position = pos
+	m.Position = pos
 	return m
 }
 

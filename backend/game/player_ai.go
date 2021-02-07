@@ -21,20 +21,20 @@ func (ai *player_ai) setup(g *Game) error {
 	return nil
 }
 
-// act ...
-func (ai *player_ai) act() actionMessage {
-	// this should really run some ai script to determine what to do
-	return ai.nextAction
-}
+// // act ...
+// func (ai *player_ai) act(ws *waveState) actionMessage {
+// 	// this should really run some ai script to determine what to do
+// 	return ai.nextAction
+// }
 
-// tick ...
-func (ai *player_ai) tick() (*endless.EventMessage, error) {
-	return nil, nil
-}
+// // tick ...
+// func (ai *player_ai) tick() (*endless.EventMessage, error) {
+// 	return nil, nil
+// }
 
-// round ...
-func (ai *player_ai) round() (*endless.EventMessage, error) {
-	return nil, nil
-}
+// // round ...
+// func (ai *player_ai) round() (*endless.EventMessage, error) {
+// 	return nil, nil
+// }
 
 // id(), initiative(), health(), takeDamage() covered by creature

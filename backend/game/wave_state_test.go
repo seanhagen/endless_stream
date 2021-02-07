@@ -447,6 +447,39 @@ end`
 	ratAtkSk := makeTestSkill(t, g, ratAtk, 1)
 	fightAtkSk := makeTestSkill(t, g, fightAtk, 1)
 
+	fightAI := `function initiative() return 5 end
+function getAction()
+  pids = getMonsters()
+  ml = entityByKey(pids[1])
+
+  if ml.Position > creature.Position then
+    return "moveRight", {}
+  end
+
+  if ml.Position == creature.Position then
+    return "attack", {pids[1]}
+  end
+
+  return "skip", {}
+end
+`
+	ratAI := `function initiative() return 10 end
+function getAction()
+  pids = getPlayers()
+  pl = entityByKey(pids[1])
+
+  if pl.Position < creature.Position then
+    return "moveLeft", {}
+  end
+
+  if pl.Position == creature.Position then
+    return "attack", {pids[1]}
+  end
+
+  return "skip", {}
+end
+`
+
 	g.entityCollection = EntityCollection{
 		Skills: skillMap{
 			"Rat":     charSkillMap{"attack": ratAtkSk},
@@ -454,43 +487,24 @@ end`
 		},
 		Classes: classMap{
 			"40f9a099-58e3-4769-8a1f-80f8bf0982fb": class{
-				Name: "Fighter",
+				Name:     "Fighter",
+				aiScript: fightAI,
 			},
 		},
 	}
 
-	ratAI := `function initiative() return 10 end
-function getAction()
-  pids = getPlayers()
-  pl = entityByKey(pids[1])
-  print("rat skips", pids[1], pl.Position, creature.Position)
-
-  if pl.Position < creature.Position then
-    return "moveRight", {}
-  end
-
-  return "skip", {}
-end
-`
 	rat := makeTestMonster(t, g, "Rat", "0c1f01dc-e21d-44ea-9d14-6f65c7c5ca46", ratAI, endless.Position_Right)
 	if err := ws.addActor(rat); err != nil {
 		t.Fatalf("unable to add rat to wave state: %v", err)
 	}
 
-	fightAI := `function initiative() return 5 end
-function getAction()
-  print("current position: ", creature.Position)
-  print("fighter skips")
-  return "skip", {}
-end
-`
-	fighter := makeTestPlayer(t, g, endless.ClassType_Fighter, "4230a173-d0bc-4b64-b065-5810ebe2d928", fightAI, endless.Position_Left)
+	fighter := makeTestPlayerAI(t, g, endless.ClassType_Fighter, "4230a173-d0bc-4b64-b065-5810ebe2d928", fightAI, endless.Position_Left)
 	if err := ws.addActor(fighter); err != nil {
 		t.Fatalf("unable to add fighter player to wave state: %v", err)
 	}
 
-	fighter.creature.CurrentVitality = 10
-	rat.creature.CurrentVitality = 5
+	fighter.CurrentVitality = 10
+	rat.CurrentVitality = 5
 
 	if err := ws.waveStart(); err != nil {
 		t.Fatalf("unable to trigger wave start: %v", err)
@@ -498,24 +512,32 @@ end
 
 	maxTurns := 20
 	turn := 1
-
-	for i := turn; i < maxTurns; i++ {
+	for ; turn < maxTurns; turn++ {
+		// fmt.Printf("turn %v, checking act\n", turn)
 		if err := ws.act(); err != nil {
 			t.Fatalf("unable to act: %v", err)
 		}
+		// fmt.Printf("can proceed?\n")
 		if ws.proceed() {
+			// fmt.Printf("yes!\n")
 			if err := ws.process(g); err != nil {
 				t.Fatalf("unable to process wave state: %v", err)
 			}
 
-			if ws.waveComplete() || ws.waveFailed() {
-				t.Errorf("wave should not be complete or failed yet")
+			if ws.waveComplete() {
+				break
 			}
 
-			fmt.Printf("fighter health: %v\n", fighter.creature.CurrentVitality)
-			fmt.Printf("rat health: %v\n", rat.creature.CurrentVitality)
+			// fmt.Printf("\tfighter:\n\t\thealth: %v\n\t\tposition: %v\n\n", fighter.CurrentVitality, fighter.Position)
+			// fmt.Printf("\trat:\n\t\thealth: %v\n\t\tposition: %v\n-----------------\n", rat.CurrentVitality, rat.Position)
 		}
 	}
 
-	t.Errorf("not yet")
+	if fighter.CurrentVitality <= 0 {
+		t.Errorf("fighter died")
+	}
+
+	if rat.CurrentVitality > 0 {
+		t.Errorf("rat didn't die")
+	}
 }

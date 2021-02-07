@@ -432,11 +432,8 @@ export class Tick extends jspb.Message {
   getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
-  hasProgress(): boolean;
-  clearProgress(): void;
-  getProgress(): google_protobuf_wrappers_pb.Int32Value | undefined;
-  setProgress(value?: google_protobuf_wrappers_pb.Int32Value): void;
-
+  getProgressMap(): jspb.Map<string, number>;
+  clearProgressMap(): void;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Tick.AsObject;
   static toObject(includeInstance: boolean, msg: Tick): Tick.AsObject;
@@ -450,7 +447,7 @@ export class Tick extends jspb.Message {
 export namespace Tick {
   export type AsObject = {
     time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-    progress?: google_protobuf_wrappers_pb.Int32Value.AsObject,
+    progressMap: Array<[string, number]>,
   }
 }
 
@@ -631,4 +628,11 @@ export interface PositionMap {
 }
 
 export const Position: PositionMap;
+
+export interface ProgressBarTypeMap {
+  COUNTDOWNGAMESTARTING: 0;
+  COUNTDOWNTURNEND: 1;
+}
+
+export const ProgressBarType: ProgressBarTypeMap;
 

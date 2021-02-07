@@ -13,7 +13,7 @@ import { Display, Class, ClassType } from "../grpc/util_pb";
 import { GameClient } from "../grpc/endless_pb_service";
 import { grpc } from "grpc-web-client";
 
-console.log("class type: ", ClassType);
+// console.log("class type: ", ClassType);
 
 const emitInput = "input";
 

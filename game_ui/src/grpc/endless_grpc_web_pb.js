@@ -12,8 +12,6 @@ const grpc = {};
 grpc.web = require('grpc-web');
 
 
-var google_api_annotations_pb = require('./google/api/annotations_pb.js')
-
 var input_pb = require('./input_pb.js')
 
 var output_pb = require('./output_pb.js')

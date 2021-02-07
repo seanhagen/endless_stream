@@ -59,18 +59,22 @@ func (s *Srv) background() {
 	for {
 		select {
 		case <-health.C:
-			if err := s.sdk.Health(); err != nil {
-				log.Printf("unable to send health check: %v", err)
+			if s.sdk != nil {
+				if err := s.sdk.Health(); err != nil {
+					log.Printf("unable to send health check: %v", err)
+				}
 			}
 		case t := <-tick.C:
 			var err error
-			if len(s.games) > 0 {
-				err = s.sdk.Allocate()
-			} else {
-				err = s.sdk.Ready()
-			}
-			if err != nil {
-				log.Printf("Unable to signal Agones SDK: %v", err)
+			if s.sdk != nil {
+				if len(s.games) > 0 {
+					err = s.sdk.Allocate()
+				} else {
+					err = s.sdk.Ready()
+				}
+				if err != nil {
+					log.Printf("Unable to signal Agones SDK: %v", err)
+				}
 			}
 
 			for id, g := range s.games {

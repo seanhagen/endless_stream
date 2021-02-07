@@ -1,3 +1,18 @@
+# Player Browser
+
+What the players interact with to play the game
+
+
+## Old Dependencies 
+
+```    
+// "grpc-web": "^1.0.7",
+// "grpc-web-client": "^0.7.0",
+```
+
+
+# Old
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
 ## Available Scripts

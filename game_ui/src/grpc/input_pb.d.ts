@@ -82,8 +82,10 @@ export class UseSkill extends jspb.Message {
   getSkillId(): string;
   setSkillId(value: string): void;
 
-  getTargetId(): string;
-  setTargetId(value: string): void;
+  clearTargetIdsList(): void;
+  getTargetIdsList(): Array<string>;
+  setTargetIdsList(value: Array<string>): void;
+  addTargetIds(value: string, index?: number): string;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UseSkill.AsObject;
@@ -98,7 +100,7 @@ export class UseSkill extends jspb.Message {
 export namespace UseSkill {
   export type AsObject = {
     skillId: string,
-    targetId: string,
+    targetIdsList: Array<string>,
   }
 }
 
@@ -221,6 +223,22 @@ export namespace Continue {
   }
 }
 
+export class LevelUp extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): LevelUp.AsObject;
+  static toObject(includeInstance: boolean, msg: LevelUp): LevelUp.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: LevelUp, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): LevelUp;
+  static deserializeBinaryFromReader(message: LevelUp, reader: jspb.BinaryReader): LevelUp;
+}
+
+export namespace LevelUp {
+  export type AsObject = {
+  }
+}
+
 export class AudienceYell extends jspb.Message {
   getIsCheering(): boolean;
   setIsCheering(value: boolean): void;
@@ -293,6 +311,11 @@ export class Input extends jspb.Message {
   getPurchase(): Purchase | undefined;
   setPurchase(value?: Purchase): void;
 
+  hasLevelUp(): boolean;
+  clearLevelUp(): void;
+  getLevelUp(): LevelUp | undefined;
+  setLevelUp(value?: LevelUp): void;
+
   hasContinue(): boolean;
   clearContinue(): void;
   getContinue(): Continue | undefined;
@@ -330,6 +353,7 @@ export namespace Input {
     move?: Move.AsObject,
     actionComplete?: ActionComplete.AsObject,
     purchase?: Purchase.AsObject,
+    levelUp?: LevelUp.AsObject,
     pb_continue?: Continue.AsObject,
     endGame?: EndGame.AsObject,
     audience?: AudienceYell.AsObject,
@@ -345,6 +369,7 @@ export namespace Input {
     MOVE = 60,
     ACTION_COMPLETE = 70,
     PURCHASE = 80,
+    LEVEL_UP = 81,
     CONTINUE = 90,
     END_GAME = 100,
     AUDIENCE = 110,

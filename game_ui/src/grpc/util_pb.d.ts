@@ -55,6 +55,7 @@ export interface TypeMap {
   SPIRIT: 131;
   VAMPIRE: 132;
   ELDRITCH: 140;
+  HUMANPLAYER: 9999;
 }
 
 export const Type: TypeMap;

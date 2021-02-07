@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	agones "agones.dev/agones/sdks/go"
+	sdk "agones.dev/agones/sdks/go"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/seanhagen/endless_stream/backend/game"
 	"github.com/seanhagen/endless_stream/backend/grpc"
@@ -38,10 +38,11 @@ func main() {
 	log.SetOutput(new(logWriter))
 	log.Println("Starting server")
 
-	sdk, err := agones.NewSDK()
-	if err != nil {
-		log.Fatalf("failed to get agones sdk: %v", err)
-	}
+	// sdk, err := agones.NewSDK()
+	// if err != nil {
+	// 	log.Fatalf("failed to get agones sdk: %v", err)
+	// }
+	var sdk *sdk.SDK
 
 	ctx := context.Background()
 	ctx, cnl := context.WithCancel(ctx)
@@ -83,11 +84,13 @@ func main() {
 		// 	return
 		// }
 
-		log.Print("Marking this server as ready")
-		if err := sdk.Ready(); err != nil {
-			log.Printf("Could not send ready message")
-			sigChan <- syscall.SIGTERM
-			return
+		if sdk != nil {
+			log.Print("Marking this server as ready")
+			if err := sdk.Ready(); err != nil {
+				log.Printf("Could not send ready message")
+				sigChan <- syscall.SIGTERM
+				return
+			}
 		}
 
 		err = srv.Start(ctx, cnl)
@@ -98,8 +101,10 @@ func main() {
 	}()
 
 	_ = <-sigChan
-	if err = sdk.Shutdown(); err != nil {
-		log.Printf("Unable to send shutdown message: %v", err)
+	if sdk != nil {
+		if err = sdk.Shutdown(); err != nil {
+			log.Printf("Unable to send shutdown message: %v", err)
+		}
 	}
 
 	ctx, cancel := context.WithTimeout(ctx, time.Second*15)

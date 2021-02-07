@@ -90,8 +90,15 @@ func (ws waveState) getPlayers(l *lua.LState) int {
 
 // getMonsters ...
 func (ws waveState) getMonsters(l *lua.LState) int {
+	out := l.NewTable()
 
-	return 0
+	for id, a := range ws.Entities {
+		if a.Type() != endless.Type_HumanPlayer {
+			out.Append(lua.LString(id))
+		}
+	}
+	l.Push(out)
+	return 1
 }
 
 // register ...
@@ -209,6 +216,8 @@ func (ws *waveState) process(g *Game) error {
 	if ca == nil {
 		return fmt.Errorf("no current actor")
 	}
+
+	//fmt.Printf("have action to process\n")
 	cr := ca.getCreature()
 	act := ws.currentAction
 	tgts := act.targets()
@@ -218,7 +227,14 @@ func (ws *waveState) process(g *Game) error {
 		if !ok {
 			return fmt.Errorf("no entity with id '%v'", id)
 		}
+		//fmt.Printf("applying action to creature\n")
 		a.apply(cr, act, g)
+
+		// z, x := a.Health()
+		// if z <= 0 {
+		// 	fmt.Printf("need to remove creature '%v' because at zero health\n", a.ID())
+		// }
+
 	}
 
 	cst, typ := act.cost()

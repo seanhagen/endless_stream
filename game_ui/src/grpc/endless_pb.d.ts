@@ -2,7 +2,6 @@
 // file: endless.proto
 
 import * as jspb from "google-protobuf";
-import * as google_api_annotations_pb from "./google/api/annotations_pb";
 import * as input_pb from "./input_pb";
 import * as output_pb from "./output_pb";
 
