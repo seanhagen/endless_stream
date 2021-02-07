@@ -13,13 +13,15 @@ ifeq ($(INCPATH),)
 export INCPATH=$(GOPATH)
 endif
 
+#GO_BUILD_ENV:=GOOS=linux GOARCH=amd64
 GO_BUILD_ENV:=CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+
 LDFLAGS=$(LDFLAGSBASE) -X main.Repo=${REPO}
-LDFLAGBUILD=$(LDFLAGS) -s -w -linkmode external -extldflags -static
+LDFLAGBUILD=$(LDFLAGS) -s -w #-linkmode external #-extldflags=-static
 LDFLAGDEBUG=$(LDFLAGS) -s -w
 
-
-GO_BUILD_CMD=go build -a -ldflags '${LDFLAGBUILD}' -o ${SERVER_TARGET} -installsuffix cgo
+GO_BUILD_CMD=$(GO_BUILD_ENV) go build -ldflags '${LDFLAGBUILD}' -o ${SERVER_TARGET}
+GO_DEBUG_CMD=$(GO_BUILD_ENV) go build -ldflags '$(LDFLAGDEBUG)' -o ${DEBUG_TARGET}
 
 PROTO_DIR=proto
 
@@ -29,6 +31,7 @@ PROTOC=$(PROTOCMD) $(IMPORTS)
 
 SERVER_SRC=backend
 SERVER_TARGET=$(SERVER_SRC)/deploy/server
+DEBUG_TARGET=$(SERVER_SRC)/deploy/srv-dbg
 GO_PROTO_TARGET_DIR=backend/endless
 
 PROTO_IN=$(shell find "$(PROTO_DIR)" -name '*.proto')
@@ -89,9 +92,8 @@ proto: go_pb go_srv go_desc
 $(SERVER_TARGET):
 	$(GO_BUILD_CMD) ./$(SERVER_SRC)
 
-server: $(SERVER_TARGET)
-
-reserver: clnsrv $(SERVER_TARGET)
+# server: $(SERVER_TARGET)
+# reserver: clnsrv $(SERVER_TARGET)
 
 PROTOC_GEN_TS_PATH=
 
@@ -103,11 +105,15 @@ clnsrv:
 clnproto:
 	rm -rf $(GO_PROTO_TARGET_DIR)
 
-# run: clnsrv server
-# 	docker-compose up --build
+docker-build: clnsrv $(SERVER_TARGET)
+	docker build --no-cache -f ./backend/deploy/Dockerfile -t cgn/endless:t-$(NOW) ./backend/deploy
 
-rebuild: clnsrv server container
-	@echo Container updated
+run: clnsrv $(SERVER_TARGET)
+	docker-compose up --build
+
+rebuild: clnsrv $(SERVER_TARGET)
+	docker-compose up -d --no-deps --build game_server
+	# @echo Container updated
 
 # reproxy:
 # 	docker-compose build --no-cache nodeproxy
