@@ -1,7 +1,7 @@
 #!make
 include .env
 
-NOW=$(shell date +"%s")
+NOW:=$(shell date +"%s")
 
 ifeq ($(VERSION),)
 export VERSION=$(shell cat VERSION)
