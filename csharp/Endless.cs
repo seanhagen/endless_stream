@@ -24,19 +24,23 @@ namespace Endless.Stream.V1 {
     static EndlessReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1lbmRsZXNzLnByb3RvEhFlbmRsZXNzLnN0cmVhbS52MRoLaW5wdXQucHJv",
-            "dG8aDG91dHB1dC5wcm90byIMCgpDcmVhdGVHYW1lIhsKC0dhbWVDcmVhdGVk",
-            "EgwKBGNvZGUYASABKAkylQEKBEdhbWUSSQoGQ3JlYXRlEh0uZW5kbGVzcy5z",
-            "dHJlYW0udjEuQ3JlYXRlR2FtZRoeLmVuZGxlc3Muc3RyZWFtLnYxLkdhbWVD",
-            "cmVhdGVkIgASQgoFU3RhdGUSGC5lbmRsZXNzLnN0cmVhbS52MS5JbnB1dBoZ",
-            "LmVuZGxlc3Muc3RyZWFtLnYxLk91dHB1dCIAKAEwAUI1WjNnaXRodWIuY29t",
-            "L3NlYW5oYWdlbi9lbmRsZXNzX3N0cmVhbS9iYWNrZW5kL2VuZGxlc3NiBnBy",
-            "b3RvMw=="));
+            "Cg1lbmRsZXNzLnByb3RvEhFlbmRsZXNzLnN0cmVhbS52MRobZ29vZ2xlL3By",
+            "b3RvYnVmL2VtcHR5LnByb3RvGgtpbnB1dC5wcm90bxoMb3V0cHV0LnByb3Rv",
+            "IgwKCkNyZWF0ZUdhbWUiGwoLR2FtZUNyZWF0ZWQSDAoEY29kZRgBIAEoCSI1",
+            "CgxTZXJ2ZXJTdGF0dXMSFQoNcnVubmluZ19nYW1lcxgBIAEoAxIOCgZ1cHRp",
+            "bWUYAiABKAMy2gEKBEdhbWUSSQoGQ3JlYXRlEh0uZW5kbGVzcy5zdHJlYW0u",
+            "djEuQ3JlYXRlR2FtZRoeLmVuZGxlc3Muc3RyZWFtLnYxLkdhbWVDcmVhdGVk",
+            "IgASQgoFU3RhdGUSGC5lbmRsZXNzLnN0cmVhbS52MS5JbnB1dBoZLmVuZGxl",
+            "c3Muc3RyZWFtLnYxLk91dHB1dCIAKAEwARJDCgZTdGF0dXMSFi5nb29nbGUu",
+            "cHJvdG9idWYuRW1wdHkaHy5lbmRsZXNzLnN0cmVhbS52MS5TZXJ2ZXJTdGF0",
+            "dXMiAEI1WjNnaXRodWIuY29tL3NlYW5oYWdlbi9lbmRsZXNzX3N0cmVhbS9i",
+            "YWNrZW5kL2VuZGxlc3NiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Endless.Stream.V1.InputReflection.Descriptor, global::Endless.Stream.V1.OutputReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Endless.Stream.V1.InputReflection.Descriptor, global::Endless.Stream.V1.OutputReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.CreateGame), global::Endless.Stream.V1.CreateGame.Parser, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.GameCreated), global::Endless.Stream.V1.GameCreated.Parser, new[]{ "Code" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.GameCreated), global::Endless.Stream.V1.GameCreated.Parser, new[]{ "Code" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.ServerStatus), global::Endless.Stream.V1.ServerStatus.Parser, new[]{ "RunningGames", "Uptime" }, null, null, null)
           }));
     }
     #endregion
@@ -265,6 +269,163 @@ namespace Endless.Stream.V1 {
             break;
           case 10: {
             Code = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class ServerStatus : pb::IMessage<ServerStatus> {
+    private static readonly pb::MessageParser<ServerStatus> _parser = new pb::MessageParser<ServerStatus>(() => new ServerStatus());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ServerStatus> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Endless.Stream.V1.EndlessReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ServerStatus() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ServerStatus(ServerStatus other) : this() {
+      runningGames_ = other.runningGames_;
+      uptime_ = other.uptime_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ServerStatus Clone() {
+      return new ServerStatus(this);
+    }
+
+    /// <summary>Field number for the "running_games" field.</summary>
+    public const int RunningGamesFieldNumber = 1;
+    private long runningGames_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long RunningGames {
+      get { return runningGames_; }
+      set {
+        runningGames_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "uptime" field.</summary>
+    public const int UptimeFieldNumber = 2;
+    private long uptime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long Uptime {
+      get { return uptime_; }
+      set {
+        uptime_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ServerStatus);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ServerStatus other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RunningGames != other.RunningGames) return false;
+      if (Uptime != other.Uptime) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RunningGames != 0L) hash ^= RunningGames.GetHashCode();
+      if (Uptime != 0L) hash ^= Uptime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (RunningGames != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(RunningGames);
+      }
+      if (Uptime != 0L) {
+        output.WriteRawTag(16);
+        output.WriteInt64(Uptime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (RunningGames != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(RunningGames);
+      }
+      if (Uptime != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Uptime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ServerStatus other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RunningGames != 0L) {
+        RunningGames = other.RunningGames;
+      }
+      if (other.Uptime != 0L) {
+        Uptime = other.Uptime;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RunningGames = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            Uptime = input.ReadInt64();
             break;
           }
         }

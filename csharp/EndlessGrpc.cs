@@ -16,6 +16,8 @@ namespace Endless.Stream.V1 {
     static readonly grpc::Marshaller<global::Endless.Stream.V1.GameCreated> __Marshaller_endless_stream_v1_GameCreated = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Endless.Stream.V1.GameCreated.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Endless.Stream.V1.Input> __Marshaller_endless_stream_v1_Input = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Endless.Stream.V1.Input.Parser.ParseFrom);
     static readonly grpc::Marshaller<global::Endless.Stream.V1.Output> __Marshaller_endless_stream_v1_Output = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Endless.Stream.V1.Output.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Google.Protobuf.WellKnownTypes.Empty> __Marshaller_google_protobuf_Empty = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Google.Protobuf.WellKnownTypes.Empty.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Endless.Stream.V1.ServerStatus> __Marshaller_endless_stream_v1_ServerStatus = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Endless.Stream.V1.ServerStatus.Parser.ParseFrom);
 
     static readonly grpc::Method<global::Endless.Stream.V1.CreateGame, global::Endless.Stream.V1.GameCreated> __Method_Create = new grpc::Method<global::Endless.Stream.V1.CreateGame, global::Endless.Stream.V1.GameCreated>(
         grpc::MethodType.Unary,
@@ -30,6 +32,13 @@ namespace Endless.Stream.V1 {
         "State",
         __Marshaller_endless_stream_v1_Input,
         __Marshaller_endless_stream_v1_Output);
+
+    static readonly grpc::Method<global::Google.Protobuf.WellKnownTypes.Empty, global::Endless.Stream.V1.ServerStatus> __Method_Status = new grpc::Method<global::Google.Protobuf.WellKnownTypes.Empty, global::Endless.Stream.V1.ServerStatus>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "Status",
+        __Marshaller_google_protobuf_Empty,
+        __Marshaller_endless_stream_v1_ServerStatus);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -47,6 +56,11 @@ namespace Endless.Stream.V1 {
       }
 
       public virtual global::System.Threading.Tasks.Task State(grpc::IAsyncStreamReader<global::Endless.Stream.V1.Input> requestStream, grpc::IServerStreamWriter<global::Endless.Stream.V1.Output> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      public virtual global::System.Threading.Tasks.Task<global::Endless.Stream.V1.ServerStatus> Status(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -100,6 +114,22 @@ namespace Endless.Stream.V1 {
       {
         return CallInvoker.AsyncDuplexStreamingCall(__Method_State, null, options);
       }
+      public virtual global::Endless.Stream.V1.ServerStatus Status(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return Status(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual global::Endless.Stream.V1.ServerStatus Status(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_Status, null, options, request);
+      }
+      public virtual grpc::AsyncUnaryCall<global::Endless.Stream.V1.ServerStatus> StatusAsync(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return StatusAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual grpc::AsyncUnaryCall<global::Endless.Stream.V1.ServerStatus> StatusAsync(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_Status, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override GameClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -113,7 +143,8 @@ namespace Endless.Stream.V1 {
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
           .AddMethod(__Method_Create, serviceImpl.Create)
-          .AddMethod(__Method_State, serviceImpl.State).Build();
+          .AddMethod(__Method_State, serviceImpl.State)
+          .AddMethod(__Method_Status, serviceImpl.Status).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
@@ -124,6 +155,7 @@ namespace Endless.Stream.V1 {
     {
       serviceBinder.AddMethod(__Method_Create, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Endless.Stream.V1.CreateGame, global::Endless.Stream.V1.GameCreated>(serviceImpl.Create));
       serviceBinder.AddMethod(__Method_State, serviceImpl == null ? null : new grpc::DuplexStreamingServerMethod<global::Endless.Stream.V1.Input, global::Endless.Stream.V1.Output>(serviceImpl.State));
+      serviceBinder.AddMethod(__Method_Status, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Google.Protobuf.WellKnownTypes.Empty, global::Endless.Stream.V1.ServerStatus>(serviceImpl.Status));
     }
 
   }

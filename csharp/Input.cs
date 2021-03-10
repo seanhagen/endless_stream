@@ -29,45 +29,47 @@ namespace Endless.Stream.V1 {
             "GAMgASgJEisKBHR5cGUYBCABKA4yHS5lbmRsZXNzLnN0cmVhbS52MS5DbGll",
             "bnRUeXBlIkkKCkNoYXJTZWxlY3QSEQoJcGxheWVyX2lkGAEgASgJEigKBmNo",
             "b2ljZRgCIAEoCzIYLmVuZGxlc3Muc3RyZWFtLnYxLkNsYXNzIgsKCUdhbWVT",
-            "dGFydCIvCghVc2VTa2lsbBIQCghza2lsbF9pZBgBIAEoCRIRCgl0YXJnZXRf",
-            "aWQYAiABKAkiGgoHVXNlSXRlbRIPCgdpdGVtX2lkGAEgASgJIkwKBE1vdmUS",
-            "KAoDZGlyGAEgASgOMhsuZW5kbGVzcy5zdHJlYW0udjEuTW92ZS5EaXIiGgoD",
-            "RGlyEggKBExlZnQQABIJCgVSaWdodBABIiYKDkFjdGlvbkNvbXBsZXRlEhQK",
-            "DGNvbXBsZXRlZF9pZBgBIAEoCSIWCghQdXJjaGFzZRIKCgJpZBgBIAEoCSIJ",
-            "CgdFbmRHYW1lIgoKCENvbnRpbnVlIkYKDEF1ZGllbmNlWWVsbBITCgtpc19j",
-            "aGVlcmluZxgBIAEoCBIRCglpc19ib29pbmcYAiABKAgSDgoGYW1vdW50GAMg",
-            "ASgFIsYECgVJbnB1dBIRCglwbGF5ZXJfaWQYASABKAkSLwoIcmVnaXN0ZXIY",
-            "CiABKAsyGy5lbmRsZXNzLnN0cmVhbS52MS5SZWdpc3RlckgAEjQKC2NoYXJf",
-            "c2VsZWN0GBQgASgLMh0uZW5kbGVzcy5zdHJlYW0udjEuQ2hhclNlbGVjdEgA",
-            "EjIKCmdhbWVfc3RhcnQYHiABKAsyHC5lbmRsZXNzLnN0cmVhbS52MS5HYW1l",
-            "U3RhcnRIABIsCgVza2lsbBgoIAEoCzIbLmVuZGxlc3Muc3RyZWFtLnYxLlVz",
-            "ZVNraWxsSAASKgoEaXRlbRgyIAEoCzIaLmVuZGxlc3Muc3RyZWFtLnYxLlVz",
-            "ZUl0ZW1IABInCgRtb3ZlGDwgASgLMhcuZW5kbGVzcy5zdHJlYW0udjEuTW92",
-            "ZUgAEjwKD2FjdGlvbl9jb21wbGV0ZRhGIAEoCzIhLmVuZGxlc3Muc3RyZWFt",
-            "LnYxLkFjdGlvbkNvbXBsZXRlSAASLwoIcHVyY2hhc2UYUCABKAsyGy5lbmRs",
-            "ZXNzLnN0cmVhbS52MS5QdXJjaGFzZUgAEi8KCGNvbnRpbnVlGFogASgLMhsu",
-            "ZW5kbGVzcy5zdHJlYW0udjEuQ29udGludWVIABIuCghlbmRfZ2FtZRhkIAEo",
-            "CzIaLmVuZGxlc3Muc3RyZWFtLnYxLkVuZEdhbWVIABIzCghhdWRpZW5jZRhu",
-            "IAEoCzIfLmVuZGxlc3Muc3RyZWFtLnYxLkF1ZGllbmNlWWVsbEgAQgcKBWlu",
-            "cHV0KkUKCkNsaWVudFR5cGUSEAoMQ2xpZW50UGxheWVyEAASEgoOQ2xpZW50",
-            "QXVkaWVuY2UQARIRCg1DbGllbnREaXNwbGF5EAJCNVozZ2l0aHViLmNvbS9z",
-            "ZWFuaGFnZW4vZW5kbGVzc19zdHJlYW0vYmFja2VuZC9lbmRsZXNzYgZwcm90",
-            "bzM="));
+            "dGFydCIwCghVc2VTa2lsbBIQCghza2lsbF9pZBgBIAEoCRISCgp0YXJnZXRf",
+            "aWRzGAIgAygJIhoKB1VzZUl0ZW0SDwoHaXRlbV9pZBgBIAEoCSJMCgRNb3Zl",
+            "EigKA2RpchgBIAEoDjIbLmVuZGxlc3Muc3RyZWFtLnYxLk1vdmUuRGlyIhoK",
+            "A0RpchIICgRMZWZ0EAASCQoFUmlnaHQQASImCg5BY3Rpb25Db21wbGV0ZRIU",
+            "Cgxjb21wbGV0ZWRfaWQYASABKAkiFgoIUHVyY2hhc2USCgoCaWQYASABKAki",
+            "CQoHRW5kR2FtZSIKCghDb250aW51ZSIJCgdMZXZlbFVwIkYKDEF1ZGllbmNl",
+            "WWVsbBITCgtpc19jaGVlcmluZxgBIAEoCBIRCglpc19ib29pbmcYAiABKAgS",
+            "DgoGYW1vdW50GAMgASgFIvYECgVJbnB1dBIRCglwbGF5ZXJfaWQYASABKAkS",
+            "LwoIcmVnaXN0ZXIYCiABKAsyGy5lbmRsZXNzLnN0cmVhbS52MS5SZWdpc3Rl",
+            "ckgAEjQKC2NoYXJfc2VsZWN0GBQgASgLMh0uZW5kbGVzcy5zdHJlYW0udjEu",
+            "Q2hhclNlbGVjdEgAEjIKCmdhbWVfc3RhcnQYHiABKAsyHC5lbmRsZXNzLnN0",
+            "cmVhbS52MS5HYW1lU3RhcnRIABIsCgVza2lsbBgoIAEoCzIbLmVuZGxlc3Mu",
+            "c3RyZWFtLnYxLlVzZVNraWxsSAASKgoEaXRlbRgyIAEoCzIaLmVuZGxlc3Mu",
+            "c3RyZWFtLnYxLlVzZUl0ZW1IABInCgRtb3ZlGDwgASgLMhcuZW5kbGVzcy5z",
+            "dHJlYW0udjEuTW92ZUgAEjwKD2FjdGlvbl9jb21wbGV0ZRhGIAEoCzIhLmVu",
+            "ZGxlc3Muc3RyZWFtLnYxLkFjdGlvbkNvbXBsZXRlSAASLwoIcHVyY2hhc2UY",
+            "UCABKAsyGy5lbmRsZXNzLnN0cmVhbS52MS5QdXJjaGFzZUgAEi4KCGxldmVs",
+            "X3VwGFEgASgLMhouZW5kbGVzcy5zdHJlYW0udjEuTGV2ZWxVcEgAEi8KCGNv",
+            "bnRpbnVlGFogASgLMhsuZW5kbGVzcy5zdHJlYW0udjEuQ29udGludWVIABIu",
+            "CghlbmRfZ2FtZRhkIAEoCzIaLmVuZGxlc3Muc3RyZWFtLnYxLkVuZEdhbWVI",
+            "ABIzCghhdWRpZW5jZRhuIAEoCzIfLmVuZGxlc3Muc3RyZWFtLnYxLkF1ZGll",
+            "bmNlWWVsbEgAQgcKBWlucHV0KkUKCkNsaWVudFR5cGUSEAoMQ2xpZW50UGxh",
+            "eWVyEAASEgoOQ2xpZW50QXVkaWVuY2UQARIRCg1DbGllbnREaXNwbGF5EAJC",
+            "NVozZ2l0aHViLmNvbS9zZWFuaGFnZW4vZW5kbGVzc19zdHJlYW0vYmFja2Vu",
+            "ZC9lbmRsZXNzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Endless.Stream.V1.UtilReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Endless.Stream.V1.ClientType), }, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.Register), global::Endless.Stream.V1.Register.Parser, new[]{ "Id", "Code", "Name", "Type" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.CharSelect), global::Endless.Stream.V1.CharSelect.Parser, new[]{ "PlayerId", "Choice" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.GameStart), global::Endless.Stream.V1.GameStart.Parser, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.UseSkill), global::Endless.Stream.V1.UseSkill.Parser, new[]{ "SkillId", "TargetId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.UseSkill), global::Endless.Stream.V1.UseSkill.Parser, new[]{ "SkillId", "TargetIds" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.UseItem), global::Endless.Stream.V1.UseItem.Parser, new[]{ "ItemId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.Move), global::Endless.Stream.V1.Move.Parser, new[]{ "Dir" }, null, new[]{ typeof(global::Endless.Stream.V1.Move.Types.Dir) }, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.ActionComplete), global::Endless.Stream.V1.ActionComplete.Parser, new[]{ "CompletedId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.Purchase), global::Endless.Stream.V1.Purchase.Parser, new[]{ "Id" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.EndGame), global::Endless.Stream.V1.EndGame.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.Continue), global::Endless.Stream.V1.Continue.Parser, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.LevelUp), global::Endless.Stream.V1.LevelUp.Parser, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.AudienceYell), global::Endless.Stream.V1.AudienceYell.Parser, new[]{ "IsCheering", "IsBooing", "Amount" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.Input), global::Endless.Stream.V1.Input.Parser, new[]{ "PlayerId", "Register", "CharSelect", "GameStart", "Skill", "Item", "Move", "ActionComplete", "Purchase", "Continue", "EndGame", "Audience" }, new[]{ "Input" }, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Stream.V1.Input), global::Endless.Stream.V1.Input.Parser, new[]{ "PlayerId", "Register", "CharSelect", "GameStart", "Skill", "Item", "Move", "ActionComplete", "Purchase", "LevelUp", "Continue", "EndGame", "Audience" }, new[]{ "Input" }, null, null)
           }));
     }
     #endregion
@@ -599,7 +601,7 @@ namespace Endless.Stream.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public UseSkill(UseSkill other) : this() {
       skillId_ = other.skillId_;
-      targetId_ = other.targetId_;
+      targetIds_ = other.targetIds_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -611,6 +613,9 @@ namespace Endless.Stream.V1 {
     /// <summary>Field number for the "skill_id" field.</summary>
     public const int SkillIdFieldNumber = 1;
     private string skillId_ = "";
+    /// <summary>
+    /// skillId is the uuid of the skill to be used
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public string SkillId {
       get { return skillId_; }
@@ -619,15 +624,17 @@ namespace Endless.Stream.V1 {
       }
     }
 
-    /// <summary>Field number for the "target_id" field.</summary>
-    public const int TargetIdFieldNumber = 2;
-    private string targetId_ = "";
+    /// <summary>Field number for the "target_ids" field.</summary>
+    public const int TargetIdsFieldNumber = 2;
+    private static readonly pb::FieldCodec<string> _repeated_targetIds_codec
+        = pb::FieldCodec.ForString(18);
+    private readonly pbc::RepeatedField<string> targetIds_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// targetIds is a slice of uuids of who the skill is targeting
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string TargetId {
-      get { return targetId_; }
-      set {
-        targetId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
+    public pbc::RepeatedField<string> TargetIds {
+      get { return targetIds_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -644,7 +651,7 @@ namespace Endless.Stream.V1 {
         return true;
       }
       if (SkillId != other.SkillId) return false;
-      if (TargetId != other.TargetId) return false;
+      if(!targetIds_.Equals(other.targetIds_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -652,7 +659,7 @@ namespace Endless.Stream.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (SkillId.Length != 0) hash ^= SkillId.GetHashCode();
-      if (TargetId.Length != 0) hash ^= TargetId.GetHashCode();
+      hash ^= targetIds_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -670,10 +677,7 @@ namespace Endless.Stream.V1 {
         output.WriteRawTag(10);
         output.WriteString(SkillId);
       }
-      if (TargetId.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(TargetId);
-      }
+      targetIds_.WriteTo(output, _repeated_targetIds_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -685,9 +689,7 @@ namespace Endless.Stream.V1 {
       if (SkillId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(SkillId);
       }
-      if (TargetId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(TargetId);
-      }
+      size += targetIds_.CalculateSize(_repeated_targetIds_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -702,9 +704,7 @@ namespace Endless.Stream.V1 {
       if (other.SkillId.Length != 0) {
         SkillId = other.SkillId;
       }
-      if (other.TargetId.Length != 0) {
-        TargetId = other.TargetId;
-      }
+      targetIds_.Add(other.targetIds_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -721,7 +721,7 @@ namespace Endless.Stream.V1 {
             break;
           }
           case 18: {
-            TargetId = input.ReadString();
+            targetIds_.AddEntriesFrom(input, _repeated_targetIds_codec);
             break;
           }
         }
@@ -1473,6 +1473,110 @@ namespace Endless.Stream.V1 {
 
   }
 
+  /// <summary>
+  /// LevelUp is sent when a player has decided what attribute or skill to level up
+  /// </summary>
+  public sealed partial class LevelUp : pb::IMessage<LevelUp> {
+    private static readonly pb::MessageParser<LevelUp> _parser = new pb::MessageParser<LevelUp>(() => new LevelUp());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<LevelUp> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Endless.Stream.V1.InputReflection.Descriptor.MessageTypes[10]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LevelUp() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LevelUp(LevelUp other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LevelUp Clone() {
+      return new LevelUp(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as LevelUp);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(LevelUp other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(LevelUp other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    }
+
+  }
+
   public sealed partial class AudienceYell : pb::IMessage<AudienceYell> {
     private static readonly pb::MessageParser<AudienceYell> _parser = new pb::MessageParser<AudienceYell>(() => new AudienceYell());
     private pb::UnknownFieldSet _unknownFields;
@@ -1481,7 +1585,7 @@ namespace Endless.Stream.V1 {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Endless.Stream.V1.InputReflection.Descriptor.MessageTypes[10]; }
+      get { return global::Endless.Stream.V1.InputReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1666,7 +1770,7 @@ namespace Endless.Stream.V1 {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Endless.Stream.V1.InputReflection.Descriptor.MessageTypes[11]; }
+      get { return global::Endless.Stream.V1.InputReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1709,6 +1813,9 @@ namespace Endless.Stream.V1 {
         case InputOneofCase.Purchase:
           Purchase = other.Purchase.Clone();
           break;
+        case InputOneofCase.LevelUp:
+          LevelUp = other.LevelUp.Clone();
+          break;
         case InputOneofCase.Continue:
           Continue = other.Continue.Clone();
           break;
@@ -1741,6 +1848,9 @@ namespace Endless.Stream.V1 {
 
     /// <summary>Field number for the "register" field.</summary>
     public const int RegisterFieldNumber = 10;
+    /// <summary>
+    /// any player during pre-game:
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Endless.Stream.V1.Register Register {
       get { return inputCase_ == InputOneofCase.Register ? (global::Endless.Stream.V1.Register) input_ : null; }
@@ -1774,6 +1884,9 @@ namespace Endless.Stream.V1 {
 
     /// <summary>Field number for the "skill" field.</summary>
     public const int SkillFieldNumber = 40;
+    /// <summary>
+    /// registered players, during game:
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Endless.Stream.V1.UseSkill Skill {
       get { return inputCase_ == InputOneofCase.Skill ? (global::Endless.Stream.V1.UseSkill) input_ : null; }
@@ -1807,6 +1920,9 @@ namespace Endless.Stream.V1 {
 
     /// <summary>Field number for the "action_complete" field.</summary>
     public const int ActionCompleteFieldNumber = 70;
+    /// <summary>
+    /// game ui, after finishing animation
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Endless.Stream.V1.ActionComplete ActionComplete {
       get { return inputCase_ == InputOneofCase.ActionComplete ? (global::Endless.Stream.V1.ActionComplete) input_ : null; }
@@ -1818,6 +1934,9 @@ namespace Endless.Stream.V1 {
 
     /// <summary>Field number for the "purchase" field.</summary>
     public const int PurchaseFieldNumber = 80;
+    /// <summary>
+    /// during store screen
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Endless.Stream.V1.Purchase Purchase {
       get { return inputCase_ == InputOneofCase.Purchase ? (global::Endless.Stream.V1.Purchase) input_ : null; }
@@ -1827,8 +1946,25 @@ namespace Endless.Stream.V1 {
       }
     }
 
+    /// <summary>Field number for the "level_up" field.</summary>
+    public const int LevelUpFieldNumber = 81;
+    /// <summary>
+    /// on level-up screen
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Endless.Stream.V1.LevelUp LevelUp {
+      get { return inputCase_ == InputOneofCase.LevelUp ? (global::Endless.Stream.V1.LevelUp) input_ : null; }
+      set {
+        input_ = value;
+        inputCase_ = value == null ? InputOneofCase.None : InputOneofCase.LevelUp;
+      }
+    }
+
     /// <summary>Field number for the "continue" field.</summary>
     public const int ContinueFieldNumber = 90;
+    /// <summary>
+    /// vip during store or new wave screens
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Endless.Stream.V1.Continue Continue {
       get { return inputCase_ == InputOneofCase.Continue ? (global::Endless.Stream.V1.Continue) input_ : null; }
@@ -1840,6 +1976,9 @@ namespace Endless.Stream.V1 {
 
     /// <summary>Field number for the "end_game" field.</summary>
     public const int EndGameFieldNumber = 100;
+    /// <summary>
+    /// vip on defeat screen
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Endless.Stream.V1.EndGame EndGame {
       get { return inputCase_ == InputOneofCase.EndGame ? (global::Endless.Stream.V1.EndGame) input_ : null; }
@@ -1851,6 +1990,9 @@ namespace Endless.Stream.V1 {
 
     /// <summary>Field number for the "audience" field.</summary>
     public const int AudienceFieldNumber = 110;
+    /// <summary>
+    /// audience on any page
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Endless.Stream.V1.AudienceYell Audience {
       get { return inputCase_ == InputOneofCase.Audience ? (global::Endless.Stream.V1.AudienceYell) input_ : null; }
@@ -1872,6 +2014,7 @@ namespace Endless.Stream.V1 {
       Move = 60,
       ActionComplete = 70,
       Purchase = 80,
+      LevelUp = 81,
       Continue = 90,
       EndGame = 100,
       Audience = 110,
@@ -1910,6 +2053,7 @@ namespace Endless.Stream.V1 {
       if (!object.Equals(Move, other.Move)) return false;
       if (!object.Equals(ActionComplete, other.ActionComplete)) return false;
       if (!object.Equals(Purchase, other.Purchase)) return false;
+      if (!object.Equals(LevelUp, other.LevelUp)) return false;
       if (!object.Equals(Continue, other.Continue)) return false;
       if (!object.Equals(EndGame, other.EndGame)) return false;
       if (!object.Equals(Audience, other.Audience)) return false;
@@ -1929,6 +2073,7 @@ namespace Endless.Stream.V1 {
       if (inputCase_ == InputOneofCase.Move) hash ^= Move.GetHashCode();
       if (inputCase_ == InputOneofCase.ActionComplete) hash ^= ActionComplete.GetHashCode();
       if (inputCase_ == InputOneofCase.Purchase) hash ^= Purchase.GetHashCode();
+      if (inputCase_ == InputOneofCase.LevelUp) hash ^= LevelUp.GetHashCode();
       if (inputCase_ == InputOneofCase.Continue) hash ^= Continue.GetHashCode();
       if (inputCase_ == InputOneofCase.EndGame) hash ^= EndGame.GetHashCode();
       if (inputCase_ == InputOneofCase.Audience) hash ^= Audience.GetHashCode();
@@ -1982,6 +2127,10 @@ namespace Endless.Stream.V1 {
         output.WriteRawTag(130, 5);
         output.WriteMessage(Purchase);
       }
+      if (inputCase_ == InputOneofCase.LevelUp) {
+        output.WriteRawTag(138, 5);
+        output.WriteMessage(LevelUp);
+      }
       if (inputCase_ == InputOneofCase.Continue) {
         output.WriteRawTag(210, 5);
         output.WriteMessage(Continue);
@@ -2028,6 +2177,9 @@ namespace Endless.Stream.V1 {
       }
       if (inputCase_ == InputOneofCase.Purchase) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(Purchase);
+      }
+      if (inputCase_ == InputOneofCase.LevelUp) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(LevelUp);
       }
       if (inputCase_ == InputOneofCase.Continue) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(Continue);
@@ -2100,6 +2252,12 @@ namespace Endless.Stream.V1 {
             Purchase = new global::Endless.Stream.V1.Purchase();
           }
           Purchase.MergeFrom(other.Purchase);
+          break;
+        case InputOneofCase.LevelUp:
+          if (LevelUp == null) {
+            LevelUp = new global::Endless.Stream.V1.LevelUp();
+          }
+          LevelUp.MergeFrom(other.LevelUp);
           break;
         case InputOneofCase.Continue:
           if (Continue == null) {
@@ -2206,6 +2364,15 @@ namespace Endless.Stream.V1 {
             }
             input.ReadMessage(subBuilder);
             Purchase = subBuilder;
+            break;
+          }
+          case 650: {
+            global::Endless.Stream.V1.LevelUp subBuilder = new global::Endless.Stream.V1.LevelUp();
+            if (inputCase_ == InputOneofCase.LevelUp) {
+              subBuilder.MergeFrom(LevelUp);
+            }
+            input.ReadMessage(subBuilder);
+            LevelUp = subBuilder;
             break;
           }
           case 722: {

@@ -2,6 +2,7 @@ syntax = "proto3";
 package endless.stream.v1;
 option go_package = "github.com/seanhagen/endless_stream/backend/endless";
 
+import "google/protobuf/empty.proto";
 import "input.proto";
 import "output.proto";
 
@@ -11,7 +12,15 @@ message GameCreated {
   string code = 1;
 }
 
+
+message ServerStatus {
+  int64 running_games = 1;
+  int64 uptime = 2;
+}
+
 service Game {
   rpc Create(CreateGame) returns (GameCreated) {}
   rpc State(stream Input) returns (stream Output){}
+
+  rpc Status(google.protobuf.Empty) returns (ServerStatus) {}
 }

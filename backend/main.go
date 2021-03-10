@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	sdk "agones.dev/agones/sdks/go"
+	agones "agones.dev/agones/sdks/go"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/seanhagen/endless_stream/backend/game"
 	"github.com/seanhagen/endless_stream/backend/grpc"
@@ -38,11 +38,12 @@ func main() {
 	log.SetOutput(new(logWriter))
 	log.Println("Starting server")
 
-	// sdk, err := agones.NewSDK()
+	var sdk *agones.SDK
+	var err error
+	// sdk, err = agones.NewSDK()
 	// if err != nil {
 	// 	log.Fatalf("failed to get agones sdk: %v", err)
 	// }
-	var sdk *sdk.SDK
 
 	ctx := context.Background()
 	ctx, cnl := context.WithCancel(ctx)

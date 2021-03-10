@@ -25,7 +25,7 @@ namespace Endless.Stream.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cgp1dGlsLnByb3RvEhFlbmRsZXNzLnN0cmVhbS52MSI0CgVDbGFzcxIrCgVj",
-            "bGFzcxgBIAEoDjIcLmVuZGxlc3Muc3RyZWFtLnYxLkNsYXNzVHlwZSr4AgoE",
+            "bGFzcxgBIAEoDjIcLmVuZGxlc3Muc3RyZWFtLnYxLkNsYXNzVHlwZSqKAwoE",
             "VHlwZRIICgROb25lEAASCgoGQW5pbWFsEAoSCAoEQmlyZBALEggKBEZpc2gQ",
             "DBIHCgNSYXQQDRIICgRXb2xmEA4SCgoGSW5zZWN0EA8SCgoGU3BpZGVyEBAS",
             "DAoIRGlub3NhdXIQFBIKCgZEcmFnb24QHhIPCgtBYm9taW5hdGlvbhAoEgcK",
@@ -34,19 +34,19 @@ namespace Endless.Stream.V1 {
             "R29sZW0QWxIKCgZIeWJyaWQQXBIMCghIdW1hbm9pZBBkEgkKBUh1bWFuEGUS",
             "EAoMU2hhcGVzaGlmdGVyEGYSCQoFV2l0Y2gQZxIICgROYWdhEG4SCQoFU2xp",
             "bWUQeBILCgZVbmRlYWQQggESCwoGU3Bpcml0EIMBEgwKB1ZhbXBpcmUQhAES",
-            "DQoIRWxkcml0Y2gQjAEqdQoJQ2xhc3NUeXBlEgsKB1Vua25vd24QABITCgZT",
-            "dGF0dXMQ/v//////////ARIVCghBdWRpZW5jZRD///////////8BEgsKB0Zp",
-            "Z2h0ZXIQChIKCgZSYW5nZXIQFBIKCgZDbGVyaWMQHhIKCgZXaXphcmQQKCp7",
-            "CgxTdGF0dXNFZmZlY3QSCgoGTm9ybWFsEAASDAoIUG9pc29uZWQQARILCgdT",
-            "dHVubmVkEAISCQoFUHJvbmUQAxIMCghCbGVlZGluZxAEEgwKCEZyZW56aWVk",
-            "EAUSDQoJSW52aXNpYmxlEAYSDgoKSW52aW5jaWJsZRAHKlIKBUxldmVsEgkK",
-            "BUJsYW5rEAASCgoGRm9yZXN0EAESCAoEQ2F2ZRACEgsKB0R1bmdlb24QAxIH",
-            "CgNJY2UQBBIICgRGaXJlEAUSCAoEVm9pZBAGKp0BCgdEaXNwbGF5EhEKDVNj",
-            "cmVlbkxvYWRpbmcQABIUChBTY3JlZW5DaGFyU2VsZWN0EAESDgoKU2NyZWVu",
-            "V2F2ZRACEhEKDVNjcmVlblZpY3RvcnkQAxIOCgpTY3JlZW5EZWFkEAQSEgoO",
-            "U2NyZWVuR2FtZU92ZXIQBRIPCgtTY3JlZW5TdG9yZRAGEhEKDVNjcmVlbk5l",
-            "d1dhdmUQB0I1WjNnaXRodWIuY29tL3NlYW5oYWdlbi9lbmRsZXNzX3N0cmVh",
-            "bS9iYWNrZW5kL2VuZGxlc3NiBnByb3RvMw=="));
+            "DQoIRWxkcml0Y2gQjAESEAoLSHVtYW5QbGF5ZXIQj04qdQoJQ2xhc3NUeXBl",
+            "EgsKB1Vua25vd24QABITCgZTdGF0dXMQ/v//////////ARIVCghBdWRpZW5j",
+            "ZRD///////////8BEgsKB0ZpZ2h0ZXIQChIKCgZSYW5nZXIQFBIKCgZDbGVy",
+            "aWMQHhIKCgZXaXphcmQQKCp7CgxTdGF0dXNFZmZlY3QSCgoGTm9ybWFsEAAS",
+            "DAoIUG9pc29uZWQQARILCgdTdHVubmVkEAISCQoFUHJvbmUQAxIMCghCbGVl",
+            "ZGluZxAEEgwKCEZyZW56aWVkEAUSDQoJSW52aXNpYmxlEAYSDgoKSW52aW5j",
+            "aWJsZRAHKlIKBUxldmVsEgkKBUJsYW5rEAASCgoGRm9yZXN0EAESCAoEQ2F2",
+            "ZRACEgsKB0R1bmdlb24QAxIHCgNJY2UQBBIICgRGaXJlEAUSCAoEVm9pZBAG",
+            "Kp0BCgdEaXNwbGF5EhEKDVNjcmVlbkxvYWRpbmcQABIUChBTY3JlZW5DaGFy",
+            "U2VsZWN0EAESDgoKU2NyZWVuV2F2ZRACEhEKDVNjcmVlblZpY3RvcnkQAxIO",
+            "CgpTY3JlZW5EZWFkEAQSEgoOU2NyZWVuR2FtZU92ZXIQBRIPCgtTY3JlZW5T",
+            "dG9yZRAGEhEKDVNjcmVlbk5ld1dhdmUQB0I1WjNnaXRodWIuY29tL3NlYW5o",
+            "YWdlbi9lbmRsZXNzX3N0cmVhbS9iYWNrZW5kL2VuZGxlc3NiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Endless.Stream.V1.Type), typeof(global::Endless.Stream.V1.ClassType), typeof(global::Endless.Stream.V1.StatusEffect), typeof(global::Endless.Stream.V1.Level), typeof(global::Endless.Stream.V1.Display), }, new pbr::GeneratedClrTypeInfo[] {
@@ -93,6 +93,7 @@ namespace Endless.Stream.V1 {
     [pbr::OriginalName("Spirit")] Spirit = 131,
     [pbr::OriginalName("Vampire")] Vampire = 132,
     [pbr::OriginalName("Eldritch")] Eldritch = 140,
+    [pbr::OriginalName("HumanPlayer")] HumanPlayer = 9999,
   }
 
   /// <summary>
