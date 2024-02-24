@@ -1,6 +1,6 @@
 syntax = "proto3";
 package es;
-option go_package = "github.com/seanhagen/endless_stream/protos/go";
+option go_package = "github.com/seanhagen/endless_stream/protos/go/client";
 
 service Universe {
   // Join is used by a game client to request to join a game server.

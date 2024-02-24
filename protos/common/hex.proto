@@ -1,0 +1,40 @@
+syntax = "proto3";
+package common;
+option go_package = "github.com/seanhagen/endless_stream/protos/go/comon";
+
+// Theme defines the basic theme of a dungeon level.
+enum Theme = {
+  // Dungeon is the default theme, means a basic "stone castle dungeon" theme.
+  Dungeon = 0;
+
+  Caves = 10;
+
+  Arcane = 20;
+
+  Farm = 30;
+
+};
+
+// Style defines a specific set of assets and whatnot to pair with a theme.
+enum Style = {
+  None = 0;
+  Occupied = 10;
+  Attacked = 20;
+  Abandoned = 30;
+  Ancient = 40;
+};
+
+enum Terrain = {
+  Grassland = 10;
+  Forest = 20;
+  Tundra = 30;
+  Mountains = 40;
+  Volcano = 50;
+  Frozen = 60;
+Tropical = 70;
+Desert = 80;
+};
+
+message Grid {};
+
+message Hex {};
