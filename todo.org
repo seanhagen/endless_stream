@@ -1,0 +1,61 @@
+* Tasks
+** TODO Basic Server Setup [1/6]
+*** DONE Set up minikube on laptop
+CLOSED: [2024-02-19 Mon 15:11]
+For local development when not at home. If it takes more than one step, create a
+setup script.
+
+*** TODO Set up Turing Pi 2 cluster as kubernetes cluster
+Not sure if I want to use the RPi cluster or the other cluster, but either way
+get one of the Turing Pi 2 boards set up so that I can install kubernetes on
+it.
+
+**** TODO Setup tailscale on kubernetes
+Once I get to the point I want to start sending clients to people to test stuff
+out, I would rather just test with the Turing Pi cluster. Easiest way to handle
+that is probably figuring out how to set up Tailscale with ACLs so that only
+specific users/guests have access to it ( or only have access to that and
+nothing else )
+
+*** TODO Set up Agones
+Figure out good way to install it to a kubernetes cluster. Preferably via some
+kind of ops-as-code solution, so that it's super easy to move or set up a new
+cluster.
+
+*** TODO Create basic server
+Need to create a basic, simple server that's got the Agones SDK set up so that I
+can get a handle on game server lifetime stuff. Doesn't need to do much, just a
+simple GPRC server with a bi-directional stream that keeps track of how many
+clients are connected and marks itself for shutdown/destruction some time after
+the last client disconnects.
+**** Some architecture stuf
+ - folders ( from repo root ) :
+   - [ ] /protos => all protobuf definitions
+   - [ ] /protos/go => all protobuf generated Go code
+   - [ ] /internal/server => defines server, without transport mechanism
+   - [ ] /internal/transport/grpc => defines GRPC server that handles GRPC <->
+     Game server translation ( hex architecture )
+   - [ ] /cmd/overlord => main server binary
+
+**** TODO set up internal server skeleton
+Package that defines a basic server, handles connections, messages, etc. The
+Agones SDK should be passed in to the constructor ( via config ).
+
+**** TODO set up server command
+Binary that sets up dependencies and injects them as part of setting up the
+server.
+
+**** TODO build & local deploy process
+Magefile target for building the code, and another task ( or tasks ) for
+handling doing the Docker build, tagging, and deploying to K8s.
+
+*** TODO Create build pipeline via GitHub Actions
+Initially all I need is to run tests, but would be nice to have it set up to do
+stuff like:
+ - notifies with test results ( via comment, or some other mechanism; preferably
+   not publishing a GitHub Page )
+ - also runs benchmarks and reports results
+ - runs golangci-lint and reports results
+ - runs security vulnerability tools ( and reports results )
+
+* Notes
