@@ -1,0 +1,121 @@
+syntax = "proto3";
+package common;
+option go_package = "github.com/seanhagen/endless_stream/protos/go";
+
+import "google/protobuf/timestamp.proto";
+
+// Type defines whether the hex is empty, a floor tile, or a wall tile.
+enum Type = {
+  // Empty is a tile without anything in it.
+  Empty = 0;
+  // Floor is a tile that can be walked on.
+  Floor = 1;
+  // Wall is a tile that blocks movement and line-of-sight.
+  Wall = 2;
+};
+
+// Coordinate is the x,y location in the world for a tile.
+message Coordinate = {
+  int32 x = 0;
+  int32 y = 1;
+};
+
+// Hex is a single tile within the world.
+message Hex {
+  // Type defines whether the hex is empty, a floor, or a wall.
+  Type type = 0;
+  // Coords defines the position of the hex within the world.
+  Coordinate coords = 1;
+};
+
+enum Tileset = {
+  Dungeon = 0;
+  Woods = 1;
+};
+
+// Level is a single layer of hexes laid out to create a level.
+message Level {
+  // Hexes is an array of all the hex tiles on a level.
+  repeated Hex hexes = 0;
+
+  // Tileset tells Godot what tileset to use.
+  Tileset tileset = 1;
+};
+
+enum LogLevel = {
+  Debug = -1;
+  Info = 0;
+  Warn = 1;
+  Error = 2;
+  Fatal = 3;
+};
+
+enum LogSource = {
+  Server = 0;
+  Player = 100;
+  Game = 200;
+};
+
+message Log = {
+  string msg = 0;
+  google.protobuf.Timestamp at = 1;
+
+  LogLevel level = 2;
+  LogSource source = 4;
+};
+
+message InfoRequest = {};
+
+message InfoResponse = {
+  string version = 0;
+  string build_date = 1;
+};
+
+message GetLevel = {};
+
+message GameRequest = {
+  string client_id = 0;
+
+  oneof request {
+    InfoRequest info = 1;
+    GetLevel get_level = 2;
+  }
+};
+
+message GameResponse = {
+  string server_id = 0;
+
+  oneof msesage {
+    Log log = 1;
+    InfoResponse info = 2;
+    Level level = 3;
+  }
+};
+
+message AddTile = {
+  Hex hex = 0;
+};
+
+message RemoveTile = {
+  Coordinate coords = 1;
+};
+
+message AdminRequest = {
+  string client_id = 0;
+
+  oneof request {
+    AddTile add_tile = 1;
+    RemoveTile remove_tile = 2;
+  }
+};
+
+enum Result = {
+  Failure = 0;
+  Success = 1;
+};
+
+message AdminResponse = {
+  string server_id = 0;
+  Log log = 1;
+  Result result = 2;
+};
