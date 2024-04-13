@@ -11,6 +11,14 @@ import (
 	"github.com/magefile/mage/mg" // mg contains helpful utility functions, like Deps
 )
 
+func GRPC() error {
+	return nil
+}
+
+func GRPC_Go() error {
+	return nil
+}
+
 // Default target to run when none is specified
 // If not set, running mage will list available targets
 // var Default = Build
