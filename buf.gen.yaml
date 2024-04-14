@@ -1,0 +1,37 @@
+version: v1
+plugins:
+  - plugin: go
+    out: internal
+    opt: paths=source_relative
+  - plugin: go-grpc
+    out: internal
+    opt: paths=source_relative
+  - plugin: grpc-gateway
+    out: internal
+    opt:
+      - paths=source_relative
+      - generate_unbound_methods=true
+      - logtostderr=true
+
+  - plugin: csharp
+    out: gen/csh2
+
+  - plugin: buf.build/protocolbuffers/csharp:v26.1
+    out: gen/csh
+
+  - plugin: openapiv2
+    out: docs/openapiv2
+    opt: allow_merge=true,merge_file_name=services
+
+  - plugin: buf.build/bufbuild/es
+    out: gen/js
+  - plugin: buf.build/bufbuild/connect-web
+    out: gen/js
+managed:
+  enabled: true
+  optimize_for: SPEED
+  go_package_prefix:
+    default: github.com/seanhagen/endless_stream/internal/proto
+    except:
+      - buf.build/googleapis/googleapis
+      - buf.build/grpc-ecosystem/grpc-gateway

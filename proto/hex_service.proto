@@ -1,6 +1,8 @@
 syntax = "proto3";
-package common;
+package endless;
 option go_package = "github.com/seanhagen/endless_stream/protos/go";
+
+import "proto/hex.proto";
 
 service Hex {
   rpc Info(InfoRequest) returns (InfoResponse);
