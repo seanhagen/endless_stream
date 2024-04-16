@@ -1,0 +1,102 @@
+syntax = "proto3";
+package common;
+option go_package = "github.com/seanhagen/endless_stream/protos/go/comon";
+
+enum Facing {
+  North = 0;
+  NorthEast = 1;
+  East = 2;
+  SouthEast = 3;
+  South = 4;
+  SouthWest = 5;
+  West = 6;
+  NorthWest = 7;
+};
+
+// enum DoorStyle {
+//   DoorStyleBasic = 0;
+//   DoorStyleShabby = 1;
+//   DoorStyleStone = 2;
+//   DoorStyleSteel = 3;
+//   DoorStyleMagic = 4;
+// };
+
+// enum DoorState {
+//   DoorStateClosed = 0;
+//   DoorStateLocked = 5;
+//   DoorStateOpen = 10;
+//   DoorStateDestroyed = 15;
+//   DoorStateBarred = 20;
+// };
+
+// enum FloorStyle {
+//   FloorStyleDirt = 0;
+//   FloorStyleRawStone = 1;
+//   FloorStyleCobbles = 2;
+//   FloorStyleTiles = 3;
+//   FloorStyleWood = 4;
+//   FloorStyleGrass = 5;
+//   FloorStyleIce = 6;
+// };
+
+
+// // Theme defines the basic theme of a dungeon level.
+// enum Theme {
+//   // Dungeon is the default theme, means a basic "stone castle dungeon" theme.
+//   Dungeon = 0;
+
+//   Caves = 10;
+
+//   Arcane = 20;
+
+//   Farm = 30;
+
+//   Battlefield = 40;
+
+//   Stronghold = 50;
+// };
+
+// // Style defines a specific set of assets and whatnot to pair with a theme.
+// enum Style  {
+//   None = 0;
+//   Occupied = 10;
+//   Attacked = 20;
+//   Abandoned = 30;
+//   Ancient = 40;
+// };
+
+// enum Terrain  {
+//   Grassland = 0;
+//   Forest = 10;
+//   Tundra = 20;
+//   Mountains = 30;
+//   Volcano = 40;
+//   Frozen = 50;
+//   Tropical = 60;
+//   Desert = 70;
+// };
+
+// enum Faction  {
+//   Neutral = 0;
+//   Kingdom = 10;
+//   Evil = 20;
+// };
+
+// enum Race  {
+//   Unknown = 0;
+//   Human = 10;
+//   Dwarves = 20;
+//   Elves = 30;
+//   Centaur = 40;
+//   Wildfolk = 50;
+//   Goblinoid = 60;
+//   Troll = 70;
+//   Undead = 80;
+//   DeepOne = 90;
+//   Dragon = 100;
+// };
+
+// message Grid {};
+
+
+// message Level {};
