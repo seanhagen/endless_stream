@@ -1,32 +1,33 @@
 version: v1
 plugins:
-  - plugin: go
+  # generate Go
+  - plugin: buf.build/protocolbuffers/go:v1.31.0
     out: internal
     opt: paths=source_relative
-  - plugin: go-grpc
+  - plugin: buf.build/grpc/go:v1.3.0
     out: internal
     opt: paths=source_relative
-  - plugin: grpc-gateway
+  - plugin: buf.build/grpc-ecosystem/gateway:v2.16.2
     out: internal
     opt:
       - paths=source_relative
       - generate_unbound_methods=true
       - logtostderr=true
 
-  - plugin: csharp
-    out: gen/csh2
-
+  # generate C#
   - plugin: buf.build/protocolbuffers/csharp:v26.1
-    out: gen/csh
+    out: pb/cs
 
-  - plugin: openapiv2
+  # generate JS
+  - plugin: buf.build/bufbuild/es
+    out: pb/js
+  - plugin: buf.build/bufbuild/connect-web
+    out: pb/js
+
+  # generate OpenAPI docs
+  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.16.2
     out: docs/openapiv2
     opt: allow_merge=true,merge_file_name=services
-
-  - plugin: buf.build/bufbuild/es
-    out: gen/js
-  - plugin: buf.build/bufbuild/connect-web
-    out: gen/js
 managed:
   enabled: true
   optimize_for: SPEED
