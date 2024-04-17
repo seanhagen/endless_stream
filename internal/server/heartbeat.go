@@ -70,11 +70,7 @@ func (hm *healthManager) shouldCheck(beatTime time.Time) bool {
 	}
 
 	diff := beatTime.Sub(hm.lastCheck)
-	if diff > hm.timeBetweenChecks {
-		return true
-	}
-
-	return false
+	return diff > hm.timeBetweenChecks
 }
 
 // heartbeat ...
