@@ -39,7 +39,7 @@ func Coverage() error {
 		return err
 	}
 
-	cmd = exec.Command("go", "tool", "cover", "-func=coverage.out", "-o=coverage.out")
+	cmd = exec.Command("go", "tool", "cover", "-func=coverage.out", "-o=coverage.txt")
 	buf.Reset()
 	cmd.Stdout = buf
 
