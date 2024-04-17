@@ -18,11 +18,16 @@
     <!-- PackageProjectUrl is different from the repository URL. It can be a documentation
          website or a website explaining the project -->
     <PackageProjectUrl>https://seanhagen.ca/endless-stream</PackageProjectUrl>
+    <RepositoryUrl>git@github.com:seanhagen/endless_stream</RepositoryUrl>
 
     <!-- A list of tags to help the search engine to understand the content of the package -->
     <PackageTags>grpc, library, game</PackageTags>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>
