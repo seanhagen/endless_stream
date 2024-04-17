@@ -1,4 +1,4 @@
-name: Test
+name: Pull Request Title Linter
 on:
   pull_request:
     types: [edited, opened]
