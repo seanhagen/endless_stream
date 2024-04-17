@@ -4,6 +4,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -15,7 +16,39 @@ func GRPC() error {
 	return nil
 }
 
-func GRPC_Go() error {
+// Coverage runs the unit tests and collects the code coverage data
+func Coverage() error {
+	mg.Deps(InstallDeps)
+	fmt.Println("Running tests...")
+
+	cmd := exec.Command(
+		"go",
+		"test",
+		"-v",
+		"./...",
+		"-covermode=count",
+		"-coverprofile=coverage.out",
+	)
+
+	buf := bytes.NewBuffer(nil)
+	cmd.Stdout = buf
+
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("Unable to run tests: %s\n", err)
+		fmt.Printf("Error:\n%s\n", buf.String())
+		return err
+	}
+
+	cmd = exec.Command("go", "tool", "cover", "-func=coverage.out", "-o=coverage.out")
+	buf.Reset()
+	cmd.Stdout = buf
+
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("Unable to generate coverage data: %s\n", err)
+		fmt.Printf("Error:\n%s\n", buf.String())
+		return err
+	}
+
 	return nil
 }
 
