@@ -1,54 +1,34 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <EnablePackageValidation>true</EnablePackageValidation>
 
     <!-- Optional: Detect breaking changes from a previous version -->
     <!-- <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
-  </PropertyGroup>
-
-  <PropertyGroup>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
 
     <!-- If all members are not documented, you can disable the compiler warnings -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <Authors>Sean Hagen</Authors>
     <Description>GRPC definitions for Endless Stream</Description>
 
     <!-- PackageProjectUrl is different from the repository URL. It can be a documentation
-         website or a website explaining the project
-    <PackageProjectUrl>https://seanhagen.ca/endless-stream</PackageProjectUrl>-->
+         website or a website explaining the project -->
+    <PackageProjectUrl>https://seanhagen.ca/endless-stream</PackageProjectUrl>
 
     <!-- A list of tags to help the search engine to understand the content of the package -->
     <PackageTags>grpc, library, game</PackageTags>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <PackageIcon>icon.png</PackageIcon>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- Add a README.md next to the csproj -->
     <None Include="README.md" Pack="true" PackagePath=""/>
-  </ItemGroup>
 
-  <ItemGroup>
     <!--
         Add an icon.png next to the csproj:
         - Supported format: png, jpg
@@ -56,9 +36,10 @@
         - Maximum size: 1MB
     -->
     <None Include="icon.png" Pack="true" PackagePath=""/>
-  </ItemGroup>
 
-  <ItemGroup>
+    <!-- Add a LICENSE.txt next to the csproj -->
+    <None Include="LICENSE.txt" Pack="true" PackagePath=""/>
+
     <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -69,8 +50,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- Add a LICENSE.txt next to the csproj -->
-    <None Include="LICENSE.txt" Pack="true" PackagePath=""/>
-  </ItemGroup>
 </Project>
