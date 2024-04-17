@@ -1,27 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackageId></PackageId>
+    <Authors>Sean Hagen</Authors>
+    <Description>GRPC definitions for Endless Stream</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageTags>grpc, library, game</PackageTags>
     <PackageIcon>icon.png</PackageIcon>
 
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <EnablePackageValidation>true</EnablePackageValidation>
-
-    <!-- Optional: Detect breaking changes from a previous version -->
-    <!-- <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
-
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-
     <!-- If all members are not documented, you can disable the compiler warnings -->
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <Authors>Sean Hagen</Authors>
-    <Description>GRPC definitions for Endless Stream</Description>
-
-    <!-- PackageProjectUrl is different from the repository URL. It can be a documentation
-         website or a website explaining the project -->
     <PackageProjectUrl>https://seanhagen.ca/endless-stream</PackageProjectUrl>
     <RepositoryUrl>git@github.com:seanhagen/endless_stream</RepositoryUrl>
   </PropertyGroup>
@@ -31,20 +25,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Add a README.md next to the csproj -->
     <None Include="README.md" Pack="true" PackagePath=""/>
-
-    <!--
-        Add an icon.png next to the csproj:
-        - Supported format: png, jpg
-        - Recommended dimensions: 128x128
-        - Maximum size: 1MB
-    -->
     <None Include="icon.png" Pack="true" PackagePath=""/>
-
-    <!-- Add a LICENSE.txt next to the csproj -->
     <None Include="LICENSE.txt" Pack="true" PackagePath=""/>
+  </ItemGroup>
 
+  <ItemGroup>
     <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
