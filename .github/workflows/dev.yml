@@ -48,6 +48,13 @@ jobs:
           retention-days: 7
           path: coverage.out
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: go-test-coverage-txt
+          if-no-files-found: error
+          retention-days: 7
+          path: coverage.txt
+
   code_coverage:
     name: "Generate code coverage report"
     if: github.event_name == 'pull_request'
@@ -56,20 +63,25 @@ jobs:
     steps:
       - uses: fgrosse/go-coverage-report@v1.0.0 # Consider using a Git revision for maximum security
         with:
-          coverage-artifact-name: "go-test-coverage" # can be omitted if you used this default value
-          coverage-file-name: "coverage.out" # can be omitted if you used this
-          # default value
+          coverage-artifact-name: "go-test-coverage"
+          coverage-file-name: "coverage.txt"
 
   dependency_checks:
     name: "Run dependency checks"
     needs: tests
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          cache-dependency-path: "go.sum"
       - name: Run snapshot action
         uses: actions/go-dependency-submission@v2
         with:
-            # Required: Define the repo path to the go.mod file used by the
-            # build target
             go-mod-path: go.mod
             #
             # Optional: Define the path of a build target (a file with a
@@ -83,6 +95,14 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          cache-dependency-path: "go.sum"
       - uses: dominikh/staticcheck-action@v1
         with:
           version: "latest"
@@ -96,6 +116,14 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          cache-dependency-path: "go.sum"
       - name: Scan for Vulnerabilities in Code
         uses: Templum/govulncheck-action@<version>
         with:
@@ -109,6 +137,14 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          cache-dependency-path: "go.sum"
       - id: govulncheck
         uses: golang/govulncheck-action@v1
         with:
