@@ -28,8 +28,8 @@
     <Description>GRPC definitions for Endless Stream</Description>
 
     <!-- PackageProjectUrl is different from the repository URL. It can be a documentation
-         website or a website explaining the project -->
-    <PackageProjectUrl>git@github.com:seanhagen/endless_stream</PackageProjectUrl>
+         website or a website explaining the project
+    <PackageProjectUrl>https://seanhagen.ca/endless-stream</PackageProjectUrl>-->
 
     <!-- A list of tags to help the search engine to understand the content of the package -->
     <PackageTags>grpc, library, game</PackageTags>
