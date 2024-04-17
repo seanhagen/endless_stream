@@ -1,0 +1,129 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Run tests & scanners
+on:
+  push:
+    branches:
+      - 'main'
+      - 'dev'
+      - 'feat/*'
+      - 'bugfix/*'
+      - 'hotfix/*'
+  pull_request:
+    branches:
+     - '*'
+  release:
+    types:
+      - published    # Run the workflow when a new GitHub release is published
+
+env:
+  GO111MODULE: on
+
+jobs:
+  tests:
+    name: "Download code & run tests"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+          cache-dependency-path: "go.sum"
+
+      # - name: Run Mage
+      #   uses: magefile/mage-action@v3
+      #   with:
+      #     version: latest
+      #     args: coverage
+
+      - name: Test
+        uses: robherley/go-test-action@v0
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: go-test-coverage
+          if-no-files-found: error
+          retention-days: 7
+          path: coverage.out
+
+  code_coverage:
+    name: "Generate code coverage report"
+    if: github.event_name == 'pull_request'
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: fgrosse/go-coverage-report@v1.0.0 # Consider using a Git revision for maximum security
+        with:
+          coverage-artifact-name: "go-test-coverage" # can be omitted if you used this default value
+          coverage-file-name: "coverage.out" # can be omitted if you used this
+          # default value
+
+  dependency_checks:
+    name: "Run dependency checks"
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run snapshot action
+        uses: actions/go-dependency-submission@v2
+        with:
+            # Required: Define the repo path to the go.mod file used by the
+            # build target
+            go-mod-path: go.mod
+            #
+            # Optional: Define the path of a build target (a file with a
+            # `main()` function) If not defined, this Action will collect all
+            # dependencies used by all build targets for the module, which may
+            # include Go dependencies used by tests and tooling.
+            # go-build-target: go-example/cmd/octocat.go
+
+  static_checks:
+    name: "Run static checks"
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dominikh/staticcheck-action@v1
+        with:
+          version: "latest"
+      - name: Run go-mnd
+        uses: tommy-muehle/go-mnd@master
+        with:
+          args: ./...
+
+  vuln_checks:
+    name: "Run vulnerabilty checks"
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan for Vulnerabilities in Code
+        uses: Templum/govulncheck-action@<version>
+        with:
+          go-version: 1.22.0
+          vulncheck-version: latest
+          package: ./...
+          fail-on-vuln: true
+
+  security_checks:
+    name: "Run security checks"
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - id: govulncheck
+        uses: golang/govulncheck-action@v1
+        with:
+          repo-checkout: false
+          go-version-file: go.mod
+          go-package: ./...
+
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          # we let the report trigger content trigger a failure using the GitHub Security features.
+          args: '-no-fail -fmt sarif -out results.sarif ./...'
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: results.sarif
