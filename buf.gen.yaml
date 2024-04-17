@@ -16,7 +16,7 @@ plugins:
 
   # generate C#
   - plugin: buf.build/protocolbuffers/csharp:v26.1
-    out: pb/cs
+    out: EndlessStreamData
 
   # generate JS
   - plugin: buf.build/bufbuild/es

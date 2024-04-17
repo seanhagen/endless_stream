@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "dgSpecHash": "ojIupOW/sarHMxNea67hSjHmOUDJUMzhLEvahaTuUSu9l4dpN/JmgmAv5TfMzrY8w2ADDMFGBX0RZs7bbOwi/A==",
+  "success": true,
+  "projectFilePath": "/home/sean/Code/Go/src/github.com/seanhagen/endless_stream/EndlessStreamData/EndlessStreamData.csproj",
+  "expectedPackageFiles": [
+    "/home/sean/.nuget/packages/dotnet.reproduciblebuilds/1.1.1/dotnet.reproduciblebuilds.1.1.1.nupkg.sha512",
+    "/home/sean/.nuget/packages/microsoft.build.tasks.git/1.1.1/microsoft.build.tasks.git.1.1.1.nupkg.sha512",
+    "/home/sean/.nuget/packages/microsoft.sourcelink.azurerepos.git/1.1.1/microsoft.sourcelink.azurerepos.git.1.1.1.nupkg.sha512",
+    "/home/sean/.nuget/packages/microsoft.sourcelink.bitbucket.git/1.1.1/microsoft.sourcelink.bitbucket.git.1.1.1.nupkg.sha512",
+    "/home/sean/.nuget/packages/microsoft.sourcelink.common/1.1.1/microsoft.sourcelink.common.1.1.1.nupkg.sha512",
+    "/home/sean/.nuget/packages/microsoft.sourcelink.github/1.1.1/microsoft.sourcelink.github.1.1.1.nupkg.sha512",
+    "/home/sean/.nuget/packages/microsoft.sourcelink.gitlab/1.1.1/microsoft.sourcelink.gitlab.1.1.1.nupkg.sha512",
+    "/home/sean/.nuget/packages/minver/5.0.0/minver.5.0.0.nupkg.sha512",
+    "/home/sean/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.4/microsoft.aspnetcore.app.ref.8.0.4.nupkg.sha512"
+  ],
+  "logs": []
+}
