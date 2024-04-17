@@ -29,7 +29,7 @@
 
     <!-- PackageProjectUrl is different from the repository URL. It can be a documentation
          website or a website explaining the project -->
-    <PackageProjectUrl>https://seanhagen.ca</PackageProjectUrl>
+    <PackageProjectUrl>git@github.com:seanhagen/endless_stream</PackageProjectUrl>
 
     <!-- A list of tags to help the search engine to understand the content of the package -->
     <PackageTags>grpc, library, game</PackageTags>

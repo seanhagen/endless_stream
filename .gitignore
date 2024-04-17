@@ -1,9 +1,1 @@
 /nuget/
-/EndlessStreamData/obj/*
-/EndlessStreamData/bin/*
-/EndlessStreamData.Tests/obj/*
-/EndlessStreamData.Tests/bin/*
-/EndlessStreamData.Tests/obj/EndlessStreamData.Tests.csproj.nuget.dgspec.json
-/EndlessStreamData.Tests/obj/project.assets.json
-/EndlessStreamData.Tests/obj/project.nuget.cache
-/EndlessStreamData/obj/EndlessStreamData.csproj.nuget.dgspec.json
