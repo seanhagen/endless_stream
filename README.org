@@ -1,0 +1,7 @@
+#+TITLE: Endless Stream: Backend Code
+
+This repository contains all the backend code for the Endless Stream game.
+
+It also contains the GRPC protobuf schema files, as well as the generated code
+for Go, C#, JavaScript, and TypeScript. Additionally, it packages the C#
+generated code into a NuGet package.
