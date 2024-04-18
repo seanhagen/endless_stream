@@ -64,8 +64,9 @@ func Install() error {
 // Manage your deps, or running package managers.
 func InstallDeps() error {
 	fmt.Println("Installing Deps...")
-	cmd := exec.Command("go", "get", "github.com/stretchr/piglatin")
-	return cmd.Run()
+	// cmd := exec.Command("go", "get", "github.com/stretchr/piglatin")
+	// return cmd.Run()
+	return nil
 }
 
 // Clean up after yourself
