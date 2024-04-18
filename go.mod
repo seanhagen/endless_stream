@@ -1,6 +1,6 @@
 module github.com/seanhagen/endless_stream
 
-go 1.22.0
+go 1.22
 
 require (
 	agones.dev/agones v1.38.0
