@@ -1,6 +1,3 @@
-//go:build mage
-// +build mage
-
 package main
 
 import (
@@ -8,39 +5,8 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/fatih/color"
-	"github.com/magefile/mage/mg" // mg contains helpful utility functions, like Deps
-	"github.com/seanhagen/endless_stream/internal/mage"
+	"github.com/magefile/mage/mg"
 )
-
-func GRPC() error {
-	mg.Deps(InstallDeps)
-
-	if err := mage.RunBuf(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// Coverage runs the unit tests and collects the code coverage data
-func Coverage() error {
-	mg.Deps(InstallDeps)
-
-	fmt.Printf("Generating code coverage...\n")
-
-	if err := mage.RunTests(true); err != nil {
-		return err
-	}
-
-	if err := mage.GenerateCoverage(); err != nil {
-		return err
-	}
-
-	fmt.Printf("%s - finished generating code coverage\n", color.GreenString("DONE"))
-
-	return nil
-}
 
 // A build step that requires additional params, or platform specific steps for example
 func Build() error {

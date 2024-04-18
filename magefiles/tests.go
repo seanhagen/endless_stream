@@ -1,4 +1,4 @@
-package mage
+package main
 
 import (
 	"bytes"
@@ -6,12 +6,34 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+
+	"github.com/fatih/color"
+	"github.com/magefile/mage/mg"
 )
 
 const (
 	coverageProfile = "coverage.out"
 	coverageOutput  = "coverage.txt"
 )
+
+// Coverage runs the unit tests and collects the code coverage data
+func Coverage() error {
+	mg.Deps(InstallDeps)
+
+	fmt.Printf("Generating code coverage...\n")
+
+	if err := runTests(true); err != nil {
+		return err
+	}
+
+	if err := generateCoverage(); err != nil {
+		return err
+	}
+
+	fmt.Printf("%s - finished generating code coverage\n", color.GreenString("DONE"))
+
+	return nil
+}
 
 func coverProfileArg() string {
 	return fmt.Sprintf("-coverprofile=%s", coverageProfile)
@@ -36,7 +58,7 @@ func coverProfileExists() bool {
 	return errors.Is(err, os.ErrNotExist)
 }
 
-func RunTests(withCoverage bool) error {
+func runTests(withCoverage bool) error {
 	cmd := exec.Command("go", "test", "-v", "./...")
 
 	fmt.Printf("Running tests ")
@@ -58,7 +80,7 @@ func RunTests(withCoverage bool) error {
 	return err
 }
 
-func GenerateCoverage() error {
+func generateCoverage() error {
 	fmt.Printf("Generating coverage output...\n")
 	if !coverProfileExists() {
 		return fmt.Errorf("unable to stat coverage file %q", coverageProfile)
