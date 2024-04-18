@@ -4,50 +4,40 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
 
+	"github.com/fatih/color"
 	"github.com/magefile/mage/mg" // mg contains helpful utility functions, like Deps
+	"github.com/seanhagen/endless_stream/internal/mage"
 )
 
 func GRPC() error {
+	mg.Deps(InstallDeps)
+
+	if err := mage.RunBuf(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // Coverage runs the unit tests and collects the code coverage data
 func Coverage() error {
 	mg.Deps(InstallDeps)
-	fmt.Println("Running tests...")
 
-	cmd := exec.Command(
-		"go",
-		"test",
-		"-v",
-		"./...",
-		"-covermode=count",
-		"-coverprofile=coverage.out",
-	)
+	fmt.Printf("Generating code coverage...\n")
 
-	buf := bytes.NewBuffer(nil)
-	cmd.Stdout = buf
-
-	if err := cmd.Run(); err != nil {
-		fmt.Printf("Unable to run tests: %s\n", err)
-		fmt.Printf("Error:\n%s\n", buf.String())
+	if err := mage.RunTests(true); err != nil {
 		return err
 	}
 
-	cmd = exec.Command("go", "tool", "cover", "-func=coverage.out", "-o=coverage.txt")
-	buf.Reset()
-	cmd.Stdout = buf
-
-	if err := cmd.Run(); err != nil {
-		fmt.Printf("Unable to generate coverage data: %s\n", err)
-		fmt.Printf("Error:\n%s\n", buf.String())
+	if err := mage.GenerateCoverage(); err != nil {
 		return err
 	}
+
+	fmt.Printf("%s - finished generating code coverage\n", color.GreenString("DONE"))
 
 	return nil
 }
