@@ -3,10 +3,13 @@ run:
   skip-dirs:
     - infra
     - sample_files
+    - magefiles
   modules-download-mode: readonly
+
 output:
   format: github-actions
   sort-results: true
+
 issues:
   exclude-rules:
     - path: _test\.go
@@ -33,8 +36,10 @@ issues:
 
 severity:
   default-severity: error
+
 linters:
   disable:
+  enable:
     - depguard
     - musttag
     - funlen
@@ -45,14 +50,12 @@ linters:
     - ireturn
     - nlreturn
     - wsl
-    # the following linters should be enabled once packages have been refactored
     - exhaustruct
     - gochecknoglobals
     - goerr113
     - gofumpt
     - lll
     - typecheck
-  enable:
     - asasalint
     - bidichk
     - bodyclose
