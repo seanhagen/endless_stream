@@ -34,5 +34,5 @@ func InstallDeps() error {
 // Clean up after yourself
 func Clean() {
 	fmt.Println("Cleaning...")
-	os.RemoveAll("MyApp")
+	// os.RemoveAll("MyApp")
 }

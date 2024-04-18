@@ -86,7 +86,7 @@ func generateCoverage() error {
 		return fmt.Errorf("unable to stat coverage file %q", coverageProfile)
 	}
 
-	cmd := exec.Command("go", "tool", "cover", goToolCoverFunc(), goToolCoverOutput())
+	cmd := exec.Command("go", "tool", "cover", goToolCoverFunc(), goToolCoverOutput()) //#nosec G204
 
 	buf := bytes.NewBuffer(nil)
 	cmd.Stdout = buf
