@@ -3,10 +3,34 @@ run:
   skip-dirs:
     - infra
     - sample_files
-  modules-download-mode: vendor
+  modules-download-mode: readonly
 output:
   format: github-actions
   sort-results: true
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+    - path-except: _test\.go
+      linters:
+        - forbidigo
+    - linters:
+        - staticcheck
+      text: "SA9003:"
+    - linters:
+        - lll
+      source: "^//go:generate "
+  exclude-use-default: false
+  exclude-dirs:
+    - magefiles
+  exclude-dirs-use-default: false
+  exclude-files:
+    - magefile.go
+
 severity:
   default-severity: error
 linters:
