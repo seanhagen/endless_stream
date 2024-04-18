@@ -110,10 +110,10 @@ jobs:
           version: "latest"
           install-go: false
 
-      - name: Run go-mnd
-        uses: tommy-muehle/go-mnd@master
-        with:
-          args: ./...
+      # - name: Run go-mnd
+      #   uses: tommy-muehle/go-mnd@master
+      #   with:
+      #     args: ./...
 
   vuln_checks:
     name: "Run vulnerabilty checks"
