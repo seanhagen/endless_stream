@@ -79,6 +79,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache-dependency-path: "go.sum"
+
       - name: Run snapshot action
         uses: actions/go-dependency-submission@v2
         with:
@@ -103,9 +104,12 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache-dependency-path: "go.sum"
+
       - uses: dominikh/staticcheck-action@v1
         with:
           version: "latest"
+          install-go: false
+
       - name: Run go-mnd
         uses: tommy-muehle/go-mnd@master
         with:
@@ -124,6 +128,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache-dependency-path: "go.sum"
+
       - name: Scan for Vulnerabilities in Code
         uses: Templum/govulncheck-action@v1
         with:
@@ -145,6 +150,7 @@ jobs:
         with:
           go-version-file: "go.mod"
           cache-dependency-path: "go.sum"
+
       - id: govulncheck
         uses: golang/govulncheck-action@v1
         with:
