@@ -1,14 +1,13 @@
 package main
 
 import (
-	"bytes"
-	"errors"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 
-	"github.com/fatih/color"
 	"github.com/magefile/mage/mg"
+	"github.com/pterm/pterm"
 )
 
 const (
@@ -16,23 +15,72 @@ const (
 	coverageOutput  = "coverage.txt"
 )
 
-// Coverage runs the unit tests and collects the code coverage data
-func Coverage() error {
-	mg.Deps(InstallDeps)
+func Tests() error {
+	mg.SerialDeps(InstallDeps)
 
-	fmt.Printf("Generating code coverage...\n")
-
-	if err := runTests(true); err != nil {
-		return err
+	if err := runTests(false); err != nil {
+		pterm.Error.Printf("Failed: %s", err)
+		os.Exit(1)
 	}
-
-	if err := generateCoverage(); err != nil {
-		return err
-	}
-
-	fmt.Printf("%s - finished generating code coverage\n", color.GreenString("DONE"))
+	pterm.Success.Println("Tests run completed successfully.")
 
 	return nil
+}
+
+// Coverage runs the unit tests and collects the code coverage data
+func Coverage() error {
+	mg.SerialDeps(InstallDeps)
+
+	if err := runTests(true); err != nil {
+		pterm.Error.Printf("Failed: %s", err)
+		os.Exit(1)
+	}
+	pterm.Success.Println("Tests run completed successfully.")
+
+	pterm.Info.Println("Generating code coverage.")
+	if err := generateCoverage(); err != nil {
+		pterm.Error.Println("Failed to generate code coverage data")
+		return err
+	}
+
+	pterm.Success.Println("Code coverage generated.")
+	return nil
+}
+
+func runTests(withCoverage bool) error {
+	cmd := exec.Command("go", "test", "-v", "./...")
+
+	area, err := pterm.DefaultArea.WithRemoveWhenDone().Start()
+	if err != nil {
+		log.Fatalf("unable to create pterm area: %s", err)
+	}
+
+	if withCoverage {
+		addToArea(area, pterm.Info.Sprint("Running tests with coverage"))
+		cmd.Args = append(cmd.Args, "-covermode=count", coverProfileArg())
+	} else {
+		addToArea(area, pterm.Info.Sprint("Running tests"))
+	}
+	addToArea(area, "\n")
+
+	return runCommand(cmd, area, "run tests", "some tests failed to pass")
+}
+
+func generateCoverage() error {
+	area, err := pterm.DefaultArea.WithRemoveWhenDone().Start()
+	if err != nil {
+		log.Fatalf("unable to create pterm area: %s", err)
+	}
+
+	area.Update(pterm.Info.Sprintf("Generating code coverage output "))
+	if !fileExists(coverageProfile) {
+		area.Update(pterm.Error.Sprint("ERROR"))
+		return fmt.Errorf("unable to stat coverage file %q", coverageProfile)
+	}
+
+	cmd := exec.Command("go", "tool", "cover", goToolCoverFunc(), goToolCoverOutput()) //#nosec G204
+
+	return runCommand(cmd, area, "generate code coverage data", "unable to generate code coverage data")
 }
 
 func coverProfileArg() string {
@@ -45,58 +93,4 @@ func goToolCoverFunc() string {
 
 func goToolCoverOutput() string {
 	return fmt.Sprintf("-o=%s", coverageOutput)
-}
-
-func coverProfileExists() bool {
-	_, err := os.Stat(coverageProfile)
-	if err == nil {
-		return true
-	}
-
-	// can return an error for other reasons, but if this code can't
-	// read the file then the Go cover tool probably can't either!
-	return errors.Is(err, os.ErrNotExist)
-}
-
-func runTests(withCoverage bool) error {
-	cmd := exec.Command("go", "test", "-v", "./...")
-
-	fmt.Printf("Running tests ")
-	if withCoverage {
-		fmt.Printf("(with coverage)")
-		cmd.Args = append(cmd.Args, "-covermode=count", coverProfileArg())
-	}
-	fmt.Printf("\n")
-
-	buf := bytes.NewBuffer(nil)
-	cmd.Stdout = buf
-
-	err := cmd.Run()
-	if err != nil {
-		fmt.Printf("Unable to run tests: %s\n", err)
-		fmt.Printf("Error:\n%s\n", buf.String())
-	}
-
-	return err
-}
-
-func generateCoverage() error {
-	fmt.Printf("Generating coverage output...\n")
-	if !coverProfileExists() {
-		return fmt.Errorf("unable to stat coverage file %q", coverageProfile)
-	}
-
-	cmd := exec.Command("go", "tool", "cover", goToolCoverFunc(), goToolCoverOutput()) //#nosec G204
-
-	buf := bytes.NewBuffer(nil)
-	cmd.Stdout = buf
-
-	err := cmd.Run()
-	if err != nil {
-		fmt.Printf("Unable to generate coverage data: %s\n", err)
-		fmt.Printf("Error:\n%s\n", buf.String())
-		return err
-	}
-
-	return err
 }
