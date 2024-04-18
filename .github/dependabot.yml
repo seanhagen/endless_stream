@@ -11,14 +11,13 @@ updates:
     # `directory: "/"`.)
     directory: "/"
     schedule:
-      # Check for updates to GitHub Actions every weekday
       interval: "daily"
     labels:
       - "depdendabot"
       - "github-action"
 
-  - package-ecosystem: "gomod" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "gomod"
+    directory: "/"
     schedule:
       interval: "weekly"
     labels:
