@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -34,23 +35,32 @@ const (
 	minTimeBetween   = time.Millisecond * 200
 )
 
+var (
+	// ErrRequireHealthReporter ...
+	ErrRequireHealthReporter = errors.New("health config requires HealthReporter interface")
+	// ErrMaxFailedBelowMinimum ...
+	ErrMaxFailedBelowMinimum = fmt.Errorf(
+		"health config value 'MaxFailed' below minimum value of %v",
+		maxFailedMinimum,
+	)
+	// ErrTimeBetweenChecksBelowMinimum ...
+	ErrTimeBetweenChecksBelowMinimum = fmt.Errorf(
+		"health config value 'TimeBetweenChecks' below minimum value of %s",
+		minTimeBetween,
+	)
+)
+
 func newHealthManager(hc HealthConfig) (*healthManager, error) {
 	if isNil(hc.Reporter) {
-		return nil, fmt.Errorf("health config requires HealthReporter interface")
+		return nil, ErrRequireHealthReporter
 	}
 
 	if hc.MaxFailed < maxFailedMinimum {
-		return nil, fmt.Errorf(
-			"health config value 'MaxFailed' below minimum value of %v",
-			maxFailedMinimum,
-		)
+		return nil, ErrMaxFailedBelowMinimum
 	}
 
 	if hc.TimeBetweenChecks < minTimeBetween {
-		return nil, fmt.Errorf(
-			"health config value 'TimeBetweenChecks' below minimum value of %s",
-			minTimeBetween,
-		)
+		return nil, ErrTimeBetweenChecksBelowMinimum
 	}
 
 	hm := healthManager{
@@ -68,7 +78,6 @@ func (hm *healthManager) shouldCheck(beatTime time.Time) bool {
 	if hm.lastCheck.IsZero() {
 		return true
 	}
-
 	diff := beatTime.Sub(hm.lastCheck)
 	return diff > hm.timeBetweenChecks
 }
@@ -86,6 +95,7 @@ func (hm *healthManager) heartbeat(ctx context.Context, beatTime time.Time) erro
 	if err != nil {
 		return fmt.Errorf("heartbeat health check failed: %w", err)
 	}
+
 	return nil
 }
 
@@ -107,6 +117,7 @@ func (hm *healthManager) report(ctx context.Context) error {
 
 	if err != nil && hm.failedChecks >= hm.maxFailedChecks {
 		hm.logger.ErrorContext(ctx, "too many failed checks")
+
 		return fmt.Errorf("max failed checks, last error: %w", err)
 	}
 

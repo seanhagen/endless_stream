@@ -1,7 +1,9 @@
+// Package server contains the types & functions for running an Endless Stream server.
 package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -58,14 +60,19 @@ type Handler struct {
 	sdk                GameSDK
 	heartbeatCh        chan time.Time
 	heartbeatListeners []heartbeatListener
-	heartbeatCtx       context.Context
+	// heartbeatCtx       context.Context
 	heartbeatCtxCancel func()
 	buildTicker        tickFn
 	logger             *slog.Logger
 }
 
+// ErrMissingRequiredField is returned from Create when a required field is missing.
+//
+// TODO: turn into a custom error type that can hold the field name.
+var ErrMissingRequiredField = errors.New("missing required field GameSDK in configuration")
+
 // Create ...
-func Create(ctx context.Context, conf Config) (*Handler, error) {
+func Create(_ context.Context, conf Config) (*Handler, error) {
 	if isNil(conf.Logger) {
 		conf.Logger = slog.New(slog.NewTextHandler(io.Discard, nil))
 	} else {
@@ -73,7 +80,7 @@ func Create(ctx context.Context, conf Config) (*Handler, error) {
 	}
 
 	if isNil(conf.GameSDK) {
-		return nil, fmt.Errorf("missing required field GameSDK in configuration")
+		return nil, ErrMissingRequiredField
 	}
 
 	if isNil(conf.buildTicker) {
@@ -114,7 +121,9 @@ func (h *Handler) Start(ctx context.Context) error {
 
 	go h.heartbeat(ctx)
 
-	h.heartbeatCtx = ctx
+	// can't remember why i wanted to keep a reference to this.
+	// probably for doing something with it during shutdown?
+	// h.heartbeatCtx = ctx
 	h.heartbeatCtxCancel = cancel
 
 	if err := h.sdk.Ready(ctx); err != nil {
@@ -162,13 +171,13 @@ func (h *Handler) Stop(ctx context.Context) error {
 	return nil
 }
 
-func isNil(i any) bool {
-	if i == nil {
+func isNil(input any) bool {
+	if input == nil {
 		return true
 	}
-	switch reflect.TypeOf(i).Kind() {
+	switch reflect.TypeOf(input).Kind() { //nolint:wsl
 	case reflect.Ptr, reflect.Map, reflect.Array, reflect.Chan, reflect.Slice:
-		return reflect.ValueOf(i).IsNil()
+		return reflect.ValueOf(input).IsNil()
 	}
 	return false
 }

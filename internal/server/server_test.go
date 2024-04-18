@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"testing"
@@ -28,8 +29,10 @@ func TestServer_Constructor_RequiredOptions(t *testing.T) {
 		{
 			name: "config with only GameSDK & Health set is valid",
 			conf: Config{
-				GameSDK: &testAgonesSDK{},
+				GameSDK: &testAgonesSDK{}, //nolint:exhaustruct
 				Health: HealthConfig{
+					Reporter:          nil,
+					Logger:            &slog.Logger{},
 					MaxFailed:         3,
 					TimeBetweenChecks: time.Second,
 				},
@@ -45,11 +48,13 @@ func TestServer_Constructor_RequiredOptions(t *testing.T) {
 		t.Run(
 			fmt.Sprintf("test %d %s", i+1, tt.name),
 			func(t *testing.T) {
+				t.Parallel()
 				handler, err := Create(ctx, tt.conf)
 
 				if tt.valid {
 					assert.NotNil(t, handler)
 					assert.NoError(t, err)
+
 					return
 				}
 
@@ -67,18 +72,21 @@ func TestServer_StartsAndLifecycleProgression(t *testing.T) {
 	fakeTicks := make(chan time.Time, 10)
 	expectDuration := time.Second
 	buf := bytes.NewBuffer(nil)
-	logger := slog.New(slog.NewTextHandler(buf, &slog.HandlerOptions{Level: slog.LevelDebug}))
-	testSDK := &testAgonesSDK{}
+	logger := slog.New(slog.NewTextHandler(buf, &slog.HandlerOptions{Level: slog.LevelDebug})) //nolint:exhaustruct
+	testSDK := &testAgonesSDK{}                                                                //nolint:exhaustruct
 
 	var gotDuration time.Duration
-	tickerFn := func(d time.Duration) <-chan time.Time {
+	tickerFn := func(d time.Duration) <-chan time.Time { //nolint:wsl
 		gotDuration = d
+
 		return fakeTicks
 	}
 
 	conf := Config{
 		GameSDK: testSDK,
 		Health: HealthConfig{
+			Reporter:          nil,
+			Logger:            logger,
 			MaxFailed:         2,
 			TimeBetweenChecks: time.Second,
 		},
@@ -119,6 +127,8 @@ func TestServer_StartsAndLifecycleProgression(t *testing.T) {
 	t.Logf("logger output: \n%s", buf.String())
 }
 
+var errNotImplementedYet = errors.New("not implemented yet")
+
 type testAgonesSDK struct {
 	allocateCalls int
 	readyCalls    int
@@ -128,23 +138,26 @@ type testAgonesSDK struct {
 // Allocate ...
 func (sdk *testAgonesSDK) Allocate(_ context.Context) error {
 	sdk.allocateCalls++
+
 	return nil
 }
 
 // GameServer ...
 func (sdk *testAgonesSDK) GameServer(_ context.Context) (*GameServer, error) {
-	return nil, nil
+	return nil, errNotImplementedYet
 }
 
 // Health ...
 func (sdk *testAgonesSDK) Health(_ context.Context) error {
 	sdk.healthCalls++
+
 	return nil
 }
 
 // Ready ...
 func (sdk *testAgonesSDK) Ready(_ context.Context) error {
 	sdk.readyCalls++
+
 	return nil
 }
 

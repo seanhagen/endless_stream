@@ -5,6 +5,7 @@ run:
     - sample_files
     - magefiles
   modules-download-mode: readonly
+  tests: false
 
 output:
   format: github-actions
@@ -39,23 +40,12 @@ severity:
 
 linters:
   disable:
-  enable:
-    - depguard
-    - musttag
-    - funlen
-    - forbidigo
-    - gci
-    - godox
-    - tagalign
-    - ireturn
-    - nlreturn
-    - wsl
+    - exhaustive
     - exhaustruct
-    - gochecknoglobals
-    - goerr113
-    - gofumpt
-    - lll
-    - typecheck
+    - godox
+    - wsl
+    - nlreturn
+  enable:
     - asasalint
     - bidichk
     - bodyclose
@@ -63,6 +53,7 @@ linters:
     - contextcheck
     - cyclop
     - decorder
+    - depguard
     - dogsled
     - dupl
     - dupword
@@ -72,17 +63,22 @@ linters:
     - errname
     - errorlint
     - execinquery
-    - exhaustive
     - exportloopref
+    - forbidigo
     - forcetypeassert
+    - funlen
+    - gci
     - gocheckcompilerdirectives
+    - gochecknoglobals
     - gochecknoinits
     - gocognit
     - goconst
     - gocritic
     - gocyclo
     - godot
+    - goerr113
     - gofmt
+    - gofumpt
     - goimports
     - gomnd
     - gomoddirectives
@@ -96,10 +92,13 @@ linters:
     - importas
     - ineffassign
     - interfacebloat
+    - ireturn
+    - lll
     - loggercheck
     - maintidx
     - makezero
     - misspell
+    - musttag
     - nakedret
     - nestif
     - nilerr
@@ -117,11 +116,13 @@ linters:
     - sqlclosecheck
     - staticcheck
     - stylecheck
+    - tagalign
     - tagliatelle
     - tenv
     - testableexamples
     - thelper
     - tparallel
+    - typecheck
     - unconvert
     - unparam
     - unused
@@ -132,6 +133,12 @@ linters:
     - wrapcheck
     - zerologlint
 linters-settings:
+  depguard:
+    rules:
+      main:
+        allow:
+          - $gostd
+          - agones.dev/agones/pkg/sdk
   varnamelen:
     min-name-length: 2
   tagliatelle:
