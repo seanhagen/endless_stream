@@ -13,10 +13,24 @@ plugins:
       - paths=source_relative
       - generate_unbound_methods=true
       - logtostderr=true
+  - plugin: buf.build/community/mfridman-go-json:v1.4.0
+    out: internal
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/bufbuild/validate-go:v1.0.4
+    out: internal
+    opt:
+      - paths=source_relative
 
   # generate C#
   - plugin: buf.build/protocolbuffers/csharp:v26.1
     out: EndlessStreamData
+  - plugin: buf.build/grpc/csharp:v1.62.2
+    out: EndlessStreamData
+
+  # generate JSON schema
+  - plugin: buf.build/bufbuild/protoschema-jsonschema
+    out: ./pb/json
 
   # generate JS
   - plugin: buf.build/bufbuild/es
@@ -24,10 +38,18 @@ plugins:
   - plugin: buf.build/bufbuild/connect-web
     out: pb/js
 
+  # generate Dart
+  - plugin: buf.build/protocolbuffers/dart:v21.1.2
+    out: pb/dart
+
   # generate OpenAPI docs
   - plugin: buf.build/grpc-ecosystem/openapiv2:v2.16.2
     out: docs/openapiv2
     opt: allow_merge=true,merge_file_name=services
+
+  # generate docs
+  - plugin: buf.build/community/pseudomuto-doc:v1.5.1
+    out: docs/grpc
 managed:
   enabled: true
   optimize_for: SPEED
