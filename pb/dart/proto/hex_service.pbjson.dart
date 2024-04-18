@@ -67,4 +67,3 @@ const $core.Map<$core.String, $core.Map<$core.String, $core.dynamic>> AdminServi
 final $typed_data.Uint8List adminServiceDescriptor = $convert.base64Decode(
     'CgVBZG1pbhI7CgZNYW5hZ2USFS5lbmRsZXNzLkFkbWluUmVxdWVzdBoWLmVuZGxlc3MuQWRtaW'
     '5SZXNwb25zZSgBMAE=');
-

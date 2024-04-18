@@ -28,6 +28,7 @@ message Tile {
   Coordinate coords = 2;
 };
 
+// Tileset defines what tileset to use in Godot.
 enum Tileset {
   Dungeon = 0;
   Woods = 1;

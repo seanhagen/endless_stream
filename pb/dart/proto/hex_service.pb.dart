@@ -36,4 +36,3 @@ class AdminApi {
     _client.invoke<$1.AdminResponse>(ctx, 'Admin', 'Manage', request, $1.AdminResponse())
   ;
 }
-

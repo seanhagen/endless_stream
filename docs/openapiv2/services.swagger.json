@@ -183,7 +183,8 @@
         "Dungeon",
         "Woods"
       ],
-      "default": "Dungeon"
+      "default": "Dungeon",
+      "description": "Tileset defines what tileset to use in Godot."
     },
     "endlessType": {
       "type": "string",

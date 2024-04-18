@@ -20,6 +20,8 @@ export const Type = /*@__PURE__*/ proto3.makeEnum(
 );
 
 /**
+ * Tileset defines what tileset to use in Godot.
+ *
  * @generated from enum endless.Tileset
  */
 export const Tileset = /*@__PURE__*/ proto3.makeEnum(
@@ -215,4 +217,3 @@ export const AdminResponse = /*@__PURE__*/ proto3.makeMessageType(
     { no: 3, name: "result", kind: "enum", T: proto3.getEnumType(Result) },
   ],
 );
-

@@ -31,6 +31,7 @@ class Type extends $pb.ProtobufEnum {
   const Type._($core.int v, $core.String n) : super(v, n);
 }
 
+/// Tileset defines what tileset to use in Godot.
 class Tileset extends $pb.ProtobufEnum {
   static const Tileset Dungeon = Tileset._(0, _omitEnumNames ? '' : 'Dungeon');
   static const Tileset Woods = Tileset._(1, _omitEnumNames ? '' : 'Woods');

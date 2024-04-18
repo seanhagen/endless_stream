@@ -74,6 +74,7 @@ func (Type) EnumDescriptor() ([]byte, []int) {
 	return file_proto_hex_proto_rawDescGZIP(), []int{0}
 }
 
+// Tileset defines what tileset to use in Godot.
 type Tileset int32
 
 const (

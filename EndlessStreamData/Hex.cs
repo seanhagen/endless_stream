@@ -101,6 +101,9 @@ namespace Endless {
     [pbr::OriginalName("Wall")] Wall = 2,
   }
 
+  /// <summary>
+  /// Tileset defines what tileset to use in Godot.
+  /// </summary>
   public enum Tileset {
     [pbr::OriginalName("Dungeon")] Dungeon = 0,
     [pbr::OriginalName("Woods")] Woods = 1,

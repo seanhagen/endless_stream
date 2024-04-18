@@ -35,6 +35,8 @@ export declare enum Type {
 }
 
 /**
+ * Tileset defines what tileset to use in Godot.
+ *
  * @generated from enum endless.Tileset
  */
 export declare enum Tileset {
@@ -536,4 +538,3 @@ export declare class AdminResponse extends Message<AdminResponse> {
 
   static equals(a: AdminResponse | PlainMessage<AdminResponse> | undefined, b: AdminResponse | PlainMessage<AdminResponse> | undefined): boolean;
 }
-
