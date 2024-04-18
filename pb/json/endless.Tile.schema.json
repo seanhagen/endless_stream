@@ -1,0 +1,33 @@
+{
+  "$id": "endless.Tile.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Tile is a single tile within the world.",
+  "properties": {
+    "coords": {
+      "$ref": "endless.Coordinate.schema.json",
+      "description": "Coords defines the position of the tile within the world."
+    },
+    "type": {
+      "anyOf": [
+        {
+          "enum": [
+            "Empty",
+            "Floor",
+            "Wall"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        {
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        }
+      ],
+      "description": "Type defines whether the tile is empty, a floor, or a wall."
+    }
+  },
+  "title": "Tile",
+  "type": "object"
+}

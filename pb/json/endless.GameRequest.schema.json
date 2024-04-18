@@ -1,0 +1,18 @@
+{
+  "$id": "endless.GameRequest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "get_level": {
+      "$ref": "endless.GetLevel.schema.json"
+    },
+    "info": {
+      "$ref": "endless.InfoRequest.schema.json"
+    }
+  },
+  "title": "Game Request",
+  "type": "object"
+}

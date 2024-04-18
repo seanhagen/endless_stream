@@ -1,0 +1,35 @@
+{
+  "$id": "endless.Level.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Level is a single layer of tiles laid out to create a level.",
+  "properties": {
+    "tiles": {
+      "description": "Tiles is an array of all the tiles laid out on a level.",
+      "items": {
+        "$ref": "endless.Tile.schema.json"
+      },
+      "type": "array"
+    },
+    "tileset": {
+      "anyOf": [
+        {
+          "enum": [
+            "Dungeon",
+            "Woods"
+          ],
+          "title": "Tileset",
+          "type": "string"
+        },
+        {
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        }
+      ],
+      "description": "Tileset tells Godot what tileset to use."
+    }
+  },
+  "title": "Level",
+  "type": "object"
+}

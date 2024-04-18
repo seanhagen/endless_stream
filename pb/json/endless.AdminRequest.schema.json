@@ -1,0 +1,18 @@
+{
+  "$id": "endless.AdminRequest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "add_tile": {
+      "$ref": "endless.AddTile.schema.json"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "remove_tile": {
+      "$ref": "endless.RemoveTile.schema.json"
+    }
+  },
+  "title": "Admin Request",
+  "type": "object"
+}
