@@ -20,8 +20,7 @@ func TestServer_Constructor_RequiredOptions(t *testing.T) {
 		valid bool
 	}{
 		{
-			name:  "empty config is not valid",
-			valid: true,
+			name: "empty config is not valid",
 		},
 		{
 			name: "config with only GameSDK set is invalid",
@@ -55,7 +54,6 @@ func TestServer_Constructor_RequiredOptions(t *testing.T) {
 				if tt.valid {
 					assert.NotNil(t, handler)
 					assert.NoError(t, err)
-
 					return
 				}
 
