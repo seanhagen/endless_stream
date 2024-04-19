@@ -1,5 +1,5 @@
-agones.dev/agones v1.38.0 h1:8MjcZWx55/so4VAzSCbsXAtHmuomz26UVrmsv9rB4So=
-agones.dev/agones v1.38.0/go.mod h1:SMykJ8MXLO9m5StuVWCMuSK4Xbto6NOMbVDkU3RPoC4=
+agones.dev/agones v1.39.0 h1:oCwJohhcZQzfz1pQ8OxQSkZ12V0imTlEBZez78bYspo=
+agones.dev/agones v1.39.0/go.mod h1:n0gTMgxYrvxvEHK8Hfr/epa95BM7W3QuYdlZ1EAG/IQ=
 atomicgo.dev/assert v0.0.2 h1:FiKeMiZSgRrZsPo9qn/7vmr7mCsh5SZyXY4YGYiYwrg=
 atomicgo.dev/assert v0.0.2/go.mod h1:ut4NcI3QDdJtlmAxQULOmA13Gz6e2DWbSAS8RUOmNYQ=
 atomicgo.dev/cursor v0.2.0 h1:H6XN5alUJ52FZZUkI7AlJbUc1aW38GWZalpYRPpoPOw=
