@@ -87,3 +87,34 @@ how to optimize them.
  - with hot reloading?
 
 * Notes
+** How To Test GRPC
+*** Servers
+The examples use the [[https://github.com/grpc/grpc-go/tree/master/examples/helloworld][helloworld]] protos.
+
+A server is created by doing the following:
+#+begin_src go
+  s := grpc.NewServer()
+	pb.RegisterGreeterServer(s, &server{})
+#+end_src
+
+Basically, =grpc.NewServer= creates the type that handles most of the work;
+listening for clients, serializing & de-serializing messages, dealing with
+errors returned from handlers, etc.
+
+The register function registered the provided type as the implementation of that
+server/service.
+
+So to test the server, can just test the handler functions the same as I would
+for any other type that has methods.
+
+*** Clients
+Clients are defined as interfaces:
+#+begin_src go
+type HexClient interface {
+	Info(ctx context.Context, in *InfoRequest, opts ...grpc.CallOption) (*InfoResponse, error)
+	Game(ctx context.Context, opts ...grpc.CallOption) (Hex_GameClient, error)
+}
+#+end_src
+
+So anything expecting a HexClient can just be passed a type that implements the
+correct methods.
