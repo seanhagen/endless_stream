@@ -467,3 +467,4 @@ $RECYCLE.BIN/
 *.lnk
 /coverage.out
 /coverage.txt
+/report.xml
