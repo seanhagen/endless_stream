@@ -488,8 +488,8 @@ class Heartbeat extends $pb.GeneratedMessage {
 }
 
 enum GameRequest_Request {
-  info, 
-  getLevel, 
+  info,
+  getLevel,
   notSet
 }
 
@@ -585,10 +585,10 @@ class GameRequest extends $pb.GeneratedMessage {
 }
 
 enum GameResponse_Message {
-  heartbeat, 
-  log, 
-  info, 
-  level, 
+  heartbeat,
+  log,
+  info,
+  level,
   notSet
 }
 
@@ -822,8 +822,8 @@ class RemoveTile extends $pb.GeneratedMessage {
 }
 
 enum AdminRequest_Request {
-  addTile, 
-  removeTile, 
+  addTile,
+  removeTile,
   notSet
 }
 

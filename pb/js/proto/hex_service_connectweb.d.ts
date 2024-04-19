@@ -50,4 +50,3 @@ export declare const Admin: {
     },
   }
 };
-

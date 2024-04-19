@@ -568,4 +568,3 @@ export declare class AdminResponse extends Message<AdminResponse> {
 
   static equals(a: AdminResponse | PlainMessage<AdminResponse> | undefined, b: AdminResponse | PlainMessage<AdminResponse> | undefined): boolean;
 }
-

@@ -228,4 +228,3 @@ export const AdminResponse = /*@__PURE__*/ proto3.makeMessageType(
     { no: 3, name: "result", kind: "enum", T: proto3.getEnumType(Result) },
   ],
 );
-
