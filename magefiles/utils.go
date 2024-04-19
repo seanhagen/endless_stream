@@ -25,24 +25,6 @@ func fileExists(path string) bool {
 	return errors.Is(err, os.ErrNotExist)
 }
 
-func removeFile(path string) error {
-	fmt.Printf("\tRemoving file %q: ", path)
-	if !fileExists(path) {
-		fmt.Printf(" file not found, skipping\n")
-		return nil
-	}
-
-	err := os.Remove(path)
-	if err != nil {
-		fmt.Printf("%s - %s\n", color.RedString("ERROR"), err)
-		return err
-	}
-
-	fmt.Printf("%s\n", color.GreenString("DONE"))
-
-	return nil
-}
-
 func removeAll(path string) error {
 	fmt.Printf("\tRemoving file or directory %q: ", path)
 	if !fileExists(path) {
@@ -139,18 +121,18 @@ func execCommand(command string, args ...string) error {
 	errBuf := bytes.NewBuffer(nil)
 
 	ran, err := sh.Exec(nil, outBuf, errBuf, command, args...)
-	if ran == false && err != nil {
+	if !ran && err != nil {
 		pterm.Error.Printf("Unable to run command %q!\n", command)
 		fmt.Printf("Error:\n%s\n", errBuf.String())
 		return fmt.Errorf("unable to run linter: %w", err)
 	}
 
-	if ran == true && err != nil {
+	if ran && err != nil {
 		pterm.Warning.Printf("Errors while running %s!\n", command)
 		pterm.Printf("Output:\n%s\n", outBuf.String())
 	}
 
-	if ran == true && err == nil {
+	if ran && err == nil {
 		pterm.Success.Printf("No errors when running %s!\n", command)
 	}
 
