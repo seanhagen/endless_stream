@@ -35,32 +35,34 @@ namespace Endless {
             "IAEoDjIRLmVuZGxlc3MuTG9nTGV2ZWxSBWxldmVsEioKBnNvdXJjZRgEIAEo",
             "DjISLmVuZGxlc3MuTG9nU291cmNlUgZzb3VyY2UiDQoLSW5mb1JlcXVlc3Qi",
             "RwoMSW5mb1Jlc3BvbnNlEhgKB3ZlcnNpb24YASABKAlSB3ZlcnNpb24SHQoK",
-            "YnVpbGRfZGF0ZRgCIAEoCVIJYnVpbGREYXRlIgoKCEdldExldmVsIpMBCgtH",
-            "YW1lUmVxdWVzdBIbCgljbGllbnRfaWQYASABKAlSCGNsaWVudElkEioKBGlu",
-            "Zm8YAiABKAsyFC5lbmRsZXNzLkluZm9SZXF1ZXN0SABSBGluZm8SMAoJZ2V0",
-            "X2xldmVsGAMgASgLMhEuZW5kbGVzcy5HZXRMZXZlbEgAUghnZXRMZXZlbEIJ",
-            "CgdyZXF1ZXN0Iq0BCgxHYW1lUmVzcG9uc2USGwoJc2VydmVyX2lkGAEgASgJ",
-            "UghzZXJ2ZXJJZBIgCgNsb2cYAiABKAsyDC5lbmRsZXNzLkxvZ0gAUgNsb2cS",
-            "KwoEaW5mbxgDIAEoCzIVLmVuZGxlc3MuSW5mb1Jlc3BvbnNlSABSBGluZm8S",
-            "JgoFbGV2ZWwYBCABKAsyDi5lbmRsZXNzLkxldmVsSABSBWxldmVsQgkKB21z",
-            "ZXNhZ2UiLAoHQWRkVGlsZRIhCgR0aWxlGAEgASgLMg0uZW5kbGVzcy5UaWxl",
-            "UgR0aWxlIjkKClJlbW92ZVRpbGUSKwoGY29vcmRzGAEgASgLMhMuZW5kbGVz",
-            "cy5Db29yZGluYXRlUgZjb29yZHMinQEKDEFkbWluUmVxdWVzdBIbCgljbGll",
-            "bnRfaWQYASABKAlSCGNsaWVudElkEi0KCGFkZF90aWxlGAIgASgLMhAuZW5k",
-            "bGVzcy5BZGRUaWxlSABSB2FkZFRpbGUSNgoLcmVtb3ZlX3RpbGUYAyABKAsy",
-            "Ey5lbmRsZXNzLlJlbW92ZVRpbGVIAFIKcmVtb3ZlVGlsZUIJCgdyZXF1ZXN0",
-            "InUKDUFkbWluUmVzcG9uc2USGwoJc2VydmVyX2lkGAEgASgJUghzZXJ2ZXJJ",
-            "ZBIeCgNsb2cYAiABKAsyDC5lbmRsZXNzLkxvZ1IDbG9nEicKBnJlc3VsdBgD",
-            "IAEoDjIPLmVuZGxlc3MuUmVzdWx0UgZyZXN1bHQqJgoEVHlwZRIJCgVFbXB0",
-            "eRAAEgkKBUZsb29yEAESCAoEV2FsbBACKiEKB1RpbGVzZXQSCwoHRHVuZ2Vv",
-            "bhAAEgkKBVdvb2RzEAEqSAoITG9nTGV2ZWwSCAoESW5mbxAAEhIKBURlYnVn",
-            "EP///////////wESCAoEV2FybhACEgkKBUVycm9yEAMSCQoFRmF0YWwQBCou",
-            "CglMb2dTb3VyY2USCgoGU2VydmVyEAASCgoGUGxheWVyEGQSCQoER2FtZRDI",
-            "ASovCgZSZXN1bHQSCwoHVW5rbm93bhAAEgsKB0ZhaWx1cmUQARILCgdTdWNj",
-            "ZXNzEAJCjQEKC2NvbS5lbmRsZXNzQghIZXhQcm90b1ABWjhnaXRodWIuY29t",
-            "L3NlYW5oYWdlbi9lbmRsZXNzX3N0cmVhbS9pbnRlcm5hbC9wcm90by9wcm90",
-            "b6ICA0VYWKoCB0VuZGxlc3PKAgdFbmRsZXNz4gITRW5kbGVzc1xHUEJNZXRh",
-            "ZGF0YeoCB0VuZGxlc3NiBnByb3RvMw=="));
+            "YnVpbGRfZGF0ZRgCIAEoCVIJYnVpbGREYXRlIgoKCEdldExldmVsIjsKCUhl",
+            "YXJ0YmVhdBIuCgRiZWF0GAEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVz",
+            "dGFtcFIEYmVhdCKTAQoLR2FtZVJlcXVlc3QSGwoJY2xpZW50X2lkGAEgASgJ",
+            "UghjbGllbnRJZBIqCgRpbmZvGAIgASgLMhQuZW5kbGVzcy5JbmZvUmVxdWVz",
+            "dEgAUgRpbmZvEjAKCWdldF9sZXZlbBgDIAEoCzIRLmVuZGxlc3MuR2V0TGV2",
+            "ZWxIAFIIZ2V0TGV2ZWxCCQoHcmVxdWVzdCLhAQoMR2FtZVJlc3BvbnNlEhsK",
+            "CXNlcnZlcl9pZBgBIAEoCVIIc2VydmVySWQSMgoJaGVhcnRiZWF0GAIgASgL",
+            "MhIuZW5kbGVzcy5IZWFydGJlYXRIAFIJaGVhcnRiZWF0EiAKA2xvZxgDIAEo",
+            "CzIMLmVuZGxlc3MuTG9nSABSA2xvZxIrCgRpbmZvGAQgASgLMhUuZW5kbGVz",
+            "cy5JbmZvUmVzcG9uc2VIAFIEaW5mbxImCgVsZXZlbBgFIAEoCzIOLmVuZGxl",
+            "c3MuTGV2ZWxIAFIFbGV2ZWxCCQoHbWVzc2FnZSIsCgdBZGRUaWxlEiEKBHRp",
+            "bGUYASABKAsyDS5lbmRsZXNzLlRpbGVSBHRpbGUiOQoKUmVtb3ZlVGlsZRIr",
+            "CgZjb29yZHMYASABKAsyEy5lbmRsZXNzLkNvb3JkaW5hdGVSBmNvb3JkcyKd",
+            "AQoMQWRtaW5SZXF1ZXN0EhsKCWNsaWVudF9pZBgBIAEoCVIIY2xpZW50SWQS",
+            "LQoIYWRkX3RpbGUYAiABKAsyEC5lbmRsZXNzLkFkZFRpbGVIAFIHYWRkVGls",
+            "ZRI2CgtyZW1vdmVfdGlsZRgDIAEoCzITLmVuZGxlc3MuUmVtb3ZlVGlsZUgA",
+            "UgpyZW1vdmVUaWxlQgkKB3JlcXVlc3QidQoNQWRtaW5SZXNwb25zZRIbCglz",
+            "ZXJ2ZXJfaWQYASABKAlSCHNlcnZlcklkEh4KA2xvZxgCIAEoCzIMLmVuZGxl",
+            "c3MuTG9nUgNsb2cSJwoGcmVzdWx0GAMgASgOMg8uZW5kbGVzcy5SZXN1bHRS",
+            "BnJlc3VsdComCgRUeXBlEgkKBUVtcHR5EAASCQoFRmxvb3IQARIICgRXYWxs",
+            "EAIqIQoHVGlsZXNldBILCgdEdW5nZW9uEAASCQoFV29vZHMQASpICghMb2dM",
+            "ZXZlbBIICgRJbmZvEAASEgoFRGVidWcQ////////////ARIICgRXYXJuEAIS",
+            "CQoFRXJyb3IQAxIJCgVGYXRhbBAEKi4KCUxvZ1NvdXJjZRIKCgZTZXJ2ZXIQ",
+            "ABIKCgZQbGF5ZXIQZBIJCgRHYW1lEMgBKi8KBlJlc3VsdBILCgdVbmtub3du",
+            "EAASCwoHRmFpbHVyZRABEgsKB1N1Y2Nlc3MQAkKNAQoLY29tLmVuZGxlc3NC",
+            "CEhleFByb3RvUAFaOGdpdGh1Yi5jb20vc2VhbmhhZ2VuL2VuZGxlc3Nfc3Ry",
+            "ZWFtL2ludGVybmFsL3Byb3RvL3Byb3RvogIDRVhYqgIHRW5kbGVzc8oCB0Vu",
+            "ZGxlc3PiAhNFbmRsZXNzXEdQQk1ldGFkYXRh6gIHRW5kbGVzc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Endless.Type), typeof(global::Endless.Tileset), typeof(global::Endless.LogLevel), typeof(global::Endless.LogSource), typeof(global::Endless.Result), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -71,8 +73,9 @@ namespace Endless {
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.InfoRequest), global::Endless.InfoRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.InfoResponse), global::Endless.InfoResponse.Parser, new[]{ "Version", "BuildDate" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.GetLevel), global::Endless.GetLevel.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.Heartbeat), global::Endless.Heartbeat.Parser, new[]{ "Beat" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.GameRequest), global::Endless.GameRequest.Parser, new[]{ "ClientId", "Info", "GetLevel" }, new[]{ "Request" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.GameResponse), global::Endless.GameResponse.Parser, new[]{ "ServerId", "Log", "Info", "Level" }, new[]{ "Msesage" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Endless.GameResponse), global::Endless.GameResponse.Parser, new[]{ "ServerId", "Heartbeat", "Log", "Info", "Level" }, new[]{ "Message" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.AddTile), global::Endless.AddTile.Parser, new[]{ "Tile" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.RemoveTile), global::Endless.RemoveTile.Parser, new[]{ "Coords" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Endless.AdminRequest), global::Endless.AdminRequest.Parser, new[]{ "ClientId", "AddTile", "RemoveTile" }, new[]{ "Request" }, null, null, null),
@@ -1676,6 +1679,205 @@ namespace Endless {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class Heartbeat : pb::IMessage<Heartbeat>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Heartbeat> _parser = new pb::MessageParser<Heartbeat>(() => new Heartbeat());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<Heartbeat> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Endless.HexReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Heartbeat() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Heartbeat(Heartbeat other) : this() {
+      beat_ = other.beat_ != null ? other.beat_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Heartbeat Clone() {
+      return new Heartbeat(this);
+    }
+
+    /// <summary>Field number for the "beat" field.</summary>
+    public const int BeatFieldNumber = 1;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp beat_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp Beat {
+      get { return beat_; }
+      set {
+        beat_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as Heartbeat);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(Heartbeat other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Beat, other.Beat)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (beat_ != null) hash ^= Beat.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (beat_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Beat);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (beat_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Beat);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (beat_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Beat);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(Heartbeat other) {
+      if (other == null) {
+        return;
+      }
+      if (other.beat_ != null) {
+        if (beat_ == null) {
+          Beat = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        Beat.MergeFrom(other.Beat);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (beat_ == null) {
+              Beat = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(Beat);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (beat_ == null) {
+              Beat = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(Beat);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class GameRequest : pb::IMessage<GameRequest>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1690,7 +1892,7 @@ namespace Endless {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Endless.HexReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Endless.HexReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2013,7 +2215,7 @@ namespace Endless {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Endless.HexReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Endless.HexReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2034,14 +2236,17 @@ namespace Endless {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public GameResponse(GameResponse other) : this() {
       serverId_ = other.serverId_;
-      switch (other.MsesageCase) {
-        case MsesageOneofCase.Log:
+      switch (other.MessageCase) {
+        case MessageOneofCase.Heartbeat:
+          Heartbeat = other.Heartbeat.Clone();
+          break;
+        case MessageOneofCase.Log:
           Log = other.Log.Clone();
           break;
-        case MsesageOneofCase.Info:
+        case MessageOneofCase.Info:
           Info = other.Info.Clone();
           break;
-        case MsesageOneofCase.Level:
+        case MessageOneofCase.Level:
           Level = other.Level.Clone();
           break;
       }
@@ -2067,62 +2272,75 @@ namespace Endless {
       }
     }
 
+    /// <summary>Field number for the "heartbeat" field.</summary>
+    public const int HeartbeatFieldNumber = 2;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Endless.Heartbeat Heartbeat {
+      get { return messageCase_ == MessageOneofCase.Heartbeat ? (global::Endless.Heartbeat) message_ : null; }
+      set {
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.Heartbeat;
+      }
+    }
+
     /// <summary>Field number for the "log" field.</summary>
-    public const int LogFieldNumber = 2;
+    public const int LogFieldNumber = 3;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Endless.Log Log {
-      get { return msesageCase_ == MsesageOneofCase.Log ? (global::Endless.Log) msesage_ : null; }
+      get { return messageCase_ == MessageOneofCase.Log ? (global::Endless.Log) message_ : null; }
       set {
-        msesage_ = value;
-        msesageCase_ = value == null ? MsesageOneofCase.None : MsesageOneofCase.Log;
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.Log;
       }
     }
 
     /// <summary>Field number for the "info" field.</summary>
-    public const int InfoFieldNumber = 3;
+    public const int InfoFieldNumber = 4;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Endless.InfoResponse Info {
-      get { return msesageCase_ == MsesageOneofCase.Info ? (global::Endless.InfoResponse) msesage_ : null; }
+      get { return messageCase_ == MessageOneofCase.Info ? (global::Endless.InfoResponse) message_ : null; }
       set {
-        msesage_ = value;
-        msesageCase_ = value == null ? MsesageOneofCase.None : MsesageOneofCase.Info;
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.Info;
       }
     }
 
     /// <summary>Field number for the "level" field.</summary>
-    public const int LevelFieldNumber = 4;
+    public const int LevelFieldNumber = 5;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Endless.Level Level {
-      get { return msesageCase_ == MsesageOneofCase.Level ? (global::Endless.Level) msesage_ : null; }
+      get { return messageCase_ == MessageOneofCase.Level ? (global::Endless.Level) message_ : null; }
       set {
-        msesage_ = value;
-        msesageCase_ = value == null ? MsesageOneofCase.None : MsesageOneofCase.Level;
+        message_ = value;
+        messageCase_ = value == null ? MessageOneofCase.None : MessageOneofCase.Level;
       }
     }
 
-    private object msesage_;
-    /// <summary>Enum of possible cases for the "msesage" oneof.</summary>
-    public enum MsesageOneofCase {
+    private object message_;
+    /// <summary>Enum of possible cases for the "message" oneof.</summary>
+    public enum MessageOneofCase {
       None = 0,
-      Log = 2,
-      Info = 3,
-      Level = 4,
+      Heartbeat = 2,
+      Log = 3,
+      Info = 4,
+      Level = 5,
     }
-    private MsesageOneofCase msesageCase_ = MsesageOneofCase.None;
+    private MessageOneofCase messageCase_ = MessageOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public MsesageOneofCase MsesageCase {
-      get { return msesageCase_; }
+    public MessageOneofCase MessageCase {
+      get { return messageCase_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void ClearMsesage() {
-      msesageCase_ = MsesageOneofCase.None;
-      msesage_ = null;
+    public void ClearMessage() {
+      messageCase_ = MessageOneofCase.None;
+      message_ = null;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2141,10 +2359,11 @@ namespace Endless {
         return true;
       }
       if (ServerId != other.ServerId) return false;
+      if (!object.Equals(Heartbeat, other.Heartbeat)) return false;
       if (!object.Equals(Log, other.Log)) return false;
       if (!object.Equals(Info, other.Info)) return false;
       if (!object.Equals(Level, other.Level)) return false;
-      if (MsesageCase != other.MsesageCase) return false;
+      if (MessageCase != other.MessageCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2153,10 +2372,11 @@ namespace Endless {
     public override int GetHashCode() {
       int hash = 1;
       if (ServerId.Length != 0) hash ^= ServerId.GetHashCode();
-      if (msesageCase_ == MsesageOneofCase.Log) hash ^= Log.GetHashCode();
-      if (msesageCase_ == MsesageOneofCase.Info) hash ^= Info.GetHashCode();
-      if (msesageCase_ == MsesageOneofCase.Level) hash ^= Level.GetHashCode();
-      hash ^= (int) msesageCase_;
+      if (messageCase_ == MessageOneofCase.Heartbeat) hash ^= Heartbeat.GetHashCode();
+      if (messageCase_ == MessageOneofCase.Log) hash ^= Log.GetHashCode();
+      if (messageCase_ == MessageOneofCase.Info) hash ^= Info.GetHashCode();
+      if (messageCase_ == MessageOneofCase.Level) hash ^= Level.GetHashCode();
+      hash ^= (int) messageCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2179,16 +2399,20 @@ namespace Endless {
         output.WriteRawTag(10);
         output.WriteString(ServerId);
       }
-      if (msesageCase_ == MsesageOneofCase.Log) {
+      if (messageCase_ == MessageOneofCase.Heartbeat) {
         output.WriteRawTag(18);
+        output.WriteMessage(Heartbeat);
+      }
+      if (messageCase_ == MessageOneofCase.Log) {
+        output.WriteRawTag(26);
         output.WriteMessage(Log);
       }
-      if (msesageCase_ == MsesageOneofCase.Info) {
-        output.WriteRawTag(26);
+      if (messageCase_ == MessageOneofCase.Info) {
+        output.WriteRawTag(34);
         output.WriteMessage(Info);
       }
-      if (msesageCase_ == MsesageOneofCase.Level) {
-        output.WriteRawTag(34);
+      if (messageCase_ == MessageOneofCase.Level) {
+        output.WriteRawTag(42);
         output.WriteMessage(Level);
       }
       if (_unknownFields != null) {
@@ -2205,16 +2429,20 @@ namespace Endless {
         output.WriteRawTag(10);
         output.WriteString(ServerId);
       }
-      if (msesageCase_ == MsesageOneofCase.Log) {
+      if (messageCase_ == MessageOneofCase.Heartbeat) {
         output.WriteRawTag(18);
+        output.WriteMessage(Heartbeat);
+      }
+      if (messageCase_ == MessageOneofCase.Log) {
+        output.WriteRawTag(26);
         output.WriteMessage(Log);
       }
-      if (msesageCase_ == MsesageOneofCase.Info) {
-        output.WriteRawTag(26);
+      if (messageCase_ == MessageOneofCase.Info) {
+        output.WriteRawTag(34);
         output.WriteMessage(Info);
       }
-      if (msesageCase_ == MsesageOneofCase.Level) {
-        output.WriteRawTag(34);
+      if (messageCase_ == MessageOneofCase.Level) {
+        output.WriteRawTag(42);
         output.WriteMessage(Level);
       }
       if (_unknownFields != null) {
@@ -2230,13 +2458,16 @@ namespace Endless {
       if (ServerId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ServerId);
       }
-      if (msesageCase_ == MsesageOneofCase.Log) {
+      if (messageCase_ == MessageOneofCase.Heartbeat) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Heartbeat);
+      }
+      if (messageCase_ == MessageOneofCase.Log) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Log);
       }
-      if (msesageCase_ == MsesageOneofCase.Info) {
+      if (messageCase_ == MessageOneofCase.Info) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Info);
       }
-      if (msesageCase_ == MsesageOneofCase.Level) {
+      if (messageCase_ == MessageOneofCase.Level) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Level);
       }
       if (_unknownFields != null) {
@@ -2254,20 +2485,26 @@ namespace Endless {
       if (other.ServerId.Length != 0) {
         ServerId = other.ServerId;
       }
-      switch (other.MsesageCase) {
-        case MsesageOneofCase.Log:
+      switch (other.MessageCase) {
+        case MessageOneofCase.Heartbeat:
+          if (Heartbeat == null) {
+            Heartbeat = new global::Endless.Heartbeat();
+          }
+          Heartbeat.MergeFrom(other.Heartbeat);
+          break;
+        case MessageOneofCase.Log:
           if (Log == null) {
             Log = new global::Endless.Log();
           }
           Log.MergeFrom(other.Log);
           break;
-        case MsesageOneofCase.Info:
+        case MessageOneofCase.Info:
           if (Info == null) {
             Info = new global::Endless.InfoResponse();
           }
           Info.MergeFrom(other.Info);
           break;
-        case MsesageOneofCase.Level:
+        case MessageOneofCase.Level:
           if (Level == null) {
             Level = new global::Endless.Level();
           }
@@ -2295,26 +2532,35 @@ namespace Endless {
             break;
           }
           case 18: {
+            global::Endless.Heartbeat subBuilder = new global::Endless.Heartbeat();
+            if (messageCase_ == MessageOneofCase.Heartbeat) {
+              subBuilder.MergeFrom(Heartbeat);
+            }
+            input.ReadMessage(subBuilder);
+            Heartbeat = subBuilder;
+            break;
+          }
+          case 26: {
             global::Endless.Log subBuilder = new global::Endless.Log();
-            if (msesageCase_ == MsesageOneofCase.Log) {
+            if (messageCase_ == MessageOneofCase.Log) {
               subBuilder.MergeFrom(Log);
             }
             input.ReadMessage(subBuilder);
             Log = subBuilder;
             break;
           }
-          case 26: {
+          case 34: {
             global::Endless.InfoResponse subBuilder = new global::Endless.InfoResponse();
-            if (msesageCase_ == MsesageOneofCase.Info) {
+            if (messageCase_ == MessageOneofCase.Info) {
               subBuilder.MergeFrom(Info);
             }
             input.ReadMessage(subBuilder);
             Info = subBuilder;
             break;
           }
-          case 34: {
+          case 42: {
             global::Endless.Level subBuilder = new global::Endless.Level();
-            if (msesageCase_ == MsesageOneofCase.Level) {
+            if (messageCase_ == MessageOneofCase.Level) {
               subBuilder.MergeFrom(Level);
             }
             input.ReadMessage(subBuilder);
@@ -2341,26 +2587,35 @@ namespace Endless {
             break;
           }
           case 18: {
+            global::Endless.Heartbeat subBuilder = new global::Endless.Heartbeat();
+            if (messageCase_ == MessageOneofCase.Heartbeat) {
+              subBuilder.MergeFrom(Heartbeat);
+            }
+            input.ReadMessage(subBuilder);
+            Heartbeat = subBuilder;
+            break;
+          }
+          case 26: {
             global::Endless.Log subBuilder = new global::Endless.Log();
-            if (msesageCase_ == MsesageOneofCase.Log) {
+            if (messageCase_ == MessageOneofCase.Log) {
               subBuilder.MergeFrom(Log);
             }
             input.ReadMessage(subBuilder);
             Log = subBuilder;
             break;
           }
-          case 26: {
+          case 34: {
             global::Endless.InfoResponse subBuilder = new global::Endless.InfoResponse();
-            if (msesageCase_ == MsesageOneofCase.Info) {
+            if (messageCase_ == MessageOneofCase.Info) {
               subBuilder.MergeFrom(Info);
             }
             input.ReadMessage(subBuilder);
             Info = subBuilder;
             break;
           }
-          case 34: {
+          case 42: {
             global::Endless.Level subBuilder = new global::Endless.Level();
-            if (msesageCase_ == MsesageOneofCase.Level) {
+            if (messageCase_ == MessageOneofCase.Level) {
               subBuilder.MergeFrom(Level);
             }
             input.ReadMessage(subBuilder);
@@ -2389,7 +2644,7 @@ namespace Endless {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Endless.HexReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Endless.HexReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2588,7 +2843,7 @@ namespace Endless {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Endless.HexReflection.Descriptor.MessageTypes[10]; }
+      get { return global::Endless.HexReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2787,7 +3042,7 @@ namespace Endless {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Endless.HexReflection.Descriptor.MessageTypes[11]; }
+      get { return global::Endless.HexReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3110,7 +3365,7 @@ namespace Endless {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Endless.HexReflection.Descriptor.MessageTypes[12]; }
+      get { return global::Endless.HexReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

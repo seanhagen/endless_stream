@@ -175,6 +175,19 @@ const GetLevel$json = {
 final $typed_data.Uint8List getLevelDescriptor = $convert.base64Decode(
     'CghHZXRMZXZlbA==');
 
+@$core.Deprecated('Use heartbeatDescriptor instead')
+const Heartbeat$json = {
+  '1': 'Heartbeat',
+  '2': [
+    {'1': 'beat', '3': 1, '4': 1, '5': 11, '6': '.google.protobuf.Timestamp', '10': 'beat'},
+  ],
+};
+
+/// Descriptor for `Heartbeat`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List heartbeatDescriptor = $convert.base64Decode(
+    'CglIZWFydGJlYXQSLgoEYmVhdBgBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBSBG'
+    'JlYXQ=');
+
 @$core.Deprecated('Use gameRequestDescriptor instead')
 const GameRequest$json = {
   '1': 'GameRequest',
@@ -199,21 +212,23 @@ const GameResponse$json = {
   '1': 'GameResponse',
   '2': [
     {'1': 'server_id', '3': 1, '4': 1, '5': 9, '10': 'serverId'},
-    {'1': 'log', '3': 2, '4': 1, '5': 11, '6': '.endless.Log', '9': 0, '10': 'log'},
-    {'1': 'info', '3': 3, '4': 1, '5': 11, '6': '.endless.InfoResponse', '9': 0, '10': 'info'},
-    {'1': 'level', '3': 4, '4': 1, '5': 11, '6': '.endless.Level', '9': 0, '10': 'level'},
+    {'1': 'heartbeat', '3': 2, '4': 1, '5': 11, '6': '.endless.Heartbeat', '9': 0, '10': 'heartbeat'},
+    {'1': 'log', '3': 3, '4': 1, '5': 11, '6': '.endless.Log', '9': 0, '10': 'log'},
+    {'1': 'info', '3': 4, '4': 1, '5': 11, '6': '.endless.InfoResponse', '9': 0, '10': 'info'},
+    {'1': 'level', '3': 5, '4': 1, '5': 11, '6': '.endless.Level', '9': 0, '10': 'level'},
   ],
   '8': [
-    {'1': 'msesage'},
+    {'1': 'message'},
   ],
 };
 
 /// Descriptor for `GameResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List gameResponseDescriptor = $convert.base64Decode(
-    'CgxHYW1lUmVzcG9uc2USGwoJc2VydmVyX2lkGAEgASgJUghzZXJ2ZXJJZBIgCgNsb2cYAiABKA'
-    'syDC5lbmRsZXNzLkxvZ0gAUgNsb2cSKwoEaW5mbxgDIAEoCzIVLmVuZGxlc3MuSW5mb1Jlc3Bv'
-    'bnNlSABSBGluZm8SJgoFbGV2ZWwYBCABKAsyDi5lbmRsZXNzLkxldmVsSABSBWxldmVsQgkKB2'
-    '1zZXNhZ2U=');
+    'CgxHYW1lUmVzcG9uc2USGwoJc2VydmVyX2lkGAEgASgJUghzZXJ2ZXJJZBIyCgloZWFydGJlYX'
+    'QYAiABKAsyEi5lbmRsZXNzLkhlYXJ0YmVhdEgAUgloZWFydGJlYXQSIAoDbG9nGAMgASgLMgwu'
+    'ZW5kbGVzcy5Mb2dIAFIDbG9nEisKBGluZm8YBCABKAsyFS5lbmRsZXNzLkluZm9SZXNwb25zZU'
+    'gAUgRpbmZvEiYKBWxldmVsGAUgASgLMg4uZW5kbGVzcy5MZXZlbEgAUgVsZXZlbEIJCgdtZXNz'
+    'YWdl');
 
 @$core.Deprecated('Use addTileDescriptor instead')
 const AddTile$json = {

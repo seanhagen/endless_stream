@@ -73,6 +73,10 @@ message InfoResponse {
 
 message GetLevel {};
 
+message Heartbeat {
+  google.protobuf.Timestamp beat = 1;
+};
+
 message GameRequest {
   string client_id = 1;
 
@@ -85,10 +89,11 @@ message GameRequest {
 message GameResponse {
   string server_id = 1;
 
-  oneof msesage {
-    Log log = 2;
-    InfoResponse info = 3;
-    Level level = 4;
+  oneof message {
+    Heartbeat heartbeat = 2;
+    Log log = 3;
+    InfoResponse info = 4;
+    Level level = 5;
   }
 };
 

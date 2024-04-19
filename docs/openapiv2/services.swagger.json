@@ -62,6 +62,9 @@
         "serverId": {
           "type": "string"
         },
+        "heartbeat": {
+          "$ref": "#/definitions/endlessHeartbeat"
+        },
         "log": {
           "$ref": "#/definitions/endlessLog"
         },
@@ -75,6 +78,15 @@
     },
     "endlessGetLevel": {
       "type": "object"
+    },
+    "endlessHeartbeat": {
+      "type": "object",
+      "properties": {
+        "beat": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
     },
     "endlessInfoRequest": {
       "type": "object"
