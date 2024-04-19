@@ -1,3 +1,4 @@
+#+OPTIONS: ^:nil
 * Tasks
 ** TODO Basic Server Setup [1/6]
 *** DONE Set up minikube on laptop
@@ -87,6 +88,104 @@ how to optimize them.
  - with hot reloading?
 
 * Notes
+** Game Server & Hexagonal Architecture
+Basically, I want to figure out how to do this:
+
+#+begin_quote
+GRPC -> GRPC Handler -> Game Server
+HTTP -> HTTP Handler -> Game Server
+WebSockets -> WS Handler -> Game Server
+#+end_quote
+
+IE, it doesn't matter what the communication transport is, I just need to have
+handlers for each transport type that can handle the incoming requests.
+
+What I have to figure out now is what the API of the Game Server type will
+be. How closely will it match the GRPC API? I don't really want to have it match
+1-to-1; but I also don't want the piece that sits between the transport layer &
+the game server to be hideously complicated.
+
+Let's start by seeing how this all would work for GRPC.
+
+*** GRPC
+Here's what we're breaking down:
+#+begin_quote
+GRPC -> GRPC Handler -> Game Server
+#+end_quote
+
+The =GRPC -> GRPC Handler= is already defined for us; it's a side effect of
+GRPC. A protobuf like this:
+
+#+begin_src protobuf
+service Hex {
+  rpc Info(InfoRequest) returns (InfoResponse);
+  rpc Game(stream GameRequest) returns (stream GameResponse);
+}
+#+end_src
+
+Becomes an interface like this:
+#+begin_src go
+  type HexServer interface {
+  	Info(context.Context, *InfoRequest) (*InfoResponse, error)
+  	Game(Hex_GameServer) error
+  	mustEmbedUnimplementedHexServer()
+  }
+#+end_src
+
+To implement, we create a struct:
+#+begin_src go
+  type myHexServer struct {
+  	proto.UnimplementedHexServer
+  }
+#+end_src
+
+And define methods that match each of the interface methods.
+
+The trick is that the =Game(stream GameRequest)= RPC accepts =GameRequest=, which
+contains this:
+#+begin_src protobuf
+  oneof request {
+    InfoRequest info = 2;
+    GetLevel get_level = 3;
+  }
+#+end_src
+
+My idea was to keep extending that with more request types as needed.
+
+I don't really want the game server to have what amounts to the same API; mostly
+because I don't want to end up using the protobuf message types as the "domain"
+types. That, and the types have names like =GameRequest_Info=.
+
+Maybe the GRPC Handler uses a switch to fan out to the correct handler function
+for the =request= type.
+
+So the thing to target for a test would be this:
+
+ - given a properly constructed client
+ - given a GRPC server that's configured to register the handlers
+ - given the GRPC handler defines an interface for the behaviour expected from
+   the game server
+ - given we have a test implementation of the game server interface defined by
+   the GRPC handler
+
+I should be able to use the GRPC client to make a call and then see it recorded
+in the test implementation of the game server.
+
+That would also let me set up tests for middleware; validate that things like
+rate limiting, authentication, etc are all working properly.
+
+*** Thing To Remember
+The GRPC Handler is basically the container for things like authentication,
+validation, rate limiting, etc. The game server shouldn't care about any of
+that; it should just be focused on managing the game state and returning game
+state data to callers.
+
+** Agones & Testing The Game Server
+I should write a wrapper for the Agones SDK so that I have a small API that is
+easy to cover with an interface. That way when testing I can basically stub/mock
+out the Agones stuff so I can focus on game server internals. The Agones stuff
+can wait until later, for now.
+
 ** How To Test GRPC
 *** Servers
 The examples use the [[https://github.com/grpc/grpc-go/tree/master/examples/helloworld][helloworld]] protos.
