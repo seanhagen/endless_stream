@@ -329,6 +329,30 @@ export declare class GetLevel extends Message<GetLevel> {
 }
 
 /**
+ * @generated from message endless.Heartbeat
+ */
+export declare class Heartbeat extends Message<Heartbeat> {
+  /**
+   * @generated from field: google.protobuf.Timestamp beat = 1;
+   */
+  beat?: Timestamp;
+
+  constructor(data?: PartialMessage<Heartbeat>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = "endless.Heartbeat";
+  static readonly fields: FieldList;
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Heartbeat;
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Heartbeat;
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Heartbeat;
+
+  static equals(a: Heartbeat | PlainMessage<Heartbeat> | undefined, b: Heartbeat | PlainMessage<Heartbeat> | undefined): boolean;
+}
+
+/**
  * @generated from message endless.GameRequest
  */
 export declare class GameRequest extends Message<GameRequest> {
@@ -379,23 +403,29 @@ export declare class GameResponse extends Message<GameResponse> {
   serverId: string;
 
   /**
-   * @generated from oneof endless.GameResponse.msesage
+   * @generated from oneof endless.GameResponse.message
    */
-  msesage: {
+  message: {
     /**
-     * @generated from field: endless.Log log = 2;
+     * @generated from field: endless.Heartbeat heartbeat = 2;
+     */
+    value: Heartbeat;
+    case: "heartbeat";
+  } | {
+    /**
+     * @generated from field: endless.Log log = 3;
      */
     value: Log;
     case: "log";
   } | {
     /**
-     * @generated from field: endless.InfoResponse info = 3;
+     * @generated from field: endless.InfoResponse info = 4;
      */
     value: InfoResponse;
     case: "info";
   } | {
     /**
-     * @generated from field: endless.Level level = 4;
+     * @generated from field: endless.Level level = 5;
      */
     value: Level;
     case: "level";

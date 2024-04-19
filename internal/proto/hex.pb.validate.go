@@ -835,6 +835,134 @@ var _ interface {
 	ErrorName() string
 } = GetLevelValidationError{}
 
+// Validate checks the field values on Heartbeat with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Heartbeat) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Heartbeat with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in HeartbeatMultiError, or nil
+// if none found.
+func (m *Heartbeat) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Heartbeat) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetBeat()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, HeartbeatValidationError{
+					field:  "Beat",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, HeartbeatValidationError{
+					field:  "Beat",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetBeat()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return HeartbeatValidationError{
+				field:  "Beat",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return HeartbeatMultiError(errors)
+	}
+
+	return nil
+}
+
+// HeartbeatMultiError is an error wrapping multiple validation errors returned
+// by Heartbeat.ValidateAll() if the designated constraints aren't met.
+type HeartbeatMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m HeartbeatMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m HeartbeatMultiError) AllErrors() []error { return m }
+
+// HeartbeatValidationError is the validation error returned by
+// Heartbeat.Validate if the designated constraints aren't met.
+type HeartbeatValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e HeartbeatValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e HeartbeatValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e HeartbeatValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e HeartbeatValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e HeartbeatValidationError) ErrorName() string { return "HeartbeatValidationError" }
+
+// Error satisfies the builtin error interface
+func (e HeartbeatValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sHeartbeat.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = HeartbeatValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = HeartbeatValidationError{}
+
 // Validate checks the field values on GameRequest with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -1047,11 +1175,52 @@ func (m *GameResponse) validate(all bool) error {
 
 	// no validation rules for ServerId
 
-	switch v := m.Msesage.(type) {
+	switch v := m.Message.(type) {
+	case *GameResponse_Heartbeat:
+		if v == nil {
+			err := GameResponseValidationError{
+				field:  "Message",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+		if all {
+			switch v := interface{}(m.GetHeartbeat()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, GameResponseValidationError{
+						field:  "Heartbeat",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, GameResponseValidationError{
+						field:  "Heartbeat",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetHeartbeat()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GameResponseValidationError{
+					field:  "Heartbeat",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
 	case *GameResponse_Log:
 		if v == nil {
 			err := GameResponseValidationError{
-				field:  "Msesage",
+				field:  "Message",
 				reason: "oneof value cannot be a typed-nil",
 			}
 			if !all {
@@ -1092,7 +1261,7 @@ func (m *GameResponse) validate(all bool) error {
 	case *GameResponse_Info:
 		if v == nil {
 			err := GameResponseValidationError{
-				field:  "Msesage",
+				field:  "Message",
 				reason: "oneof value cannot be a typed-nil",
 			}
 			if !all {
@@ -1133,7 +1302,7 @@ func (m *GameResponse) validate(all bool) error {
 	case *GameResponse_Level:
 		if v == nil {
 			err := GameResponseValidationError{
-				field:  "Msesage",
+				field:  "Message",
 				reason: "oneof value cannot be a typed-nil",
 			}
 			if !all {

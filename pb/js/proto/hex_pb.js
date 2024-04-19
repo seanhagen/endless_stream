@@ -150,6 +150,16 @@ export const GetLevel = /*@__PURE__*/ proto3.makeMessageType(
 );
 
 /**
+ * @generated from message endless.Heartbeat
+ */
+export const Heartbeat = /*@__PURE__*/ proto3.makeMessageType(
+  "endless.Heartbeat",
+  () => [
+    { no: 1, name: "beat", kind: "message", T: Timestamp },
+  ],
+);
+
+/**
  * @generated from message endless.GameRequest
  */
 export const GameRequest = /*@__PURE__*/ proto3.makeMessageType(
@@ -168,9 +178,10 @@ export const GameResponse = /*@__PURE__*/ proto3.makeMessageType(
   "endless.GameResponse",
   () => [
     { no: 1, name: "server_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "log", kind: "message", T: Log, oneof: "msesage" },
-    { no: 3, name: "info", kind: "message", T: InfoResponse, oneof: "msesage" },
-    { no: 4, name: "level", kind: "message", T: Level, oneof: "msesage" },
+    { no: 2, name: "heartbeat", kind: "message", T: Heartbeat, oneof: "message" },
+    { no: 3, name: "log", kind: "message", T: Log, oneof: "message" },
+    { no: 4, name: "info", kind: "message", T: InfoResponse, oneof: "message" },
+    { no: 5, name: "level", kind: "message", T: Level, oneof: "message" },
   ],
 );
 

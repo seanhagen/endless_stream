@@ -1,0 +1,12 @@
+{
+  "$id": "endless.Heartbeat.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "beat": {
+      "$ref": "google.protobuf.Timestamp.schema.json"
+    }
+  },
+  "title": "Heartbeat",
+  "type": "object"
+}
