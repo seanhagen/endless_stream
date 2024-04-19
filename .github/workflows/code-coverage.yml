@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Generate Code Coverage Badge
 
 on:
@@ -12,23 +13,28 @@ jobs:
     runs-on: ubuntu-latest
     name: Checkout Code & Run Tests
     steps:
-      - name: Download coverage.out
-        uses: actions/download-artifact@v4
+      - name: Download coverage.out artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v3
         with:
+          workflow: "Run Tests & Scanners"
+          workflow_conclusion: success
           name: go-test-coverage
           path: coverage.out
 
-      - name: Download coverage.txt
-        uses: actions/download-artifact@v4
+      - name: Download coverage.txt artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v3
         with:
+          workflow: "Run Tests & Scanners"
+          workflow_conclusion: success
           name: go-test-coverage-txt
-          path: coverage.txt
-
+          path: coverage.out
 
       - name: Go Coverage Badge  # Pass the `coverage.out` output to this action
         uses: tj-actions/coverage-badge-go@v2
         with:
-          filename: coverage.out
+          filename: coverage.txt
 
       - name: Update coverage report
         uses: ncruces/go-coverage-report@v0
