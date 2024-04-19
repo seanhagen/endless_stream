@@ -20,14 +20,16 @@ import "os"
 
 var (
 	// Version is set by the build process, contains semantic version.
-	Version string
+	Version string //nolint:gochecknoglobals
 	// Build is set by the build process, contains sha tag of build.
-	Build string
+	Build string //nolint:gochecknoglobals
 	// Repo is set by the build process, contains the repo where the code for this binary was built from.
-	Repo string
+	Repo string //nolint:gochecknoglobals
 )
 
 func main() {
+	rootCmd.AddCommand(serveCmd)
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)

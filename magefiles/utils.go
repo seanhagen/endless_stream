@@ -105,7 +105,7 @@ func getEnvVars() (map[string]string, error) {
 
 	envVars, err := envparse.Parse(envFile)
 	if err != nil {
-		return nil, fmt.Errorf("unable to get environment varaibles from .env: %w", err)
+		return nil, fmt.Errorf("unable to get environment variables from .env: %w", err)
 	}
 
 	return envVars, nil

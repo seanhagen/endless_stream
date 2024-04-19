@@ -1,14 +1,13 @@
 run:
   timeout: 5m
-  skip-dirs:
-    - infra
-    - sample_files
-    - magefiles
   modules-download-mode: readonly
   tests: false
 
 output:
-  format: github-actions
+  formats:
+    - format: checkstyle
+      path: report.xml
+    - format: github-actions
   sort-results: true
 
 issues:
@@ -31,6 +30,7 @@ issues:
   exclude-use-default: false
   exclude-dirs:
     - magefiles
+    - infra
   exclude-dirs-use-default: false
   exclude-files:
     - magefile.go
@@ -139,6 +139,7 @@ linters-settings:
         allow:
           - $gostd
           - agones.dev/agones/pkg/sdk
+          - github.com/spf13/cobra
   varnamelen:
     min-name-length: 2
   tagliatelle:

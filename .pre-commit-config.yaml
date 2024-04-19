@@ -1,33 +1,31 @@
 repos:
-  # - repo: https://github.com/dnephin/pre-commit-golang
-  #   rev: v0.5.1
-  #   hooks:
-  #     - id: go-mod-tidy
-  #     # - id: go-mod-vendor
-
-  - repo: https://github.com/tekwizely/pre-commit-golang
-    rev: v1.0.0-rc.1
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.1
     hooks:
       - id: go-mod-tidy
-      - id: go-fumpt
-      - id: go-imports
-      - id: go-test-pkg
-      - id: go-vet-pkg
-      - id: go-sec-pkg
 
   - repo: https://github.com/syntaqx/git-hooks
     rev: v0.0.18
     hooks:
-      - id: forbid-binary
       - id: go-generate
+
+  # - repo: https://github.com/tekwizely/pre-commit-golang
+  #   rev: v1.0.0-rc.1
+  #   hooks:
+  #     - id: go-mod-tidy
+  #     - id: go-fumpt
+  #     - id: go-imports
+  #     - id: go-test-pkg
+  #     - id: go-vet-pkg
+  #     - id: go-sec-pkg
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
-    -   id: mixed-line-ending
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
         args:
           - "--fix=lf"
 
@@ -37,7 +35,8 @@ repos:
       - id: golangci-lint-full
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
+    rev: 9075d9c2d16b969659986c8561537ad52ce68452
+    #rev: v2.2.6
     hooks:
       - id: codespell
 
@@ -68,10 +67,10 @@ repos:
     hooks:
       - id: gitleaks
 
-  - repo: https://github.com/dotnet/format
-    rev: v8.0.453106
-    hooks:
-      - id: dotnet-format
+  # - repo: https://github.com/dotnet/format
+  #   rev: v8.0.453106
+  #   hooks:
+  #     - id: dotnet-format
 
   - repo: https://github.com/sirosen/texthooks
     rev: 0.6.6
@@ -79,8 +78,6 @@ repos:
       - id: alphabetize-codeowners
       - id: fix-smartquotes
       - id: fix-ligatures
-
-
 
 default_language_version:
   golang: 1.22.2

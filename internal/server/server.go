@@ -154,7 +154,7 @@ func (h *Handler) notifyHeartbeat(ctx context.Context, t time.Time) {
 	h.logger.DebugContext(ctx, "heartbeat notify")
 	for _, listener := range h.heartbeatListeners {
 		if err := listener.heartbeat(ctx, t); err != nil {
-			h.logger.ErrorContext(ctx, "heartbeat listener returned erorr", "err", err)
+			h.logger.ErrorContext(ctx, "heartbeat listener returned error", "err", err)
 		}
 	}
 }
