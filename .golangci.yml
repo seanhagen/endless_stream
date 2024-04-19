@@ -140,6 +140,7 @@ linters-settings:
           - $gostd
           - agones.dev/agones/pkg/sdk
           - github.com/spf13/cobra
+          - github.com/seanhagen/endless_stream/internal/proto
   varnamelen:
     min-name-length: 2
   tagliatelle:
