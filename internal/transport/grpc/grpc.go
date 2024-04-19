@@ -26,7 +26,7 @@ type Config struct {
 
 type Transport struct {
 	proto.UnimplementedHexServer
-	proto.UnimplementedHexServer
+	proto.UnimplementedAdminServer
 }
 
 func New(conf Config) (*Transport, error) {
