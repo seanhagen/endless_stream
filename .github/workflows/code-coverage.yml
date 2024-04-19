@@ -1,4 +1,4 @@
-name: Generate code coverage badge
+name: Generate Code Coverage Badge
 
 on:
   workflow_run:

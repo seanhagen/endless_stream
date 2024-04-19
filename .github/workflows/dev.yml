@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Run tests & scanners
+name: Run Tests & Scanners
 on:
   push:
     branches:
