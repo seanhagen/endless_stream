@@ -64,3 +64,4 @@ abstract class AdminServiceBase extends $pb.GeneratedService {
   $core.Map<$core.String, $core.dynamic> get $json => AdminServiceBase$json;
   $core.Map<$core.String, $core.Map<$core.String, $core.dynamic>> get $messageJson => AdminServiceBase$messageJson;
 }
+

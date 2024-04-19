@@ -63,57 +63,57 @@
       }
 
       td p:nth-child(1) {
-        text-indent: 0;
+        text-indent: 0;  
       }
 
-
-      .field-table td:nth-child(1) {
+       
+      .field-table td:nth-child(1) {  
         width: 10em;
       }
-      .field-table td:nth-child(2) {
+      .field-table td:nth-child(2) {  
         width: 10em;
       }
-      .field-table td:nth-child(3) {
+      .field-table td:nth-child(3) {  
         width: 6em;
       }
-      .field-table td:nth-child(4) {
+      .field-table td:nth-child(4) {  
         width: auto;
       }
 
-
-      .extension-table td:nth-child(1) {
+       
+      .extension-table td:nth-child(1) {  
         width: 10em;
       }
-      .extension-table td:nth-child(2) {
+      .extension-table td:nth-child(2) {  
         width: 10em;
       }
-      .extension-table td:nth-child(3) {
+      .extension-table td:nth-child(3) {  
         width: 10em;
       }
-      .extension-table td:nth-child(4) {
+      .extension-table td:nth-child(4) {  
         width: 5em;
       }
-      .extension-table td:nth-child(5) {
+      .extension-table td:nth-child(5) {  
         width: auto;
       }
 
-
-      .enum-table td:nth-child(1) {
+       
+      .enum-table td:nth-child(1) {  
         width: 10em;
       }
-      .enum-table td:nth-child(2) {
+      .enum-table td:nth-child(2) {  
         width: 10em;
       }
-      .enum-table td:nth-child(3) {
+      .enum-table td:nth-child(3) {  
         width: auto;
       }
 
-
+       
       .scalar-value-types-table tr {
         height: 3em;
       }
 
-
+       
       #toc-container ul {
         list-style-type: none;
         padding-left: 1em;
@@ -124,7 +124,7 @@
         font-weight: bold;
       }
 
-
+       
       .file-heading {
         width: 100%;
         display: table;
@@ -140,7 +140,7 @@
         display: table-cell;
       }
 
-
+       
       .badge {
         width: 1.6em;
         height: 1.6em;
@@ -160,7 +160,7 @@
       }
     </style>
 
-
+    
     <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
   </head>
 
@@ -172,548 +172,513 @@
 
     <div id="toc-container">
       <ul id="toc">
-
-
+        
+          
           <li>
             <a href="#proto%2fhex.proto">proto/hex.proto</a>
             <ul>
-
+              
                 <li>
                   <a href="#endless.AddTile"><span class="badge">M</span>AddTile</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.AdminRequest"><span class="badge">M</span>AdminRequest</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.AdminResponse"><span class="badge">M</span>AdminResponse</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.Coordinate"><span class="badge">M</span>Coordinate</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.GameRequest"><span class="badge">M</span>GameRequest</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.GameResponse"><span class="badge">M</span>GameResponse</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.GetLevel"><span class="badge">M</span>GetLevel</a>
                 </li>
-
-                <li>
-                  <a href="#endless.Heartbeat"><span class="badge">M</span>Heartbeat</a>
-                </li>
-
+              
                 <li>
                   <a href="#endless.InfoRequest"><span class="badge">M</span>InfoRequest</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.InfoResponse"><span class="badge">M</span>InfoResponse</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.Level"><span class="badge">M</span>Level</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.Log"><span class="badge">M</span>Log</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.RemoveTile"><span class="badge">M</span>RemoveTile</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.Tile"><span class="badge">M</span>Tile</a>
                 </li>
-
-
+              
+              
                 <li>
                   <a href="#endless.LogLevel"><span class="badge">E</span>LogLevel</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.LogSource"><span class="badge">E</span>LogSource</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.Result"><span class="badge">E</span>Result</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.Tileset"><span class="badge">E</span>Tileset</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.Type"><span class="badge">E</span>Type</a>
                 </li>
-
-
-
+              
+              
+              
             </ul>
           </li>
-
-
+        
+          
           <li>
             <a href="#proto%2fhex_service.proto">proto/hex_service.proto</a>
             <ul>
-
-
-
-
+              
+              
+              
+              
                 <li>
                   <a href="#endless.Admin"><span class="badge">S</span>Admin</a>
                 </li>
-
+              
                 <li>
                   <a href="#endless.Hex"><span class="badge">S</span>Hex</a>
                 </li>
-
+              
             </ul>
           </li>
-
+        
         <li><a href="#scalar-value-types">Scalar Value Types</a></li>
       </ul>
     </div>
 
-
-
+    
+      
       <div class="file-heading">
         <h2 id="proto/hex.proto">proto/hex.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
-
+      
         <h3 id="endless.AddTile">AddTile</h3>
         <p></p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>tile</td>
                   <td><a href="#endless.Tile">Tile</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.AdminRequest">AdminRequest</h3>
         <p></p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>client_id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>add_tile</td>
                   <td><a href="#endless.AddTile">AddTile</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>remove_tile</td>
                   <td><a href="#endless.RemoveTile">RemoveTile</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.AdminResponse">AdminResponse</h3>
         <p></p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>server_id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>log</td>
                   <td><a href="#endless.Log">Log</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>result</td>
                   <td><a href="#endless.Result">Result</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.Coordinate">Coordinate</h3>
         <p>Coordinate is the x,y location in the world for a tile.</p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>x</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>y</td>
                   <td><a href="#int32">int32</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.GameRequest">GameRequest</h3>
         <p></p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>client_id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>info</td>
                   <td><a href="#endless.InfoRequest">InfoRequest</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>get_level</td>
                   <td><a href="#endless.GetLevel">GetLevel</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.GameResponse">GameResponse</h3>
         <p></p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>server_id</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
-                <tr>
-                  <td>heartbeat</td>
-                  <td><a href="#endless.Heartbeat">Heartbeat</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-
+              
                 <tr>
                   <td>log</td>
                   <td><a href="#endless.Log">Log</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>info</td>
                   <td><a href="#endless.InfoResponse">InfoResponse</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>level</td>
                   <td><a href="#endless.Level">Level</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.GetLevel">GetLevel</h3>
         <p></p>
 
+        
 
-
-
-
-        <h3 id="endless.Heartbeat">Heartbeat</h3>
-        <p></p>
-
-
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-
-                <tr>
-                  <td>beat</td>
-                  <td><a href="#google.protobuf.Timestamp">google.protobuf.Timestamp</a></td>
-                  <td></td>
-                  <td><p> </p></td>
-                </tr>
-
-            </tbody>
-          </table>
-
-
-
-
-
+        
+      
         <h3 id="endless.InfoRequest">InfoRequest</h3>
         <p></p>
 
+        
 
-
-
-
+        
+      
         <h3 id="endless.InfoResponse">InfoResponse</h3>
         <p></p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>version</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>build_date</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.Level">Level</h3>
         <p>Level is a single layer of tiles laid out to create a level.</p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>tiles</td>
                   <td><a href="#endless.Tile">Tile</a></td>
                   <td>repeated</td>
                   <td><p>Tiles is an array of all the tiles laid out on a level. </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>tileset</td>
                   <td><a href="#endless.Tileset">Tileset</a></td>
                   <td></td>
                   <td><p>Tileset tells Godot what tileset to use. </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.Log">Log</h3>
         <p></p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>msg</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>at</td>
                   <td><a href="#google.protobuf.Timestamp">google.protobuf.Timestamp</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>level</td>
                   <td><a href="#endless.LogLevel">LogLevel</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>source</td>
                   <td><a href="#endless.LogSource">LogSource</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.RemoveTile">RemoveTile</h3>
         <p></p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>coords</td>
                   <td><a href="#endless.Coordinate">Coordinate</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
-
-
-
+        
+      
         <h3 id="endless.Tile">Tile</h3>
         <p>Tile is a single tile within the world.</p>
 
-
+        
           <table class="field-table">
             <thead>
               <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
             </thead>
             <tbody>
-
+              
                 <tr>
                   <td>type</td>
                   <td><a href="#endless.Type">Type</a></td>
                   <td></td>
                   <td><p>Type defines whether the tile is empty, a floor, or a wall. </p></td>
                 </tr>
-
+              
                 <tr>
                   <td>coords</td>
                   <td><a href="#endless.Coordinate">Coordinate</a></td>
                   <td></td>
                   <td><p>Coords defines the position of the tile within the world. </p></td>
                 </tr>
-
+              
             </tbody>
           </table>
 
+          
 
+        
+      
 
-
-
-
-
+      
         <h3 id="endless.LogLevel">LogLevel</h3>
         <p></p>
         <table class="enum-table">
@@ -721,40 +686,40 @@
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
           </thead>
           <tbody>
-
+            
               <tr>
                 <td>Info</td>
                 <td>0</td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Debug</td>
                 <td>-1</td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Warn</td>
                 <td>2</td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Error</td>
                 <td>3</td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Fatal</td>
                 <td>4</td>
                 <td><p></p></td>
               </tr>
-
+            
           </tbody>
         </table>
-
+      
         <h3 id="endless.LogSource">LogSource</h3>
         <p></p>
         <table class="enum-table">
@@ -762,28 +727,28 @@
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
           </thead>
           <tbody>
-
+            
               <tr>
                 <td>Server</td>
                 <td>0</td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Player</td>
                 <td>100</td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Game</td>
                 <td>200</td>
                 <td><p></p></td>
               </tr>
-
+            
           </tbody>
         </table>
-
+      
         <h3 id="endless.Result">Result</h3>
         <p></p>
         <table class="enum-table">
@@ -791,28 +756,28 @@
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
           </thead>
           <tbody>
-
+            
               <tr>
                 <td>Unknown</td>
                 <td>0</td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Failure</td>
                 <td>1</td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Success</td>
                 <td>2</td>
                 <td><p></p></td>
               </tr>
-
+            
           </tbody>
         </table>
-
+      
         <h3 id="endless.Tileset">Tileset</h3>
         <p>Tileset defines what tileset to use in Godot.</p>
         <table class="enum-table">
@@ -820,22 +785,22 @@
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
           </thead>
           <tbody>
-
+            
               <tr>
                 <td>Dungeon</td>
                 <td>0</td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Woods</td>
                 <td>1</td>
                 <td><p></p></td>
               </tr>
-
+            
           </tbody>
         </table>
-
+      
         <h3 id="endless.Type">Type</h3>
         <p>Type defines whether the tile is empty, a floor tile, or a wall tile.</p>
         <table class="enum-table">
@@ -843,46 +808,46 @@
             <tr><td>Name</td><td>Number</td><td>Description</td></tr>
           </thead>
           <tbody>
-
+            
               <tr>
                 <td>Empty</td>
                 <td>0</td>
                 <td><p>Empty is a tile without anything in it.</p></td>
               </tr>
-
+            
               <tr>
                 <td>Floor</td>
                 <td>1</td>
                 <td><p>Floor is a tile that can be walked on.</p></td>
               </tr>
-
+            
               <tr>
                 <td>Wall</td>
                 <td>2</td>
                 <td><p>Wall is a tile that blocks movement and line-of-sight.</p></td>
               </tr>
-
+            
           </tbody>
         </table>
+      
 
+      
 
-
-
-
-
-
+      
+    
+      
       <div class="file-heading">
         <h2 id="proto/hex_service.proto">proto/hex_service.proto</h2><a href="#title">Top</a>
       </div>
       <p></p>
 
+      
 
+      
 
+      
 
-
-
-
-
+      
         <h3 id="endless.Admin">Admin</h3>
         <p></p>
         <table class="enum-table">
@@ -890,18 +855,18 @@
             <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
           </thead>
           <tbody>
-
+            
               <tr>
                 <td>Manage</td>
                 <td><a href="#endless.AdminRequest">AdminRequest</a> stream</td>
                 <td><a href="#endless.AdminResponse">AdminResponse</a> stream</td>
                 <td><p></p></td>
               </tr>
-
+            
           </tbody>
         </table>
 
-
+        
         <h3 id="endless.Hex">Hex</h3>
         <p></p>
         <table class="enum-table">
@@ -909,26 +874,26 @@
             <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
           </thead>
           <tbody>
-
+            
               <tr>
                 <td>Info</td>
                 <td><a href="#endless.InfoRequest">InfoRequest</a></td>
                 <td><a href="#endless.InfoResponse">InfoResponse</a></td>
                 <td><p></p></td>
               </tr>
-
+            
               <tr>
                 <td>Game</td>
                 <td><a href="#endless.GameRequest">GameRequest</a> stream</td>
                 <td><a href="#endless.GameResponse">GameResponse</a> stream</td>
                 <td><p></p></td>
               </tr>
-
+            
           </tbody>
         </table>
 
-
-
+        
+    
 
     <h2 id="scalar-value-types">Scalar Value Types</h2>
     <table class="scalar-value-types-table">
@@ -936,7 +901,7 @@
         <tr><td>.proto Type</td><td>Notes</td><td>C++</td><td>Java</td><td>Python</td><td>Go</td><td>C#</td><td>PHP</td><td>Ruby</td></tr>
       </thead>
       <tbody>
-
+        
           <tr id="double">
             <td>double</td>
             <td></td>
@@ -948,7 +913,7 @@
             <td>float</td>
             <td>Float</td>
           </tr>
-
+        
           <tr id="float">
             <td>float</td>
             <td></td>
@@ -960,7 +925,7 @@
             <td>float</td>
             <td>Float</td>
           </tr>
-
+        
           <tr id="int32">
             <td>int32</td>
             <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint32 instead.</td>
@@ -972,7 +937,7 @@
             <td>integer</td>
             <td>Bignum or Fixnum (as required)</td>
           </tr>
-
+        
           <tr id="int64">
             <td>int64</td>
             <td>Uses variable-length encoding. Inefficient for encoding negative numbers – if your field is likely to have negative values, use sint64 instead.</td>
@@ -984,7 +949,7 @@
             <td>integer/string</td>
             <td>Bignum</td>
           </tr>
-
+        
           <tr id="uint32">
             <td>uint32</td>
             <td>Uses variable-length encoding.</td>
@@ -996,7 +961,7 @@
             <td>integer</td>
             <td>Bignum or Fixnum (as required)</td>
           </tr>
-
+        
           <tr id="uint64">
             <td>uint64</td>
             <td>Uses variable-length encoding.</td>
@@ -1008,7 +973,7 @@
             <td>integer/string</td>
             <td>Bignum or Fixnum (as required)</td>
           </tr>
-
+        
           <tr id="sint32">
             <td>sint32</td>
             <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int32s.</td>
@@ -1020,7 +985,7 @@
             <td>integer</td>
             <td>Bignum or Fixnum (as required)</td>
           </tr>
-
+        
           <tr id="sint64">
             <td>sint64</td>
             <td>Uses variable-length encoding. Signed int value. These more efficiently encode negative numbers than regular int64s.</td>
@@ -1032,7 +997,7 @@
             <td>integer/string</td>
             <td>Bignum</td>
           </tr>
-
+        
           <tr id="fixed32">
             <td>fixed32</td>
             <td>Always four bytes. More efficient than uint32 if values are often greater than 2^28.</td>
@@ -1044,7 +1009,7 @@
             <td>integer</td>
             <td>Bignum or Fixnum (as required)</td>
           </tr>
-
+        
           <tr id="fixed64">
             <td>fixed64</td>
             <td>Always eight bytes. More efficient than uint64 if values are often greater than 2^56.</td>
@@ -1056,7 +1021,7 @@
             <td>integer/string</td>
             <td>Bignum</td>
           </tr>
-
+        
           <tr id="sfixed32">
             <td>sfixed32</td>
             <td>Always four bytes.</td>
@@ -1068,7 +1033,7 @@
             <td>integer</td>
             <td>Bignum or Fixnum (as required)</td>
           </tr>
-
+        
           <tr id="sfixed64">
             <td>sfixed64</td>
             <td>Always eight bytes.</td>
@@ -1080,7 +1045,7 @@
             <td>integer/string</td>
             <td>Bignum</td>
           </tr>
-
+        
           <tr id="bool">
             <td>bool</td>
             <td></td>
@@ -1092,7 +1057,7 @@
             <td>boolean</td>
             <td>TrueClass/FalseClass</td>
           </tr>
-
+        
           <tr id="string">
             <td>string</td>
             <td>A string must always contain UTF-8 encoded or 7-bit ASCII text.</td>
@@ -1104,7 +1069,7 @@
             <td>string</td>
             <td>String (UTF-8)</td>
           </tr>
-
+        
           <tr id="bytes">
             <td>bytes</td>
             <td>May contain any arbitrary sequence of bytes.</td>
@@ -1116,8 +1081,9 @@
             <td>string</td>
             <td>String (ASCII-8BIT)</td>
           </tr>
-
+        
       </tbody>
     </table>
   </body>
 </html>
+

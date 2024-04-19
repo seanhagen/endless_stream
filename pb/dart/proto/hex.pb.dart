@@ -435,61 +435,9 @@ class GetLevel extends $pb.GeneratedMessage {
   static GetLevel? _defaultInstance;
 }
 
-class Heartbeat extends $pb.GeneratedMessage {
-  factory Heartbeat({
-    $0.Timestamp? beat,
-  }) {
-    final $result = create();
-    if (beat != null) {
-      $result.beat = beat;
-    }
-    return $result;
-  }
-  Heartbeat._() : super();
-  factory Heartbeat.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory Heartbeat.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Heartbeat', package: const $pb.PackageName(_omitMessageNames ? '' : 'endless'), createEmptyInstance: create)
-    ..aOM<$0.Timestamp>(1, _omitFieldNames ? '' : 'beat', subBuilder: $0.Timestamp.create)
-    ..hasRequiredFields = false
-  ;
-
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  Heartbeat clone() => Heartbeat()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  Heartbeat copyWith(void Function(Heartbeat) updates) => super.copyWith((message) => updates(message as Heartbeat)) as Heartbeat;
-
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static Heartbeat create() => Heartbeat._();
-  Heartbeat createEmptyInstance() => create();
-  static $pb.PbList<Heartbeat> createRepeated() => $pb.PbList<Heartbeat>();
-  @$core.pragma('dart2js:noInline')
-  static Heartbeat getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Heartbeat>(create);
-  static Heartbeat? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $0.Timestamp get beat => $_getN(0);
-  @$pb.TagNumber(1)
-  set beat($0.Timestamp v) { setField(1, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasBeat() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearBeat() => clearField(1);
-  @$pb.TagNumber(1)
-  $0.Timestamp ensureBeat() => $_ensure(0);
-}
-
 enum GameRequest_Request {
-  info,
-  getLevel,
+  info, 
+  getLevel, 
   notSet
 }
 
@@ -584,18 +532,16 @@ class GameRequest extends $pb.GeneratedMessage {
   GetLevel ensureGetLevel() => $_ensure(2);
 }
 
-enum GameResponse_Message {
-  heartbeat,
-  log,
-  info,
-  level,
+enum GameResponse_Msesage {
+  log, 
+  info, 
+  level, 
   notSet
 }
 
 class GameResponse extends $pb.GeneratedMessage {
   factory GameResponse({
     $core.String? serverId,
-    Heartbeat? heartbeat,
     Log? log,
     InfoResponse? info,
     Level? level,
@@ -603,9 +549,6 @@ class GameResponse extends $pb.GeneratedMessage {
     final $result = create();
     if (serverId != null) {
       $result.serverId = serverId;
-    }
-    if (heartbeat != null) {
-      $result.heartbeat = heartbeat;
     }
     if (log != null) {
       $result.log = log;
@@ -622,20 +565,18 @@ class GameResponse extends $pb.GeneratedMessage {
   factory GameResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory GameResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static const $core.Map<$core.int, GameResponse_Message> _GameResponse_MessageByTag = {
-    2 : GameResponse_Message.heartbeat,
-    3 : GameResponse_Message.log,
-    4 : GameResponse_Message.info,
-    5 : GameResponse_Message.level,
-    0 : GameResponse_Message.notSet
+  static const $core.Map<$core.int, GameResponse_Msesage> _GameResponse_MsesageByTag = {
+    2 : GameResponse_Msesage.log,
+    3 : GameResponse_Msesage.info,
+    4 : GameResponse_Msesage.level,
+    0 : GameResponse_Msesage.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'GameResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'endless'), createEmptyInstance: create)
-    ..oo(0, [2, 3, 4, 5])
+    ..oo(0, [2, 3, 4])
     ..aOS(1, _omitFieldNames ? '' : 'serverId')
-    ..aOM<Heartbeat>(2, _omitFieldNames ? '' : 'heartbeat', subBuilder: Heartbeat.create)
-    ..aOM<Log>(3, _omitFieldNames ? '' : 'log', subBuilder: Log.create)
-    ..aOM<InfoResponse>(4, _omitFieldNames ? '' : 'info', subBuilder: InfoResponse.create)
-    ..aOM<Level>(5, _omitFieldNames ? '' : 'level', subBuilder: Level.create)
+    ..aOM<Log>(2, _omitFieldNames ? '' : 'log', subBuilder: Log.create)
+    ..aOM<InfoResponse>(3, _omitFieldNames ? '' : 'info', subBuilder: InfoResponse.create)
+    ..aOM<Level>(4, _omitFieldNames ? '' : 'level', subBuilder: Level.create)
     ..hasRequiredFields = false
   ;
 
@@ -660,8 +601,8 @@ class GameResponse extends $pb.GeneratedMessage {
   static GameResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GameResponse>(create);
   static GameResponse? _defaultInstance;
 
-  GameResponse_Message whichMessage() => _GameResponse_MessageByTag[$_whichOneof(0)]!;
-  void clearMessage() => clearField($_whichOneof(0));
+  GameResponse_Msesage whichMsesage() => _GameResponse_MsesageByTag[$_whichOneof(0)]!;
+  void clearMsesage() => clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
   $core.String get serverId => $_getSZ(0);
@@ -673,48 +614,37 @@ class GameResponse extends $pb.GeneratedMessage {
   void clearServerId() => clearField(1);
 
   @$pb.TagNumber(2)
-  Heartbeat get heartbeat => $_getN(1);
+  Log get log => $_getN(1);
   @$pb.TagNumber(2)
-  set heartbeat(Heartbeat v) { setField(2, v); }
+  set log(Log v) { setField(2, v); }
   @$pb.TagNumber(2)
-  $core.bool hasHeartbeat() => $_has(1);
+  $core.bool hasLog() => $_has(1);
   @$pb.TagNumber(2)
-  void clearHeartbeat() => clearField(2);
+  void clearLog() => clearField(2);
   @$pb.TagNumber(2)
-  Heartbeat ensureHeartbeat() => $_ensure(1);
+  Log ensureLog() => $_ensure(1);
 
   @$pb.TagNumber(3)
-  Log get log => $_getN(2);
+  InfoResponse get info => $_getN(2);
   @$pb.TagNumber(3)
-  set log(Log v) { setField(3, v); }
+  set info(InfoResponse v) { setField(3, v); }
   @$pb.TagNumber(3)
-  $core.bool hasLog() => $_has(2);
+  $core.bool hasInfo() => $_has(2);
   @$pb.TagNumber(3)
-  void clearLog() => clearField(3);
+  void clearInfo() => clearField(3);
   @$pb.TagNumber(3)
-  Log ensureLog() => $_ensure(2);
+  InfoResponse ensureInfo() => $_ensure(2);
 
   @$pb.TagNumber(4)
-  InfoResponse get info => $_getN(3);
+  Level get level => $_getN(3);
   @$pb.TagNumber(4)
-  set info(InfoResponse v) { setField(4, v); }
+  set level(Level v) { setField(4, v); }
   @$pb.TagNumber(4)
-  $core.bool hasInfo() => $_has(3);
+  $core.bool hasLevel() => $_has(3);
   @$pb.TagNumber(4)
-  void clearInfo() => clearField(4);
+  void clearLevel() => clearField(4);
   @$pb.TagNumber(4)
-  InfoResponse ensureInfo() => $_ensure(3);
-
-  @$pb.TagNumber(5)
-  Level get level => $_getN(4);
-  @$pb.TagNumber(5)
-  set level(Level v) { setField(5, v); }
-  @$pb.TagNumber(5)
-  $core.bool hasLevel() => $_has(4);
-  @$pb.TagNumber(5)
-  void clearLevel() => clearField(5);
-  @$pb.TagNumber(5)
-  Level ensureLevel() => $_ensure(4);
+  Level ensureLevel() => $_ensure(3);
 }
 
 class AddTile extends $pb.GeneratedMessage {
@@ -822,8 +752,8 @@ class RemoveTile extends $pb.GeneratedMessage {
 }
 
 enum AdminRequest_Request {
-  addTile,
-  removeTile,
+  addTile, 
+  removeTile, 
   notSet
 }
 
