@@ -90,12 +90,6 @@ jobs:
         uses: actions/go-dependency-submission@v2
         with:
             go-mod-path: go.mod
-            #
-            # Optional: Define the path of a build target (a file with a
-            # `main()` function) If not defined, this Action will collect all
-            # dependencies used by all build targets for the module, which may
-            # include Go dependencies used by tests and tooling.
-            # go-build-target: go-example/cmd/octocat.go
 
   static_checks:
     name: "Run static checks"
