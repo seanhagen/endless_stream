@@ -465,7 +465,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+/.github/outputs/
 /coverage.out
 /coverage.txt
 /report.xml
-/.github/outputs/
