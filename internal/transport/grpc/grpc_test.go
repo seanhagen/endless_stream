@@ -7,8 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const grpcListen = ":10000"
-
 func TestGrpc_Constructor(t *testing.T) {
 	conf := Config{}
 
