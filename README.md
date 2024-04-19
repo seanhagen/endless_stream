@@ -1,8 +1,5 @@
-:PROPERTIES:
-:ID:       7be0b8fb-9124-4f1c-ae95-b67523253cf9
-:END:
-#+TITLE: Endless Stream
-#+SUBTITLE: Multiplayer Dungeon Crawling
+Endless Stream: Multiplayer Dungeon Crawling
+============================================
 
 Endless Stream is a 2D rougelike turn-based dungeon crawling role-playing
 game. Create a character, pick a world, join a party and go kill stuff in
