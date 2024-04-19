@@ -1,0 +1,12 @@
+{
+  "$id": "endless.AddTile.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "tile": {
+      "$ref": "endless.Tile.schema.json"
+    }
+  },
+  "title": "Add Tile",
+  "type": "object"
+}

@@ -1,0 +1,149 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+  tests: false
+
+output:
+  formats:
+    - format: checkstyle
+      path: report.xml
+    - format: github-actions
+  sort-results: true
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+    - path-except: _test\.go
+      linters:
+        - forbidigo
+    - linters:
+        - staticcheck
+      text: "SA9003:"
+    - linters:
+        - lll
+      source: "^//go:generate "
+  exclude-use-default: false
+  exclude-dirs:
+    - magefiles
+    - infra
+  exclude-dirs-use-default: false
+  exclude-files:
+    - magefile.go
+
+severity:
+  default-severity: error
+
+linters:
+  disable:
+    - exhaustive
+    - exhaustruct
+    - godox
+    - wsl
+    - nlreturn
+  enable:
+    - asasalint
+    - bidichk
+    - bodyclose
+    - containedctx
+    - contextcheck
+    - cyclop
+    - decorder
+    - depguard
+    - dogsled
+    - dupl
+    - dupword
+    - durationcheck
+    - errcheck
+    - errchkjson
+    - errname
+    - errorlint
+    - execinquery
+    - exportloopref
+    - forbidigo
+    - forcetypeassert
+    - funlen
+    - gci
+    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - gochecknoinits
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - goerr113
+    - gofmt
+    - gofumpt
+    - goimports
+    - gomnd
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - gosmopolitan
+    - govet
+    - grouper
+    - importas
+    - ineffassign
+    - interfacebloat
+    - ireturn
+    - lll
+    - loggercheck
+    - maintidx
+    - makezero
+    - misspell
+    - musttag
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnil
+    - noctx
+    - nolintlint
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - prealloc
+    - predeclared
+    - reassign
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - stylecheck
+    - tagalign
+    - tagliatelle
+    - tenv
+    - testableexamples
+    - thelper
+    - tparallel
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - usestdlibvars
+    - varnamelen
+    - wastedassign
+    - whitespace
+    - wrapcheck
+    - zerologlint
+linters-settings:
+  depguard:
+    rules:
+      main:
+        allow:
+          - $gostd
+          - agones.dev/agones/pkg/sdk
+          - github.com/spf13/cobra
+  varnamelen:
+    min-name-length: 2
+  tagliatelle:
+    case:
+      use-field-name: true
+      rules:
+        json: snake

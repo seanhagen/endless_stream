@@ -1,0 +1,83 @@
+repos:
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.1
+    hooks:
+      - id: go-mod-tidy
+
+  - repo: https://github.com/syntaqx/git-hooks
+    rev: v0.0.18
+    hooks:
+      - id: go-generate
+
+  # - repo: https://github.com/tekwizely/pre-commit-golang
+  #   rev: v1.0.0-rc.1
+  #   hooks:
+  #     - id: go-mod-tidy
+  #     - id: go-fumpt
+  #     - id: go-imports
+  #     - id: go-test-pkg
+  #     - id: go-vet-pkg
+  #     - id: go-sec-pkg
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args:
+          - "--fix=lf"
+
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.57.2
+    hooks:
+      - id: golangci-lint-full
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: 9075d9c2d16b969659986c8561537ad52ce68452
+    #rev: v2.2.6
+    hooks:
+      - id: codespell
+
+  - repo: https://github.com/lorenzwalthert/gitignore-tidy
+    rev: 0.1.2
+    hooks:
+      - id: tidy-gitignore
+
+  # - repo: https://github.com/Yelp/detect-secrets
+  #   rev: v1.4.0
+  #   hooks:
+  #     - id: detect-secrets
+  #       args: ['--baseline', '.secrets.baseline']
+  #       exclude: go.sum
+
+  - repo: https://github.com/hija/clean-dotenv
+    rev: v0.0.7
+    hooks:
+      - id: clean-dotenv
+
+  # - repo: https://github.com/crate-ci/typos
+  #   rev: v1.20.9
+  #   hooks:
+  #     - id: typos-docker
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.16.1
+    hooks:
+      - id: gitleaks
+
+  # - repo: https://github.com/dotnet/format
+  #   rev: v8.0.453106
+  #   hooks:
+  #     - id: dotnet-format
+
+  - repo: https://github.com/sirosen/texthooks
+    rev: 0.6.6
+    hooks:
+      - id: alphabetize-codeowners
+      - id: fix-smartquotes
+      - id: fix-ligatures
+
+default_language_version:
+  golang: 1.22.2

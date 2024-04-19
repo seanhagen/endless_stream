@@ -1,0 +1,53 @@
+{
+  "$id": "endless.Log.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "at": {
+      "$ref": "google.protobuf.Timestamp.schema.json"
+    },
+    "level": {
+      "anyOf": [
+        {
+          "enum": [
+            "Info",
+            "Debug",
+            "Warn",
+            "Error",
+            "Fatal"
+          ],
+          "title": "Log Level",
+          "type": "string"
+        },
+        {
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        }
+      ]
+    },
+    "msg": {
+      "type": "string"
+    },
+    "source": {
+      "anyOf": [
+        {
+          "enum": [
+            "Server",
+            "Player",
+            "Game"
+          ],
+          "title": "Log Source",
+          "type": "string"
+        },
+        {
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        }
+      ]
+    }
+  },
+  "title": "Log",
+  "type": "object"
+}

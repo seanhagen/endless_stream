@@ -1,0 +1,11 @@
+version: v1
+name: buf.build/seanhagen/endless
+deps:
+  - buf.build/protocolbuffers/wellknowntypes:v21.12
+  - buf.build/grpc-ecosystem/grpc-gateway
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT

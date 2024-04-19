@@ -1,0 +1,14 @@
+syntax = "proto3";
+package endless;
+option go_package = "github.com/seanhagen/endless_stream/protos/go";
+
+import "proto/hex.proto";
+
+service Hex {
+  rpc Info(InfoRequest) returns (InfoResponse);
+  rpc Game(stream GameRequest) returns (stream GameResponse);
+}
+
+service Admin {
+  rpc Manage(stream AdminRequest) returns (stream AdminResponse);
+}

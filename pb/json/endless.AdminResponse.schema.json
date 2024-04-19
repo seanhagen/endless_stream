@@ -1,0 +1,33 @@
+{
+  "$id": "endless.AdminResponse.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "log": {
+      "$ref": "endless.Log.schema.json"
+    },
+    "result": {
+      "anyOf": [
+        {
+          "enum": [
+            "Unknown",
+            "Failure",
+            "Success"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        {
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        }
+      ]
+    },
+    "server_id": {
+      "type": "string"
+    }
+  },
+  "title": "Admin Response",
+  "type": "object"
+}

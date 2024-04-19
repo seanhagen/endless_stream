@@ -1,0 +1,12 @@
+{
+  "$id": "endless.RemoveTile.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "coords": {
+      "$ref": "endless.Coordinate.schema.json"
+    }
+  },
+  "title": "Remove Tile",
+  "type": "object"
+}
