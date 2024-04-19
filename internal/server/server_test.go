@@ -73,8 +73,10 @@ func TestServer_StartsAndLifecycleProgression(t *testing.T) {
 	fakeTicks := make(chan time.Time, 10)
 	expectDuration := time.Second
 	buf := bytes.NewBuffer(nil)
-	logger := slog.New(slog.NewTextHandler(buf, &slog.HandlerOptions{Level: slog.LevelDebug})) //nolint:exhaustruct
-	testSDK := &testAgonesSDK{}                                                                //nolint:exhaustruct
+	logger := slog.New(
+		slog.NewTextHandler(buf, &slog.HandlerOptions{Level: slog.LevelDebug}),
+	) //nolint:exhaustruct
+	testSDK := &testAgonesSDK{} //nolint:exhaustruct
 
 	var gotDuration time.Duration
 	tickerFn := func(d time.Duration) <-chan time.Time { //nolint:wsl

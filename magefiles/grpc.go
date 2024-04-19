@@ -26,11 +26,16 @@ func GRPC() error {
 
 	rebuild, err := outputsNewerThanInputs(destinations, sources)
 	if err != nil {
-		return fmt.Errorf("unable to determine if GRPC protobuf schemas are newer than the generated files: %w", err)
+		return fmt.Errorf(
+			"unable to determine if GRPC protobuf schemas are newer than the generated files: %w",
+			err,
+		)
 	}
 
 	if !rebuild {
-		pterm.Info.Println("GRPC protobuf schemas are older than all the generated code, not rebuilding.")
+		pterm.Info.Println(
+			"GRPC protobuf schemas are older than all the generated code, not rebuilding.",
+		)
 		return nil
 	}
 
@@ -43,5 +48,10 @@ func runBuf() error {
 
 	cmd := exec.Command("buf", "generate")
 	area := pterm.DefaultArea.WithRemoveWhenDone(true)
-	return runCommand(cmd, area, "generating GRPC from protobufs schemas", "failed to generate GRPC code from protobuf schemas")
+	return runCommand(
+		cmd,
+		area,
+		"generating GRPC from protobufs schemas",
+		"failed to generate GRPC code from protobuf schemas",
+	)
 }

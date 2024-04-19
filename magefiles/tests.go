@@ -80,7 +80,12 @@ func generateCoverage() error {
 
 	cmd := exec.Command("go", "tool", "cover", goToolCoverFunc(), goToolCoverOutput()) //#nosec G204
 
-	return runCommand(cmd, area, "generate code coverage data", "unable to generate code coverage data")
+	return runCommand(
+		cmd,
+		area,
+		"generate code coverage data",
+		"unable to generate code coverage data",
+	)
 }
 
 func coverProfileArg() string {

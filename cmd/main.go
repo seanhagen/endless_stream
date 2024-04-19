@@ -19,11 +19,11 @@ package main
 import "os"
 
 var (
-	// Version is set by the build process, contains semantic version
+	// Version is set by the build process, contains semantic version.
 	Version string
-	// Build is set by the build process, contains sha tag of build
+	// Build is set by the build process, contains sha tag of build.
 	Build string
-	// Repo is set by the build process, contains the repo where the code for this binary was built from
+	// Repo is set by the build process, contains the repo where the code for this binary was built from.
 	Repo string
 )
 

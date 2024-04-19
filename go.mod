@@ -6,6 +6,7 @@ require (
 	agones.dev/agones v1.38.0
 	github.com/fatih/color v1.16.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
+	github.com/hashicorp/go-envparse v0.1.0
 	github.com/magefile/mage v1.15.0
 	github.com/pterm/pterm v0.12.79
 	github.com/spf13/cobra v1.8.0
@@ -22,7 +23,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/gookit/color v1.5.4 // indirect
-	github.com/hashicorp/go-envparse v0.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lithammer/fuzzysearch v1.1.8 // indirect

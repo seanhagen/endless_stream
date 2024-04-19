@@ -140,7 +140,7 @@ func execCommand(command string, args ...string) error {
 
 	ran, err := sh.Exec(nil, outBuf, errBuf, command, args...)
 	if ran == false && err != nil {
-		pterm.Error.Printf("Unable to run command!\n", command)
+		pterm.Error.Printf("Unable to run command %q!\n", command)
 		fmt.Printf("Error:\n%s\n", errBuf.String())
 		return fmt.Errorf("unable to run linter: %w", err)
 	}

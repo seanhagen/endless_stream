@@ -113,6 +113,9 @@ func buildLdFlags() ([]string, error) {
 		fmt.Sprintf("\"main.Version=%s\"", version),
 		"-X",
 		fmt.Sprintf("\"main.Build=%s\"", build),
+		"-X",
+		// TODO: get this from .git/config
+		fmt.Sprintf("\"main.Repo=%s\"", "github.com/seanhagen/endless_stream"),
 	}
 
 	envVars, err := getEnvVars()
@@ -129,9 +132,7 @@ func buildLdFlags() ([]string, error) {
 	return flags, nil
 }
 
-var _envToLdFlag = map[string]string{
-	"REPO": "main.Repo",
-}
+var _envToLdFlag = map[string]string{}
 
 func addEnvVarToLdFlags(key, value string, flags *[]string) {
 	if !wantEnvVarAsLdFlag(key) {
