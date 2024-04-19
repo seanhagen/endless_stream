@@ -69,8 +69,8 @@ jobs:
     steps:
       - uses: fgrosse/go-coverage-report@v1.0.1 # Consider using a Git revision for maximum security
         with:
-          coverage-artifact-name: "go-test-coverage-txt"
-          coverage-file-name: "coverage.txt"
+          coverage-artifact-name: "go-test-coverage"
+          coverage-file-name: "coverage.out"
 
   dependency_checks:
     name: "Run dependency checks"
