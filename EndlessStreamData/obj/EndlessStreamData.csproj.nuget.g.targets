@@ -8,6 +8,7 @@
     <Import Project="$(NuGetPackageRoot)microsoft.sourcelink.github/1.1.1/build/Microsoft.SourceLink.GitHub.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.sourcelink.github/1.1.1/build/Microsoft.SourceLink.GitHub.targets')" />
     <Import Project="$(NuGetPackageRoot)microsoft.sourcelink.bitbucket.git/1.1.1/build/Microsoft.SourceLink.Bitbucket.Git.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.sourcelink.bitbucket.git/1.1.1/build/Microsoft.SourceLink.Bitbucket.Git.targets')" />
     <Import Project="$(NuGetPackageRoot)microsoft.sourcelink.azurerepos.git/1.1.1/build/Microsoft.SourceLink.AzureRepos.Git.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.sourcelink.azurerepos.git/1.1.1/build/Microsoft.SourceLink.AzureRepos.Git.targets')" />
+    <Import Project="$(NuGetPackageRoot)grpc.tools/2.62.0/build/Grpc.Tools.targets" Condition="Exists('$(NuGetPackageRoot)grpc.tools/2.62.0/build/Grpc.Tools.targets')" />
     <Import Project="$(NuGetPackageRoot)dotnet.reproduciblebuilds/1.1.1/build/DotNet.ReproducibleBuilds.targets" Condition="Exists('$(NuGetPackageRoot)dotnet.reproduciblebuilds/1.1.1/build/DotNet.ReproducibleBuilds.targets')" />
   </ImportGroup>
 </Project>
