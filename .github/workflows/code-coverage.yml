@@ -10,21 +10,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Update coverage badge
+    name: Checkout Code & Run Tests
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - name: Download coverage.out
+        uses: actions/download-artifact@v4
         with:
-          go-version-file: "go.mod"
-          cache-dependency-path: "go.sum"
+          name: go-test-coverage
+          path: coverage.out
 
-      - name: Run Test
-        run: |
-          go test -v ./... -covermode=count -coverprofile=coverage.out
-          go tool cover -func=coverage.out -o=coverage.out
+      - name: Download coverage.txt
+        uses: actions/download-artifact@v4
+        with:
+          name: go-test-coverage-txt
+          path: coverage.txt
+
 
       - name: Go Coverage Badge  # Pass the `coverage.out` output to this action
         uses: tj-actions/coverage-badge-go@v2
