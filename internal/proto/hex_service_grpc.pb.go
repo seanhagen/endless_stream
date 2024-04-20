@@ -299,3 +299,300 @@ var Admin_ServiceDesc = grpc.ServiceDesc{
 	},
 	Metadata: "proto/hex_service.proto",
 }
+
+const (
+	Test_Ping_FullMethodName         = "/endless.Test/Ping"
+	Test_ClientStream_FullMethodName = "/endless.Test/ClientStream"
+	Test_ServerStream_FullMethodName = "/endless.Test/ServerStream"
+	Test_BiDiStream_FullMethodName   = "/endless.Test/BiDiStream"
+)
+
+// TestClient is the client API for Test service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type TestClient interface {
+	Ping(ctx context.Context, in *PingReq, opts ...grpc.CallOption) (*PongResp, error)
+	ClientStream(ctx context.Context, opts ...grpc.CallOption) (Test_ClientStreamClient, error)
+	ServerStream(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (Test_ServerStreamClient, error)
+	BiDiStream(ctx context.Context, opts ...grpc.CallOption) (Test_BiDiStreamClient, error)
+}
+
+type testClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewTestClient(cc grpc.ClientConnInterface) TestClient {
+	return &testClient{cc}
+}
+
+func (c *testClient) Ping(ctx context.Context, in *PingReq, opts ...grpc.CallOption) (*PongResp, error) {
+	out := new(PongResp)
+	err := c.cc.Invoke(ctx, Test_Ping_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *testClient) ClientStream(ctx context.Context, opts ...grpc.CallOption) (Test_ClientStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Test_ServiceDesc.Streams[0], Test_ClientStream_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &testClientStreamClient{stream}
+	return x, nil
+}
+
+type Test_ClientStreamClient interface {
+	Send(*TestStreamRequest) error
+	CloseAndRecv() (*TestResponse, error)
+	grpc.ClientStream
+}
+
+type testClientStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *testClientStreamClient) Send(m *TestStreamRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *testClientStreamClient) CloseAndRecv() (*TestResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(TestResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *testClient) ServerStream(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (Test_ServerStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Test_ServiceDesc.Streams[1], Test_ServerStream_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &testServerStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Test_ServerStreamClient interface {
+	Recv() (*TestStreamResponse, error)
+	grpc.ClientStream
+}
+
+type testServerStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *testServerStreamClient) Recv() (*TestStreamResponse, error) {
+	m := new(TestStreamResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *testClient) BiDiStream(ctx context.Context, opts ...grpc.CallOption) (Test_BiDiStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Test_ServiceDesc.Streams[2], Test_BiDiStream_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &testBiDiStreamClient{stream}
+	return x, nil
+}
+
+type Test_BiDiStreamClient interface {
+	Send(*TestStreamRequest) error
+	CloseAndRecv() (*TestStreamResponse, error)
+	grpc.ClientStream
+}
+
+type testBiDiStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *testBiDiStreamClient) Send(m *TestStreamRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *testBiDiStreamClient) CloseAndRecv() (*TestStreamResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(TestStreamResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// TestServer is the server API for Test service.
+// All implementations must embed UnimplementedTestServer
+// for forward compatibility
+type TestServer interface {
+	Ping(context.Context, *PingReq) (*PongResp, error)
+	ClientStream(Test_ClientStreamServer) error
+	ServerStream(*TestRequest, Test_ServerStreamServer) error
+	BiDiStream(Test_BiDiStreamServer) error
+	mustEmbedUnimplementedTestServer()
+}
+
+// UnimplementedTestServer must be embedded to have forward compatible implementations.
+type UnimplementedTestServer struct {
+}
+
+func (UnimplementedTestServer) Ping(context.Context, *PingReq) (*PongResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
+func (UnimplementedTestServer) ClientStream(Test_ClientStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method ClientStream not implemented")
+}
+func (UnimplementedTestServer) ServerStream(*TestRequest, Test_ServerStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method ServerStream not implemented")
+}
+func (UnimplementedTestServer) BiDiStream(Test_BiDiStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method BiDiStream not implemented")
+}
+func (UnimplementedTestServer) mustEmbedUnimplementedTestServer() {}
+
+// UnsafeTestServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TestServer will
+// result in compilation errors.
+type UnsafeTestServer interface {
+	mustEmbedUnimplementedTestServer()
+}
+
+func RegisterTestServer(s grpc.ServiceRegistrar, srv TestServer) {
+	s.RegisterService(&Test_ServiceDesc, srv)
+}
+
+func _Test_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PingReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TestServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Test_Ping_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TestServer).Ping(ctx, req.(*PingReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Test_ClientStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TestServer).ClientStream(&testClientStreamServer{stream})
+}
+
+type Test_ClientStreamServer interface {
+	SendAndClose(*TestResponse) error
+	Recv() (*TestStreamRequest, error)
+	grpc.ServerStream
+}
+
+type testClientStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *testClientStreamServer) SendAndClose(m *TestResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *testClientStreamServer) Recv() (*TestStreamRequest, error) {
+	m := new(TestStreamRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _Test_ServerStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(TestRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TestServer).ServerStream(m, &testServerStreamServer{stream})
+}
+
+type Test_ServerStreamServer interface {
+	Send(*TestStreamResponse) error
+	grpc.ServerStream
+}
+
+type testServerStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *testServerStreamServer) Send(m *TestStreamResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _Test_BiDiStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TestServer).BiDiStream(&testBiDiStreamServer{stream})
+}
+
+type Test_BiDiStreamServer interface {
+	SendAndClose(*TestStreamResponse) error
+	Recv() (*TestStreamRequest, error)
+	grpc.ServerStream
+}
+
+type testBiDiStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *testBiDiStreamServer) SendAndClose(m *TestStreamResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *testBiDiStreamServer) Recv() (*TestStreamRequest, error) {
+	m := new(TestStreamRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// Test_ServiceDesc is the grpc.ServiceDesc for Test service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Test_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "endless.Test",
+	HandlerType: (*TestServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Ping",
+			Handler:    _Test_Ping_Handler,
+		},
+	},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ClientStream",
+			Handler:       _Test_ClientStream_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "ServerStream",
+			Handler:       _Test_ServerStream_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "BiDiStream",
+			Handler:       _Test_BiDiStream_Handler,
+			ClientStreams: true,
+		},
+	},
+	Metadata: "proto/hex_service.proto",
+}

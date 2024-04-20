@@ -228,3 +228,67 @@ export const AdminResponse = /*@__PURE__*/ proto3.makeMessageType(
     { no: 3, name: "result", kind: "enum", T: proto3.getEnumType(Result) },
   ],
 );
+
+/**
+ * these types are just for testing, they shouldn't be used in the actual game client
+ *
+ * @generated from message endless.PingReq
+ */
+export const PingReq = /*@__PURE__*/ proto3.makeMessageType(
+  "endless.PingReq",
+  () => [
+    { no: 1, name: "msg", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
+ * @generated from message endless.PongResp
+ */
+export const PongResp = /*@__PURE__*/ proto3.makeMessageType(
+  "endless.PongResp",
+  () => [
+    { no: 1, name: "gsm", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
+ * @generated from message endless.TestStreamRequest
+ */
+export const TestStreamRequest = /*@__PURE__*/ proto3.makeMessageType(
+  "endless.TestStreamRequest",
+  () => [
+    { no: 1, name: "chunk_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "msg", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
+ * @generated from message endless.TestStreamResponse
+ */
+export const TestStreamResponse = /*@__PURE__*/ proto3.makeMessageType(
+  "endless.TestStreamResponse",
+  () => [
+    { no: 1, name: "resp_id", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 2, name: "gsm", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
+ * @generated from message endless.TestRequest
+ */
+export const TestRequest = /*@__PURE__*/ proto3.makeMessageType(
+  "endless.TestRequest",
+  () => [
+    { no: 1, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
+ * @generated from message endless.TestResponse
+ */
+export const TestResponse = /*@__PURE__*/ proto3.makeMessageType(
+  "endless.TestResponse",
+  () => [
+    { no: 1, name: "resp", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);

@@ -125,3 +125,32 @@ message AdminResponse {
   Log log = 2;
   Result result = 3;
 };
+
+
+// these types are just for testing, they shouldn't be used in the actual game client
+message PingReq {
+  string msg = 1;
+};
+
+message PongResp {
+  // gsm is the Ping.msg msg backwards
+  string gsm = 1;
+};
+
+message TestStreamRequest {
+  int32 chunk_id = 1;
+  string msg = 2;
+};
+
+message TestStreamResponse {
+  int32 resp_id = 1;
+  string gsm = 2;
+};
+
+message TestRequest {
+  string name = 1;
+};
+
+message TestResponse {
+  string resp = 1;
+};

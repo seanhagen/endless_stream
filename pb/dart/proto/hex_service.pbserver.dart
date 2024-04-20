@@ -64,3 +64,33 @@ abstract class AdminServiceBase extends $pb.GeneratedService {
   $core.Map<$core.String, $core.dynamic> get $json => AdminServiceBase$json;
   $core.Map<$core.String, $core.Map<$core.String, $core.dynamic>> get $messageJson => AdminServiceBase$messageJson;
 }
+
+abstract class TestServiceBase extends $pb.GeneratedService {
+  $async.Future<$1.PongResp> ping($pb.ServerContext ctx, $1.PingReq request);
+  $async.Future<$1.TestResponse> clientStream($pb.ServerContext ctx, $1.TestStreamRequest request);
+  $async.Future<$1.TestStreamResponse> serverStream($pb.ServerContext ctx, $1.TestRequest request);
+  $async.Future<$1.TestStreamResponse> biDiStream($pb.ServerContext ctx, $1.TestStreamRequest request);
+
+  $pb.GeneratedMessage createRequest($core.String methodName) {
+    switch (methodName) {
+      case 'Ping': return $1.PingReq();
+      case 'ClientStream': return $1.TestStreamRequest();
+      case 'ServerStream': return $1.TestRequest();
+      case 'BiDiStream': return $1.TestStreamRequest();
+      default: throw $core.ArgumentError('Unknown method: $methodName');
+    }
+  }
+
+  $async.Future<$pb.GeneratedMessage> handleCall($pb.ServerContext ctx, $core.String methodName, $pb.GeneratedMessage request) {
+    switch (methodName) {
+      case 'Ping': return this.ping(ctx, request as $1.PingReq);
+      case 'ClientStream': return this.clientStream(ctx, request as $1.TestStreamRequest);
+      case 'ServerStream': return this.serverStream(ctx, request as $1.TestRequest);
+      case 'BiDiStream': return this.biDiStream(ctx, request as $1.TestStreamRequest);
+      default: throw $core.ArgumentError('Unknown method: $methodName');
+    }
+  }
+
+  $core.Map<$core.String, $core.dynamic> get $json => TestServiceBase$json;
+  $core.Map<$core.String, $core.Map<$core.String, $core.dynamic>> get $messageJson => TestServiceBase$messageJson;
+}

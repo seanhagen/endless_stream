@@ -10,6 +10,9 @@
     },
     {
       "name": "Admin"
+    },
+    {
+      "name": "Test"
     }
   ],
   "consumes": [
@@ -158,6 +161,15 @@
       ],
       "default": "Server"
     },
+    "endlessPongResp": {
+      "type": "object",
+      "properties": {
+        "gsm": {
+          "type": "string",
+          "title": "gsm is the Ping.msg msg backwards"
+        }
+      }
+    },
     "endlessRemoveTile": {
       "type": "object",
       "properties": {
@@ -174,6 +186,26 @@
         "Success"
       ],
       "default": "Unknown"
+    },
+    "endlessTestResponse": {
+      "type": "object",
+      "properties": {
+        "resp": {
+          "type": "string"
+        }
+      }
+    },
+    "endlessTestStreamResponse": {
+      "type": "object",
+      "properties": {
+        "respId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "gsm": {
+          "type": "string"
+        }
+      }
     },
     "endlessTile": {
       "type": "object",

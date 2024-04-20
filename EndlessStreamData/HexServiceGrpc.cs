@@ -314,5 +314,234 @@ namespace Endless {
     }
 
   }
+  public static partial class Test
+  {
+    static readonly string __ServiceName = "endless.Test";
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (message is global::Google.Protobuf.IBufferMessage)
+      {
+        context.SetPayloadLength(message.CalculateSize());
+        global::Google.Protobuf.MessageExtensions.WriteTo(message, context.GetBufferWriter());
+        context.Complete();
+        return;
+      }
+      #endif
+      context.Complete(global::Google.Protobuf.MessageExtensions.ToByteArray(message));
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static class __Helper_MessageCache<T>
+    {
+      public static readonly bool IsBufferMessage = global::System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(global::Google.Protobuf.IBufferMessage)).IsAssignableFrom(typeof(T));
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static T __Helper_DeserializeMessage<T>(grpc::DeserializationContext context, global::Google.Protobuf.MessageParser<T> parser) where T : global::Google.Protobuf.IMessage<T>
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (__Helper_MessageCache<T>.IsBufferMessage)
+      {
+        return parser.ParseFrom(context.PayloadAsReadOnlySequence());
+      }
+      #endif
+      return parser.ParseFrom(context.PayloadAsNewBuffer());
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Endless.PingReq> __Marshaller_endless_PingReq = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Endless.PingReq.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Endless.PongResp> __Marshaller_endless_PongResp = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Endless.PongResp.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Endless.TestStreamRequest> __Marshaller_endless_TestStreamRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Endless.TestStreamRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Endless.TestResponse> __Marshaller_endless_TestResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Endless.TestResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Endless.TestRequest> __Marshaller_endless_TestRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Endless.TestRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Endless.TestStreamResponse> __Marshaller_endless_TestStreamResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Endless.TestStreamResponse.Parser));
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Endless.PingReq, global::Endless.PongResp> __Method_Ping = new grpc::Method<global::Endless.PingReq, global::Endless.PongResp>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "Ping",
+        __Marshaller_endless_PingReq,
+        __Marshaller_endless_PongResp);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Endless.TestStreamRequest, global::Endless.TestResponse> __Method_ClientStream = new grpc::Method<global::Endless.TestStreamRequest, global::Endless.TestResponse>(
+        grpc::MethodType.ClientStreaming,
+        __ServiceName,
+        "ClientStream",
+        __Marshaller_endless_TestStreamRequest,
+        __Marshaller_endless_TestResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Endless.TestRequest, global::Endless.TestStreamResponse> __Method_ServerStream = new grpc::Method<global::Endless.TestRequest, global::Endless.TestStreamResponse>(
+        grpc::MethodType.ServerStreaming,
+        __ServiceName,
+        "ServerStream",
+        __Marshaller_endless_TestRequest,
+        __Marshaller_endless_TestStreamResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Endless.TestStreamRequest, global::Endless.TestStreamResponse> __Method_BiDiStream = new grpc::Method<global::Endless.TestStreamRequest, global::Endless.TestStreamResponse>(
+        grpc::MethodType.ClientStreaming,
+        __ServiceName,
+        "BiDiStream",
+        __Marshaller_endless_TestStreamRequest,
+        __Marshaller_endless_TestStreamResponse);
+
+    /// <summary>Service descriptor</summary>
+    public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
+    {
+      get { return global::Endless.HexServiceReflection.Descriptor.Services[2]; }
+    }
+
+    /// <summary>Base class for server-side implementations of Test</summary>
+    [grpc::BindServiceMethod(typeof(Test), "BindService")]
+    public abstract partial class TestBase
+    {
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::Endless.PongResp> Ping(global::Endless.PingReq request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::Endless.TestResponse> ClientStream(grpc::IAsyncStreamReader<global::Endless.TestStreamRequest> requestStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task ServerStream(global::Endless.TestRequest request, grpc::IServerStreamWriter<global::Endless.TestStreamResponse> responseStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::Endless.TestStreamResponse> BiDiStream(grpc::IAsyncStreamReader<global::Endless.TestStreamRequest> requestStream, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+    }
+
+    /// <summary>Client for Test</summary>
+    public partial class TestClient : grpc::ClientBase<TestClient>
+    {
+      /// <summary>Creates a new client for Test</summary>
+      /// <param name="channel">The channel to use to make remote calls.</param>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public TestClient(grpc::ChannelBase channel) : base(channel)
+      {
+      }
+      /// <summary>Creates a new client for Test that uses a custom <c>CallInvoker</c>.</summary>
+      /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public TestClient(grpc::CallInvoker callInvoker) : base(callInvoker)
+      {
+      }
+      /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      protected TestClient() : base()
+      {
+      }
+      /// <summary>Protected constructor to allow creation of configured clients.</summary>
+      /// <param name="configuration">The client configuration.</param>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      protected TestClient(ClientBaseConfiguration configuration) : base(configuration)
+      {
+      }
+
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Endless.PongResp Ping(global::Endless.PingReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return Ping(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Endless.PongResp Ping(global::Endless.PingReq request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_Ping, null, options, request);
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Endless.PongResp> PingAsync(global::Endless.PingReq request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return PingAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Endless.PongResp> PingAsync(global::Endless.PingReq request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_Ping, null, options, request);
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncClientStreamingCall<global::Endless.TestStreamRequest, global::Endless.TestResponse> ClientStream(grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ClientStream(new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncClientStreamingCall<global::Endless.TestStreamRequest, global::Endless.TestResponse> ClientStream(grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncClientStreamingCall(__Method_ClientStream, null, options);
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncServerStreamingCall<global::Endless.TestStreamResponse> ServerStream(global::Endless.TestRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ServerStream(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncServerStreamingCall<global::Endless.TestStreamResponse> ServerStream(global::Endless.TestRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncServerStreamingCall(__Method_ServerStream, null, options, request);
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncClientStreamingCall<global::Endless.TestStreamRequest, global::Endless.TestStreamResponse> BiDiStream(grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return BiDiStream(new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncClientStreamingCall<global::Endless.TestStreamRequest, global::Endless.TestStreamResponse> BiDiStream(grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncClientStreamingCall(__Method_BiDiStream, null, options);
+      }
+      /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      protected override TestClient NewInstance(ClientBaseConfiguration configuration)
+      {
+        return new TestClient(configuration);
+      }
+    }
+
+    /// <summary>Creates service definition that can be registered with a server</summary>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    public static grpc::ServerServiceDefinition BindService(TestBase serviceImpl)
+    {
+      return grpc::ServerServiceDefinition.CreateBuilder()
+          .AddMethod(__Method_Ping, serviceImpl.Ping)
+          .AddMethod(__Method_ClientStream, serviceImpl.ClientStream)
+          .AddMethod(__Method_ServerStream, serviceImpl.ServerStream)
+          .AddMethod(__Method_BiDiStream, serviceImpl.BiDiStream).Build();
+    }
+
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the service binding logic.
+    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, TestBase serviceImpl)
+    {
+      serviceBinder.AddMethod(__Method_Ping, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Endless.PingReq, global::Endless.PongResp>(serviceImpl.Ping));
+      serviceBinder.AddMethod(__Method_ClientStream, serviceImpl == null ? null : new grpc::ClientStreamingServerMethod<global::Endless.TestStreamRequest, global::Endless.TestResponse>(serviceImpl.ClientStream));
+      serviceBinder.AddMethod(__Method_ServerStream, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Endless.TestRequest, global::Endless.TestStreamResponse>(serviceImpl.ServerStream));
+      serviceBinder.AddMethod(__Method_BiDiStream, serviceImpl == null ? null : new grpc::ClientStreamingServerMethod<global::Endless.TestStreamRequest, global::Endless.TestStreamResponse>(serviceImpl.BiDiStream));
+    }
+
+  }
 }
 #endregion

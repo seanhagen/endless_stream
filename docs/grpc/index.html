@@ -227,7 +227,31 @@
                 </li>
 
                 <li>
+                  <a href="#endless.PingReq"><span class="badge">M</span>PingReq</a>
+                </li>
+
+                <li>
+                  <a href="#endless.PongResp"><span class="badge">M</span>PongResp</a>
+                </li>
+
+                <li>
                   <a href="#endless.RemoveTile"><span class="badge">M</span>RemoveTile</a>
+                </li>
+
+                <li>
+                  <a href="#endless.TestRequest"><span class="badge">M</span>TestRequest</a>
+                </li>
+
+                <li>
+                  <a href="#endless.TestResponse"><span class="badge">M</span>TestResponse</a>
+                </li>
+
+                <li>
+                  <a href="#endless.TestStreamRequest"><span class="badge">M</span>TestStreamRequest</a>
+                </li>
+
+                <li>
+                  <a href="#endless.TestStreamResponse"><span class="badge">M</span>TestStreamResponse</a>
                 </li>
 
                 <li>
@@ -274,6 +298,10 @@
 
                 <li>
                   <a href="#endless.Hex"><span class="badge">S</span>Hex</a>
+                </li>
+
+                <li>
+                  <a href="#endless.Test"><span class="badge">S</span>Test</a>
                 </li>
 
             </ul>
@@ -657,6 +685,54 @@
 
 
 
+        <h3 id="endless.PingReq">PingReq</h3>
+        <p>these types are just for testing, they shouldn't be used in the actual game client</p>
+
+
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                  <td>msg</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+
+            </tbody>
+          </table>
+
+
+
+
+
+        <h3 id="endless.PongResp">PongResp</h3>
+        <p></p>
+
+
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                  <td>gsm</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>gsm is the Ping.msg msg backwards </p></td>
+                </tr>
+
+            </tbody>
+          </table>
+
+
+
+
+
         <h3 id="endless.RemoveTile">RemoveTile</h3>
         <p></p>
 
@@ -670,6 +746,116 @@
                 <tr>
                   <td>coords</td>
                   <td><a href="#endless.Coordinate">Coordinate</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+
+            </tbody>
+          </table>
+
+
+
+
+
+        <h3 id="endless.TestRequest">TestRequest</h3>
+        <p></p>
+
+
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                  <td>name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+
+            </tbody>
+          </table>
+
+
+
+
+
+        <h3 id="endless.TestResponse">TestResponse</h3>
+        <p></p>
+
+
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                  <td>resp</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+
+            </tbody>
+          </table>
+
+
+
+
+
+        <h3 id="endless.TestStreamRequest">TestStreamRequest</h3>
+        <p></p>
+
+
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                  <td>chunk_id</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+
+                <tr>
+                  <td>msg</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+
+            </tbody>
+          </table>
+
+
+
+
+
+        <h3 id="endless.TestStreamResponse">TestStreamResponse</h3>
+        <p></p>
+
+
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                  <td>resp_id</td>
+                  <td><a href="#int32">int32</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+
+                <tr>
+                  <td>gsm</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
                   <td><p> </p></td>
                 </tr>
@@ -921,6 +1107,46 @@
                 <td>Game</td>
                 <td><a href="#endless.GameRequest">GameRequest</a> stream</td>
                 <td><a href="#endless.GameResponse">GameResponse</a> stream</td>
+                <td><p></p></td>
+              </tr>
+
+          </tbody>
+        </table>
+
+
+        <h3 id="endless.Test">Test</h3>
+        <p></p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+
+              <tr>
+                <td>Ping</td>
+                <td><a href="#endless.PingReq">PingReq</a></td>
+                <td><a href="#endless.PongResp">PongResp</a></td>
+                <td><p></p></td>
+              </tr>
+
+              <tr>
+                <td>ClientStream</td>
+                <td><a href="#endless.TestStreamRequest">TestStreamRequest</a> stream</td>
+                <td><a href="#endless.TestResponse">TestResponse</a></td>
+                <td><p></p></td>
+              </tr>
+
+              <tr>
+                <td>ServerStream</td>
+                <td><a href="#endless.TestRequest">TestRequest</a></td>
+                <td><a href="#endless.TestStreamResponse">TestStreamResponse</a> stream</td>
+                <td><p></p></td>
+              </tr>
+
+              <tr>
+                <td>BiDiStream</td>
+                <td><a href="#endless.TestStreamRequest">TestStreamRequest</a> stream</td>
+                <td><a href="#endless.TestStreamResponse">TestStreamResponse</a></td>
                 <td><p></p></td>
               </tr>
 

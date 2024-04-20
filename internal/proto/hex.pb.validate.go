@@ -1996,3 +1996,618 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = AdminResponseValidationError{}
+
+// Validate checks the field values on PingReq with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *PingReq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on PingReq with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in PingReqMultiError, or nil if none found.
+func (m *PingReq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *PingReq) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Msg
+
+	if len(errors) > 0 {
+		return PingReqMultiError(errors)
+	}
+
+	return nil
+}
+
+// PingReqMultiError is an error wrapping multiple validation errors returned
+// by PingReq.ValidateAll() if the designated constraints aren't met.
+type PingReqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PingReqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PingReqMultiError) AllErrors() []error { return m }
+
+// PingReqValidationError is the validation error returned by PingReq.Validate
+// if the designated constraints aren't met.
+type PingReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PingReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PingReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PingReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PingReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PingReqValidationError) ErrorName() string { return "PingReqValidationError" }
+
+// Error satisfies the builtin error interface
+func (e PingReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPingReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PingReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PingReqValidationError{}
+
+// Validate checks the field values on PongResp with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *PongResp) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on PongResp with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in PongRespMultiError, or nil
+// if none found.
+func (m *PongResp) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *PongResp) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Gsm
+
+	if len(errors) > 0 {
+		return PongRespMultiError(errors)
+	}
+
+	return nil
+}
+
+// PongRespMultiError is an error wrapping multiple validation errors returned
+// by PongResp.ValidateAll() if the designated constraints aren't met.
+type PongRespMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PongRespMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PongRespMultiError) AllErrors() []error { return m }
+
+// PongRespValidationError is the validation error returned by
+// PongResp.Validate if the designated constraints aren't met.
+type PongRespValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PongRespValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PongRespValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PongRespValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PongRespValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PongRespValidationError) ErrorName() string { return "PongRespValidationError" }
+
+// Error satisfies the builtin error interface
+func (e PongRespValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPongResp.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PongRespValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PongRespValidationError{}
+
+// Validate checks the field values on TestStreamRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *TestStreamRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on TestStreamRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// TestStreamRequestMultiError, or nil if none found.
+func (m *TestStreamRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *TestStreamRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for ChunkId
+
+	// no validation rules for Msg
+
+	if len(errors) > 0 {
+		return TestStreamRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// TestStreamRequestMultiError is an error wrapping multiple validation errors
+// returned by TestStreamRequest.ValidateAll() if the designated constraints
+// aren't met.
+type TestStreamRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m TestStreamRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m TestStreamRequestMultiError) AllErrors() []error { return m }
+
+// TestStreamRequestValidationError is the validation error returned by
+// TestStreamRequest.Validate if the designated constraints aren't met.
+type TestStreamRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e TestStreamRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e TestStreamRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e TestStreamRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e TestStreamRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e TestStreamRequestValidationError) ErrorName() string {
+	return "TestStreamRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e TestStreamRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sTestStreamRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = TestStreamRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = TestStreamRequestValidationError{}
+
+// Validate checks the field values on TestStreamResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *TestStreamResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on TestStreamResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// TestStreamResponseMultiError, or nil if none found.
+func (m *TestStreamResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *TestStreamResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for RespId
+
+	// no validation rules for Gsm
+
+	if len(errors) > 0 {
+		return TestStreamResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// TestStreamResponseMultiError is an error wrapping multiple validation errors
+// returned by TestStreamResponse.ValidateAll() if the designated constraints
+// aren't met.
+type TestStreamResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m TestStreamResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m TestStreamResponseMultiError) AllErrors() []error { return m }
+
+// TestStreamResponseValidationError is the validation error returned by
+// TestStreamResponse.Validate if the designated constraints aren't met.
+type TestStreamResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e TestStreamResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e TestStreamResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e TestStreamResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e TestStreamResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e TestStreamResponseValidationError) ErrorName() string {
+	return "TestStreamResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e TestStreamResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sTestStreamResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = TestStreamResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = TestStreamResponseValidationError{}
+
+// Validate checks the field values on TestRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *TestRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on TestRequest with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in TestRequestMultiError, or
+// nil if none found.
+func (m *TestRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *TestRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Name
+
+	if len(errors) > 0 {
+		return TestRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// TestRequestMultiError is an error wrapping multiple validation errors
+// returned by TestRequest.ValidateAll() if the designated constraints aren't met.
+type TestRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m TestRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m TestRequestMultiError) AllErrors() []error { return m }
+
+// TestRequestValidationError is the validation error returned by
+// TestRequest.Validate if the designated constraints aren't met.
+type TestRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e TestRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e TestRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e TestRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e TestRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e TestRequestValidationError) ErrorName() string { return "TestRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e TestRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sTestRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = TestRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = TestRequestValidationError{}
+
+// Validate checks the field values on TestResponse with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *TestResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on TestResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in TestResponseMultiError, or
+// nil if none found.
+func (m *TestResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *TestResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Resp
+
+	if len(errors) > 0 {
+		return TestResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// TestResponseMultiError is an error wrapping multiple validation errors
+// returned by TestResponse.ValidateAll() if the designated constraints aren't met.
+type TestResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m TestResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m TestResponseMultiError) AllErrors() []error { return m }
+
+// TestResponseValidationError is the validation error returned by
+// TestResponse.Validate if the designated constraints aren't met.
+type TestResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e TestResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e TestResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e TestResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e TestResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e TestResponseValidationError) ErrorName() string { return "TestResponseValidationError" }
+
+// Error satisfies the builtin error interface
+func (e TestResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sTestResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = TestResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = TestResponseValidationError{}

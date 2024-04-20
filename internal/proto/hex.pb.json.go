@@ -146,3 +146,63 @@ func (msg *AdminResponse) MarshalJSON() ([]byte, error) {
 func (msg *AdminResponse) UnmarshalJSON(b []byte) error {
 	return protojson.UnmarshalOptions{}.Unmarshal(b, msg)
 }
+
+// MarshalJSON implements json.Marshaler
+func (msg *PingReq) MarshalJSON() ([]byte, error) {
+	return protojson.MarshalOptions{}.Marshal(msg)
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (msg *PingReq) UnmarshalJSON(b []byte) error {
+	return protojson.UnmarshalOptions{}.Unmarshal(b, msg)
+}
+
+// MarshalJSON implements json.Marshaler
+func (msg *PongResp) MarshalJSON() ([]byte, error) {
+	return protojson.MarshalOptions{}.Marshal(msg)
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (msg *PongResp) UnmarshalJSON(b []byte) error {
+	return protojson.UnmarshalOptions{}.Unmarshal(b, msg)
+}
+
+// MarshalJSON implements json.Marshaler
+func (msg *TestStreamRequest) MarshalJSON() ([]byte, error) {
+	return protojson.MarshalOptions{}.Marshal(msg)
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (msg *TestStreamRequest) UnmarshalJSON(b []byte) error {
+	return protojson.UnmarshalOptions{}.Unmarshal(b, msg)
+}
+
+// MarshalJSON implements json.Marshaler
+func (msg *TestStreamResponse) MarshalJSON() ([]byte, error) {
+	return protojson.MarshalOptions{}.Marshal(msg)
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (msg *TestStreamResponse) UnmarshalJSON(b []byte) error {
+	return protojson.UnmarshalOptions{}.Unmarshal(b, msg)
+}
+
+// MarshalJSON implements json.Marshaler
+func (msg *TestRequest) MarshalJSON() ([]byte, error) {
+	return protojson.MarshalOptions{}.Marshal(msg)
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (msg *TestRequest) UnmarshalJSON(b []byte) error {
+	return protojson.UnmarshalOptions{}.Unmarshal(b, msg)
+}
+
+// MarshalJSON implements json.Marshaler
+func (msg *TestResponse) MarshalJSON() ([]byte, error) {
+	return protojson.MarshalOptions{}.Marshal(msg)
+}
+
+// UnmarshalJSON implements json.Unmarshaler
+func (msg *TestResponse) UnmarshalJSON(b []byte) error {
+	return protojson.UnmarshalOptions{}.Unmarshal(b, msg)
+}

@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { AdminRequest, AdminResponse, GameRequest, GameResponse, InfoRequest, InfoResponse } from "./hex_pb.js";
+import { AdminRequest, AdminResponse, GameRequest, GameResponse, InfoRequest, InfoResponse, PingReq, PongResp, TestRequest, TestResponse, TestStreamRequest, TestStreamResponse } from "./hex_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -47,6 +47,51 @@ export const Admin = {
       I: AdminRequest,
       O: AdminResponse,
       kind: MethodKind.BiDiStreaming,
+    },
+  }
+};
+
+/**
+ * @generated from service endless.Test
+ */
+export const Test = {
+  typeName: "endless.Test",
+  methods: {
+    /**
+     * @generated from rpc endless.Test.Ping
+     */
+    ping: {
+      name: "Ping",
+      I: PingReq,
+      O: PongResp,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc endless.Test.ClientStream
+     */
+    clientStream: {
+      name: "ClientStream",
+      I: TestStreamRequest,
+      O: TestResponse,
+      kind: MethodKind.ClientStreaming,
+    },
+    /**
+     * @generated from rpc endless.Test.ServerStream
+     */
+    serverStream: {
+      name: "ServerStream",
+      I: TestRequest,
+      O: TestStreamResponse,
+      kind: MethodKind.ServerStreaming,
+    },
+    /**
+     * @generated from rpc endless.Test.BiDiStream
+     */
+    biDiStream: {
+      name: "BiDiStream",
+      I: TestStreamRequest,
+      O: TestStreamResponse,
+      kind: MethodKind.ClientStreaming,
     },
   }
 };

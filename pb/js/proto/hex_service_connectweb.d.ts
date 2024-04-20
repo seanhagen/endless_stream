@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { AdminRequest, AdminResponse, GameRequest, GameResponse, InfoRequest, InfoResponse } from "./hex_pb.js";
+import { AdminRequest, AdminResponse, GameRequest, GameResponse, InfoRequest, InfoResponse, PingReq, PongResp, TestRequest, TestResponse, TestStreamRequest, TestStreamResponse } from "./hex_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -47,6 +47,51 @@ export declare const Admin: {
       readonly I: typeof AdminRequest,
       readonly O: typeof AdminResponse,
       readonly kind: MethodKind.BiDiStreaming,
+    },
+  }
+};
+
+/**
+ * @generated from service endless.Test
+ */
+export declare const Test: {
+  readonly typeName: "endless.Test",
+  readonly methods: {
+    /**
+     * @generated from rpc endless.Test.Ping
+     */
+    readonly ping: {
+      readonly name: "Ping",
+      readonly I: typeof PingReq,
+      readonly O: typeof PongResp,
+      readonly kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc endless.Test.ClientStream
+     */
+    readonly clientStream: {
+      readonly name: "ClientStream",
+      readonly I: typeof TestStreamRequest,
+      readonly O: typeof TestResponse,
+      readonly kind: MethodKind.ClientStreaming,
+    },
+    /**
+     * @generated from rpc endless.Test.ServerStream
+     */
+    readonly serverStream: {
+      readonly name: "ServerStream",
+      readonly I: typeof TestRequest,
+      readonly O: typeof TestStreamResponse,
+      readonly kind: MethodKind.ServerStreaming,
+    },
+    /**
+     * @generated from rpc endless.Test.BiDiStream
+     */
+    readonly biDiStream: {
+      readonly name: "BiDiStream",
+      readonly I: typeof TestStreamRequest,
+      readonly O: typeof TestStreamResponse,
+      readonly kind: MethodKind.ClientStreaming,
     },
   }
 };

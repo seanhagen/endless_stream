@@ -29,10 +29,16 @@ namespace Endless {
             "LmVuZGxlc3MuSW5mb1Jlc3BvbnNlEjcKBEdhbWUSFC5lbmRsZXNzLkdhbWVS",
             "ZXF1ZXN0GhUuZW5kbGVzcy5HYW1lUmVzcG9uc2UoATABMkQKBUFkbWluEjsK",
             "Bk1hbmFnZRIVLmVuZGxlc3MuQWRtaW5SZXF1ZXN0GhYuZW5kbGVzcy5BZG1p",
-            "blJlc3BvbnNlKAEwAUKUAQoLY29tLmVuZGxlc3NCD0hleFNlcnZpY2VQcm90",
-            "b1ABWjhnaXRodWIuY29tL3NlYW5oYWdlbi9lbmRsZXNzX3N0cmVhbS9pbnRl",
-            "cm5hbC9wcm90by9wcm90b6ICA0VYWKoCB0VuZGxlc3PKAgdFbmRsZXNz4gIT",
-            "RW5kbGVzc1xHUEJNZXRhZGF0YeoCB0VuZGxlc3NiBnByb3RvMw=="));
+            "blJlc3BvbnNlKAEwATKGAgoEVGVzdBIrCgRQaW5nEhAuZW5kbGVzcy5QaW5n",
+            "UmVxGhEuZW5kbGVzcy5Qb25nUmVzcBJDCgxDbGllbnRTdHJlYW0SGi5lbmRs",
+            "ZXNzLlRlc3RTdHJlYW1SZXF1ZXN0GhUuZW5kbGVzcy5UZXN0UmVzcG9uc2Uo",
+            "ARJDCgxTZXJ2ZXJTdHJlYW0SFC5lbmRsZXNzLlRlc3RSZXF1ZXN0GhsuZW5k",
+            "bGVzcy5UZXN0U3RyZWFtUmVzcG9uc2UwARJHCgpCaURpU3RyZWFtEhouZW5k",
+            "bGVzcy5UZXN0U3RyZWFtUmVxdWVzdBobLmVuZGxlc3MuVGVzdFN0cmVhbVJl",
+            "c3BvbnNlKAFClAEKC2NvbS5lbmRsZXNzQg9IZXhTZXJ2aWNlUHJvdG9QAVo4",
+            "Z2l0aHViLmNvbS9zZWFuaGFnZW4vZW5kbGVzc19zdHJlYW0vaW50ZXJuYWwv",
+            "cHJvdG8vcHJvdG+iAgNFWFiqAgdFbmRsZXNzygIHRW5kbGVzc+ICE0VuZGxl",
+            "c3NcR1BCTWV0YWRhdGHqAgdFbmRsZXNzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Endless.HexReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, null));

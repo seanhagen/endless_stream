@@ -68,3 +68,31 @@ const $core.Map<$core.String, $core.Map<$core.String, $core.dynamic>> AdminServi
 final $typed_data.Uint8List adminServiceDescriptor = $convert.base64Decode(
     'CgVBZG1pbhI7CgZNYW5hZ2USFS5lbmRsZXNzLkFkbWluUmVxdWVzdBoWLmVuZGxlc3MuQWRtaW'
     '5SZXNwb25zZSgBMAE=');
+
+const $core.Map<$core.String, $core.dynamic> TestServiceBase$json = {
+  '1': 'Test',
+  '2': [
+    {'1': 'Ping', '2': '.endless.PingReq', '3': '.endless.PongResp'},
+    {'1': 'ClientStream', '2': '.endless.TestStreamRequest', '3': '.endless.TestResponse', '5': true},
+    {'1': 'ServerStream', '2': '.endless.TestRequest', '3': '.endless.TestStreamResponse', '6': true},
+    {'1': 'BiDiStream', '2': '.endless.TestStreamRequest', '3': '.endless.TestStreamResponse', '5': true},
+  ],
+};
+
+@$core.Deprecated('Use testServiceDescriptor instead')
+const $core.Map<$core.String, $core.Map<$core.String, $core.dynamic>> TestServiceBase$messageJson = {
+  '.endless.PingReq': $1.PingReq$json,
+  '.endless.PongResp': $1.PongResp$json,
+  '.endless.TestStreamRequest': $1.TestStreamRequest$json,
+  '.endless.TestResponse': $1.TestResponse$json,
+  '.endless.TestRequest': $1.TestRequest$json,
+  '.endless.TestStreamResponse': $1.TestStreamResponse$json,
+};
+
+/// Descriptor for `Test`. Decode as a `google.protobuf.ServiceDescriptorProto`.
+final $typed_data.Uint8List testServiceDescriptor = $convert.base64Decode(
+    'CgRUZXN0EisKBFBpbmcSEC5lbmRsZXNzLlBpbmdSZXEaES5lbmRsZXNzLlBvbmdSZXNwEkMKDE'
+    'NsaWVudFN0cmVhbRIaLmVuZGxlc3MuVGVzdFN0cmVhbVJlcXVlc3QaFS5lbmRsZXNzLlRlc3RS'
+    'ZXNwb25zZSgBEkMKDFNlcnZlclN0cmVhbRIULmVuZGxlc3MuVGVzdFJlcXVlc3QaGy5lbmRsZX'
+    'NzLlRlc3RTdHJlYW1SZXNwb25zZTABEkcKCkJpRGlTdHJlYW0SGi5lbmRsZXNzLlRlc3RTdHJl'
+    'YW1SZXF1ZXN0GhsuZW5kbGVzcy5UZXN0U3RyZWFtUmVzcG9uc2UoAQ==');

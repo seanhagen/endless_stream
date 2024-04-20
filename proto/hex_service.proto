@@ -12,3 +12,10 @@ service Hex {
 service Admin {
   rpc Manage(stream AdminRequest) returns (stream AdminResponse);
 }
+
+service Test {
+  rpc Ping(PingReq) returns (PongResp);
+  rpc ClientStream(stream TestStreamRequest) returns (TestResponse);
+  rpc ServerStream(TestRequest) returns (stream TestStreamResponse);
+  rpc BiDiStream(stream TestStreamRequest) returns (TestStreamResponse);
+}
