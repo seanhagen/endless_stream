@@ -21,10 +21,10 @@ plugins:
     out: internal
     opt:
       - paths=source_relative
-  - plugin: go-grpc-mock
-    out: internal
-    opt:
-      - paths=source_relative
+  # - plugin: go-grpc-mock
+  #   out: internal
+  #   opt:
+  #     - paths=source_relative
 
   # generate C#
   - plugin: buf.build/protocolbuffers/csharp:v26.1
