@@ -174,6 +174,44 @@ in the test implementation of the game server.
 That would also let me set up tests for middleware; validate that things like
 rate limiting, authentication, etc are all working properly.
 
+**** Transport Layer
+ - handles setting up GRPC server ( not each service! )
+ - when created, needs to be passed a configuration that includes
+   - a way to specify servers to register during startup
+   - including grpc-gateway or others
+ - this handles setting up the =grpc.NewServer=, the listener, all that stuff
+ - launches own goroutine for listening on the socket
+
+
+ for testing:
+  - how to inject a [[https://pkg.go.dev/net#Listener][net.Listener]] so that a mock or stub can be passed in for tests?
+
+ other concerns;
+  - how to pass in middleware?
+  - how to configure grpc-gateway
+  - how to configure the dialer needed for grpc-gateway, that works with the
+    listener injected during tests?
+
+
+**** Services
+ - need an 'application' framework similar to Biba for holding things like
+   config, service clients, etc
+ - each service should at least match an interface used by the transport layer
+   to handle registration & startup stuff
+
+**** Game Server
+ - passed into services as a dependency ( at least the Hex & Admin services )
+   - Hex & Admin should define a limited interface that defines the API they
+     need to be able to work with the game server
+   - ie, Hex service defines an interface for doing things like handling player
+     requests, logs, etc
+   - while Admin service defines an interface for doing things like kicking
+     players, modifying the game world, etc
+ - would be launched in it's own goroutine separate from the GRPC/HTTP/etc
+   transport layer
+   - should probably manage it's own goroutine?
+
+
 *** Thing To Remember
 The GRPC Handler is basically the container for things like authentication,
 validation, rate limiting, etc. The game server shouldn't care about any of
