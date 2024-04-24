@@ -5,12 +5,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"log/slog"
 	"reflect"
 	"time"
 
 	"agones.dev/agones/pkg/sdk"
+	"github.com/seanhagen/endless_stream/internal/observability"
+	"github.com/seanhagen/endless_stream/internal/observability/logs"
 )
 
 const (
@@ -50,7 +50,7 @@ type Config struct {
 	Health HealthConfig
 
 	// Logger ...
-	Logger *slog.Logger
+	Logger observability.Logger
 
 	buildTicker tickFn
 }
@@ -63,7 +63,7 @@ type Handler struct {
 	// heartbeatCtx       context.Context
 	heartbeatCtxCancel func()
 	buildTicker        tickFn
-	logger             *slog.Logger
+	logger             observability.Logger
 }
 
 // ErrMissingRequiredField is returned from Create when a required field is missing.
@@ -74,9 +74,7 @@ var ErrMissingRequiredField = errors.New("missing required field GameSDK in conf
 // Create ...
 func Create(_ context.Context, conf Config) (*Handler, error) {
 	if isNil(conf.Logger) {
-		conf.Logger = slog.New(slog.NewTextHandler(io.Discard, nil))
-	} else {
-		conf.Logger = conf.Logger.With("type", "handler")
+		conf.Logger = logs.DiscardLogger()
 	}
 
 	if isNil(conf.GameSDK) {
@@ -91,11 +89,10 @@ func Create(_ context.Context, conf Config) (*Handler, error) {
 		conf.Health.Reporter = conf.GameSDK
 	}
 
-	if isNil(conf.Health.Logger) {
-		conf.Health.Logger = conf.Logger.With("type", "heartbeat")
-	}
-
-	healthChecker, err := newHealthManager(conf.Health)
+	healthChecker, err := newHealthManager(
+		conf.Health,
+		conf.Logger.WithAttrs(observability.TypeAttr("game-heartbeat")),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("unable to configure health checker: %w", err)
 	}
@@ -107,7 +104,7 @@ func Create(_ context.Context, conf Config) (*Handler, error) {
 		heartbeatListeners: []heartbeatListener{
 			healthChecker,
 		},
-		logger: conf.Logger,
+		logger: conf.Logger.WithAttrs(observability.TypeAttr("game-server")),
 	}
 
 	return hdlr, nil
@@ -115,8 +112,7 @@ func Create(_ context.Context, conf Config) (*Handler, error) {
 
 // Start ...
 func (h *Handler) Start(ctx context.Context) error {
-	h.logger.Log(ctx, slog.LevelDebug, "starting server handler")
-
+	h.logger.Debug(ctx, "starting server handler")
 	ctx, cancel := context.WithCancel(ctx)
 
 	go h.heartbeat(ctx)
@@ -128,8 +124,8 @@ func (h *Handler) Start(ctx context.Context) error {
 
 	if err := h.sdk.Ready(ctx); err != nil {
 		cancel()
-		h.logger.ErrorContext(ctx, "sdk Ready method returned error", "err", err)
-		return fmt.Errorf("unable to ready: %w", err)
+		h.logger.Error(ctx, "sdk Ready method returned error", observability.ErrorAttr(err))
+		return fmt.Errorf("ready fail: %w", err)
 	}
 
 	return nil
@@ -141,7 +137,7 @@ func (h *Handler) heartbeat(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
-			h.logger.DebugContext(ctx, "heartbeat loop, context done")
+			h.logger.Debug(ctx, "heartbeat loop, context done")
 			return
 		case t := <-tick:
 			h.notifyHeartbeat(ctx, t)
@@ -151,17 +147,17 @@ func (h *Handler) heartbeat(ctx context.Context) {
 
 // notifyHeartbeat ...
 func (h *Handler) notifyHeartbeat(ctx context.Context, t time.Time) {
-	h.logger.DebugContext(ctx, "heartbeat notify")
+	h.logger.Debug(ctx, "heartbeat notify")
 	for _, listener := range h.heartbeatListeners {
 		if err := listener.heartbeat(ctx, t); err != nil {
-			h.logger.ErrorContext(ctx, "heartbeat listener returned error", "err", err)
+			h.logger.Error(ctx, "heartbeat listener returned error", observability.ErrorAttr(err))
 		}
 	}
 }
 
 // Stop ...
 func (h *Handler) Stop(ctx context.Context) error {
-	h.logger.DebugContext(ctx, "handler stop")
+	h.logger.Debug(ctx, "handler stop")
 	h.heartbeatCtxCancel()
 
 	for _, listener := range h.heartbeatListeners {

@@ -4,8 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 	"time"
+
+	"github.com/seanhagen/endless_stream/internal/observability"
 )
 
 // HealthReporter ...
@@ -16,7 +17,6 @@ type HealthReporter interface {
 // HealthConfig ...
 type HealthConfig struct {
 	Reporter          HealthReporter
-	Logger            *slog.Logger
 	MaxFailed         int
 	TimeBetweenChecks time.Duration
 }
@@ -27,7 +27,7 @@ type healthManager struct {
 	maxFailedChecks   int
 	lastCheck         time.Time
 	timeBetweenChecks time.Duration
-	logger            *slog.Logger
+	logger            observability.Logger
 }
 
 const (
@@ -50,7 +50,7 @@ var (
 	)
 )
 
-func newHealthManager(hc HealthConfig) (*healthManager, error) {
+func newHealthManager(hc HealthConfig, logger observability.Logger) (*healthManager, error) {
 	if isNil(hc.Reporter) {
 		return nil, ErrRequireHealthReporter
 	}
@@ -67,7 +67,7 @@ func newHealthManager(hc HealthConfig) (*healthManager, error) {
 		reporter:          hc.Reporter,
 		maxFailedChecks:   hc.MaxFailed,
 		timeBetweenChecks: hc.TimeBetweenChecks,
-		logger:            hc.Logger,
+		logger:            logger,
 	}
 
 	return &hm, nil
@@ -101,23 +101,22 @@ func (hm *healthManager) heartbeat(ctx context.Context, beatTime time.Time) erro
 
 // shutdown ...
 func (hm *healthManager) shutdown(ctx context.Context) {
-	hm.logger.DebugContext(ctx, "health check manager shutting down")
+	hm.logger.Debug(ctx, "health check manager shutting down")
 }
 
 // report ...
 func (hm *healthManager) report(ctx context.Context) error {
-	hm.logger.DebugContext(ctx, "sending health ping")
+	hm.logger.Debug(ctx, "sending health ping")
 	err := hm.reporter.Health(ctx)
 	if err != nil {
-		hm.logger.ErrorContext(ctx, "health ping returned error", "err", err)
+		hm.logger.Error(ctx, "health ping returned error", observability.ErrorAttr(err))
 		hm.failedChecks++
 	} else {
 		hm.failedChecks = 0
 	}
 
 	if err != nil && hm.failedChecks >= hm.maxFailedChecks {
-		hm.logger.ErrorContext(ctx, "too many failed checks")
-
+		hm.logger.Error(ctx, "too many failed checks")
 		return fmt.Errorf("max failed checks, last error: %w", err)
 	}
 

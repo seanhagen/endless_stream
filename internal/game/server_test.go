@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/seanhagen/endless_stream/internal/observability/logs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -32,10 +33,10 @@ func TestServer_Constructor_RequiredOptions(t *testing.T) {
 				GameSDK: &testAgonesSDK{}, //nolint:exhaustruct
 				Health: HealthConfig{
 					Reporter:          nil,
-					Logger:            &slog.Logger{},
 					MaxFailed:         3,
 					TimeBetweenChecks: time.Second,
 				},
+				Logger: logs.NewTestLog(t, &logs.Config{}),
 			},
 			valid: true,
 		},
@@ -70,11 +71,15 @@ func TestServer_StartsAndLifecycleProgression(t *testing.T) {
 	ctx := context.Background()
 	fakeTicks := make(chan time.Time, 10)
 	expectDuration := time.Second
-	buf := bytes.NewBuffer(nil)
-	logger := slog.New(
-		slog.NewTextHandler(buf, &slog.HandlerOptions{Level: slog.LevelDebug}),
-	) //nolint:exhaustruct
 	testSDK := &testAgonesSDK{} //nolint:exhaustruct
+
+	buf := bytes.NewBuffer(nil)
+	logConf := &logs.Config{
+		Out:     buf,
+		LogType: logs.LogTypeText,
+		Level:   slog.LevelDebug,
+	}
+	logger := logs.NewTestLog(t, logConf)
 
 	var gotDuration time.Duration
 	tickerFn := func(d time.Duration) <-chan time.Time { //nolint:wsl
@@ -87,7 +92,6 @@ func TestServer_StartsAndLifecycleProgression(t *testing.T) {
 		GameSDK: testSDK,
 		Health: HealthConfig{
 			Reporter:          nil,
-			Logger:            logger,
 			MaxFailed:         2,
 			TimeBetweenChecks: time.Second,
 		},

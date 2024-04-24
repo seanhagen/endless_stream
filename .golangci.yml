@@ -40,11 +40,14 @@ severity:
 
 linters:
   disable:
+    - execinquery
     - exhaustive
     - exhaustruct
     - godox
+    - ireturn
     - wsl
     - nlreturn
+    - revive # temporary
   enable:
     - asasalint
     - bidichk
@@ -58,11 +61,11 @@ linters:
     - dupl
     - dupword
     - durationcheck
+    - err113
     - errcheck
     - errchkjson
     - errname
     - errorlint
-    - execinquery
     - exportloopref
     - forbidigo
     - forcetypeassert
@@ -76,11 +79,9 @@ linters:
     - gocritic
     - gocyclo
     - godot
-    - goerr113
     - gofmt
     - gofumpt
     - goimports
-    - gomnd
     - gomoddirectives
     - gomodguard
     - goprintffuncname
@@ -92,12 +93,12 @@ linters:
     - importas
     - ineffassign
     - interfacebloat
-    - ireturn
     - lll
     - loggercheck
     - maintidx
     - makezero
     - misspell
+    - mnd
     - musttag
     - nakedret
     - nestif
@@ -111,7 +112,6 @@ linters:
     - prealloc
     - predeclared
     - reassign
-    - revive
     - rowserrcheck
     - sqlclosecheck
     - staticcheck
@@ -136,11 +136,15 @@ linters-settings:
   depguard:
     rules:
       main:
+        files:
+          - "$all"
+          - "!$test"
         allow:
           - $gostd
-          - agones.dev/agones/pkg/sdk
-          - github.com/spf13/cobra
-          - github.com/seanhagen/endless_stream/internal/proto
+          - agones.dev/agones
+          - github.com/spf13
+          - github.com/seanhagen
+          - github.com/grpc-ecosystem
   varnamelen:
     min-name-length: 2
   tagliatelle:
