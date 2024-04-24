@@ -180,17 +180,38 @@ rate limiting, authentication, etc are all working properly.
    - a way to specify servers to register during startup
    - including grpc-gateway or others
  - this handles setting up the =grpc.NewServer=, the listener, all that stuff
- - launches own goroutine for listening on the socket
-
+ - launches own goroutine for listening on the socket when started
 
  for testing:
   - how to inject a [[https://pkg.go.dev/net#Listener][net.Listener]] so that a mock or stub can be passed in for tests?
 
  other concerns;
-  - how to pass in middleware?
+  - how to pass in middleware/interceptors?
   - how to configure grpc-gateway
   - how to configure the dialer needed for grpc-gateway, that works with the
     listener injected during tests?
+
+***** Testing The Transport Layer
+Need to do at least two things to test:
+ - create a service and pass in the net.Listener as part of the config. use that
+   listener to configure a client, use that to test.
+ - create a service, use default net.Listener to test. create a client,
+
+Also need to test:
+ - SSL configuration ( normal TLS & mTLS )
+ - GRPC Only
+ - GRPC with Gateway
+ - GRPC with Gateway on different port
+ - Custom listener ( will be used by all the other tests )
+ - timeouts
+ - interceptors
+ - dial options
+ - stats handlers
+ - keepalive options
+ - configured maximums ( recv msg size, send msg size, concurrent streams, etc )
+ - custom unknown service handler
+ - transport credentials configuration
+
 
 
 **** Services
