@@ -20,8 +20,9 @@ the last client disconnects.
    - [ ] /internal/transport/grpc => defines GRPC server that handles GRPC <->
      Game server translation ( hex architecture )
    - [ ] /cmd/overlord => main server binary
-
-**** BACKLOG set up internal server skeleton
+**** DONE set up GRPC server wrapper
+CLOSED: [2024-04-30 Tue 16:45]
+**** STARTED set up game server skeleton
 Package that defines a basic server, handles connections, messages, etc. The
 Agones SDK should be passed in to the constructor ( via config ).
 
