@@ -109,7 +109,6 @@ func (conf Config) toInternal() (internalConfig, error) {
 
 	if conf.StatsHandler != nil {
 		ic.serverOptions[ServerOptionKeyStatsHandler] = grpc.StatsHandler(conf.StatsHandler)
-		// ic.serverOptions = append(ic.serverOptions, grpc.StatsHandler(conf.StatsHandler))
 	}
 
 	return ic, nil
