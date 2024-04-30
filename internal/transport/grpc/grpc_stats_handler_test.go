@@ -2,11 +2,10 @@ package grpc
 
 import (
 	"context"
-	"fmt"
+	"io"
 	"testing"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/seanhagen/endless_stream/internal/observability/logs"
 	"github.com/seanhagen/endless_stream/internal/proto"
 	"github.com/stretchr/testify/assert"
@@ -56,38 +55,89 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 
 	logger := logs.NewTestLog(
 		t,
-		&logs.Config{
-			Out:   logs.NewTestLogOutput(t, true),
-			Level: logs.LevelDebug,
-		},
+		&logs.Config{Out: io.Discard},
 	)
 
 	// configure the NetworkConfig & proto.TestClient
 	t.Log("setting up network configuration & test client")
 	netConf, client := buildBufferListener(t, ctx)
 
-	testPing := func(ctx context.Context, req *proto.PingReq) (*proto.PongResp, error) {
-		return nil, fmt.Errorf("not yet")
+	testPing := func(_ context.Context, _ *proto.PingReq) (*proto.PongResp, error) {
+		return &proto.PongResp{}, nil
 	}
 	svc := &testService{
 		pingHandler: testPing,
 	}
 
+	tagRPCCalled := false
+	tagConnCalled := false
+
+	handleRPCCalled := 0
+	expectHandleRPC := 7
+	handleConnCalled := 0
+	expectHandleConn := 2
+
 	testStatHandler := &testStatsHandler{
 		t: t,
 		tagRpc: func(ctx context.Context, tagInfo *stats.RPCTagInfo) context.Context {
-			spew.Dump(ctx, tagInfo)
+			tagRPCCalled = true
+			// fmt.Printf("==============================\ntag rpc -- ")
+			// fmt.Printf("method: %q, fail fast: %v\n", tagInfo.FullMethodName, tagInfo.FailFast)
+			// fmt.Printf("==============================\n")
 			return ctx
 		},
-		handleRpc: func(ctx context.Context, stats stats.RPCStats) {
-			spew.Dump(ctx, stats)
+
+		handleRpc: func(ctx context.Context, data stats.RPCStats) {
+			handleRPCCalled++
+
+			// fmt.Printf("******************************\nhandle rpc -- ")
+			// switch data.(type) {
+			// case *stats.InHeader:
+			// 	fmt.Printf("in header!\n")
+			// case *stats.Begin:
+			// 	fmt.Printf("begin!\n")
+			// case *stats.InPayload:
+			// 	fmt.Printf("in payload!\n")
+			// case *stats.OutHeader:
+			// 	fmt.Printf("out header!\n")
+			// case *stats.OutPayload:
+			// 	fmt.Printf("out payload!\n")
+			// case *stats.OutTrailer:
+			// 	fmt.Printf("out trailer!\n")
+			// case *stats.End:
+			// 	fmt.Printf("end!\n")
+			// default:
+			// 	spew.Dump(data)
+			// }
+
+			// // spew.Dump(ctx, stats)
+			// fmt.Printf("******************************\n")
 		},
+
 		tagConn: func(ctx context.Context, tagInfo *stats.ConnTagInfo) context.Context {
-			spew.Dump(ctx, tagInfo)
+			tagConnCalled = true
+			// fmt.Printf("##############################\ntag conn -- ")
+			// fmt.Printf(
+			// 	"tagging connection, local: %q, remote: %q\n",
+			// 	tagInfo.LocalAddr.String(),
+			// 	tagInfo.RemoteAddr.String(),
+			// )
+			// fmt.Printf("##############################\n")
 			return ctx
 		},
-		handleConn: func(ctx context.Context, stats stats.ConnStats) {
-			spew.Dump(ctx, stats)
+
+		handleConn: func(ctx context.Context, data stats.ConnStats) {
+			handleConnCalled++
+			// fmt.Printf("------------------------------\nhandle conn -- ")
+			// switch data.(type) {
+			// case *stats.ConnBegin:
+			// 	fmt.Printf("conn begin!\n")
+			// case *stats.ConnEnd:
+			// 	fmt.Printf("conn end!\n")
+			// default:
+			// 	spew.Dump(data)
+			// }
+			// fmt.Printf("------------------------------\n")
 		},
 	}
 
@@ -129,4 +179,15 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 	// stop the server, wait a bit for it to finish
 	cancelFn()
 	time.Sleep(time.Millisecond * 200)
+
+	assert.True(t, tagRPCCalled, "expected tag rpc method to be called")
+	assert.True(t, tagConnCalled, "expected tag conn method to be called")
+	assert.Equal(
+		t, expectHandleConn, handleConnCalled,
+		"expected 'handle conn' to be called certain number of times",
+	)
+	assert.Equal(
+		t, expectHandleRPC, handleRPCCalled,
+		"expected 'handle rpc' to be called certain number of times",
+	)
 }

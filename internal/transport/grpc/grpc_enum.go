@@ -16,15 +16,18 @@ const (
 	ServerOptionKeyNetwork serverOptionKey = iota
 	// ServerOptionKeyTLS is a serverOptionKey of type TLS.
 	ServerOptionKeyTLS
+	// ServerOptionKeyStatsHandler is a serverOptionKey of type StatsHandler.
+	ServerOptionKeyStatsHandler
 )
 
 var ErrInvalidserverOptionKey = fmt.Errorf("not a valid serverOptionKey, try [%s]", strings.Join(_serverOptionKeyNames, ", "))
 
-const _serverOptionKeyName = "NetworkTLS"
+const _serverOptionKeyName = "NetworkTLSStatsHandler"
 
 var _serverOptionKeyNames = []string{
 	_serverOptionKeyName[0:7],
 	_serverOptionKeyName[7:10],
+	_serverOptionKeyName[10:22],
 }
 
 // serverOptionKeyNames returns a list of possible string values of serverOptionKey.
@@ -39,12 +42,14 @@ func serverOptionKeyValues() []serverOptionKey {
 	return []serverOptionKey{
 		ServerOptionKeyNetwork,
 		ServerOptionKeyTLS,
+		ServerOptionKeyStatsHandler,
 	}
 }
 
 var _serverOptionKeyMap = map[serverOptionKey]string{
-	ServerOptionKeyNetwork: _serverOptionKeyName[0:7],
-	ServerOptionKeyTLS:     _serverOptionKeyName[7:10],
+	ServerOptionKeyNetwork:      _serverOptionKeyName[0:7],
+	ServerOptionKeyTLS:          _serverOptionKeyName[7:10],
+	ServerOptionKeyStatsHandler: _serverOptionKeyName[10:22],
 }
 
 // String implements the Stringer interface.
@@ -63,10 +68,12 @@ func (x serverOptionKey) IsValid() bool {
 }
 
 var _serverOptionKeyValue = map[string]serverOptionKey{
-	_serverOptionKeyName[0:7]:                   ServerOptionKeyNetwork,
-	strings.ToLower(_serverOptionKeyName[0:7]):  ServerOptionKeyNetwork,
-	_serverOptionKeyName[7:10]:                  ServerOptionKeyTLS,
-	strings.ToLower(_serverOptionKeyName[7:10]): ServerOptionKeyTLS,
+	_serverOptionKeyName[0:7]:                    ServerOptionKeyNetwork,
+	strings.ToLower(_serverOptionKeyName[0:7]):   ServerOptionKeyNetwork,
+	_serverOptionKeyName[7:10]:                   ServerOptionKeyTLS,
+	strings.ToLower(_serverOptionKeyName[7:10]):  ServerOptionKeyTLS,
+	_serverOptionKeyName[10:22]:                  ServerOptionKeyStatsHandler,
+	strings.ToLower(_serverOptionKeyName[10:22]): ServerOptionKeyStatsHandler,
 }
 
 // ParseserverOptionKey attempts to convert a string to a serverOptionKey.

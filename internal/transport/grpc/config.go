@@ -48,14 +48,12 @@ type Config struct {
 	// DialOpts ...
 	DialOpts []grpc.DialOption
 
+	// StatsHandler ...
 	StatsHandler stats.Handler
 
 	// KeepAlive KeepAliveConfig
-
 	// Max Maximums
-
 	// EnabledSharedWriteBuffer bool
-
 	// UnknownServiceHandler grpc.StreamHandler
 }
 
@@ -107,6 +105,11 @@ func (conf Config) toInternal() (internalConfig, error) {
 
 	if ic.logger == nil {
 		ic.logger = logs.New(&logs.Config{Out: io.Discard})
+	}
+
+	if conf.StatsHandler != nil {
+		ic.serverOptions[ServerOptionKeyStatsHandler] = grpc.StatsHandler(conf.StatsHandler)
+		// ic.serverOptions = append(ic.serverOptions, grpc.StatsHandler(conf.StatsHandler))
 	}
 
 	return ic, nil

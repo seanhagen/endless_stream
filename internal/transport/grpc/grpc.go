@@ -26,7 +26,7 @@ type Service interface {
 	RegisterGateway(context.Context, *runtime.ServeMux)
 }
 
-// ENUM(Network,TLS).
+// ENUM(Network,TLS,StatsHandler).
 type serverOptionKey uint32
 
 type serverOpts map[serverOptionKey]grpc.ServerOption
