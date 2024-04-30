@@ -64,3 +64,10 @@ func TypeAttr(t string) Attr {
 		Value: slog.StringValue(t),
 	}
 }
+
+func StringAttr(key, val string) Attr {
+	return Attr{
+		Key:   key,
+		Value: slog.StringValue(val),
+	}
+}

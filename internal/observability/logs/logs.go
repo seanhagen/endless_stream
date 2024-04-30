@@ -12,6 +12,13 @@ import (
 	"github.com/seanhagen/endless_stream/internal/observability"
 )
 
+const (
+	LevelDebug = slog.LevelDebug
+	LevelInfo  = slog.LevelInfo
+	LevelWarn  = slog.LevelWarn
+	LevelError = slog.LevelError
+)
+
 // LogType is the type used to switch the style of the logger. Options
 // are text or JSON.
 //

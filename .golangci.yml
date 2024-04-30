@@ -145,6 +145,8 @@ linters-settings:
           - github.com/spf13
           - github.com/seanhagen
           - github.com/grpc-ecosystem
+          - github.com/soheilhy/cmux
+          - github.com/rs/cors
   varnamelen:
     min-name-length: 2
   tagliatelle:

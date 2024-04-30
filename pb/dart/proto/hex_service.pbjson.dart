@@ -72,7 +72,7 @@ final $typed_data.Uint8List adminServiceDescriptor = $convert.base64Decode(
 const $core.Map<$core.String, $core.dynamic> TestServiceBase$json = {
   '1': 'Test',
   '2': [
-    {'1': 'Ping', '2': '.endless.PingReq', '3': '.endless.PongResp'},
+    {'1': 'Ping', '2': '.endless.PingReq', '3': '.endless.PongResp', '4': {}},
     {'1': 'ClientStream', '2': '.endless.TestStreamRequest', '3': '.endless.TestResponse', '5': true},
     {'1': 'ServerStream', '2': '.endless.TestRequest', '3': '.endless.TestStreamResponse', '6': true},
     {'1': 'BiDiStream', '2': '.endless.TestStreamRequest', '3': '.endless.TestStreamResponse', '5': true},
@@ -91,8 +91,9 @@ const $core.Map<$core.String, $core.Map<$core.String, $core.dynamic>> TestServic
 
 /// Descriptor for `Test`. Decode as a `google.protobuf.ServiceDescriptorProto`.
 final $typed_data.Uint8List testServiceDescriptor = $convert.base64Decode(
-    'CgRUZXN0EisKBFBpbmcSEC5lbmRsZXNzLlBpbmdSZXEaES5lbmRsZXNzLlBvbmdSZXNwEkMKDE'
-    'NsaWVudFN0cmVhbRIaLmVuZGxlc3MuVGVzdFN0cmVhbVJlcXVlc3QaFS5lbmRsZXNzLlRlc3RS'
-    'ZXNwb25zZSgBEkMKDFNlcnZlclN0cmVhbRIULmVuZGxlc3MuVGVzdFJlcXVlc3QaGy5lbmRsZX'
-    'NzLlRlc3RTdHJlYW1SZXNwb25zZTABEkcKCkJpRGlTdHJlYW0SGi5lbmRsZXNzLlRlc3RTdHJl'
-    'YW1SZXF1ZXN0GhsuZW5kbGVzcy5UZXN0U3RyZWFtUmVzcG9uc2UoAQ==');
+    'CgRUZXN0EkAKBFBpbmcSEC5lbmRsZXNzLlBpbmdSZXEaES5lbmRsZXNzLlBvbmdSZXNwIhOC0+'
+    'STAg06ASoiCC92MS9waW5nEkMKDENsaWVudFN0cmVhbRIaLmVuZGxlc3MuVGVzdFN0cmVhbVJl'
+    'cXVlc3QaFS5lbmRsZXNzLlRlc3RSZXNwb25zZSgBEkMKDFNlcnZlclN0cmVhbRIULmVuZGxlc3'
+    'MuVGVzdFJlcXVlc3QaGy5lbmRsZXNzLlRlc3RTdHJlYW1SZXNwb25zZTABEkcKCkJpRGlTdHJl'
+    'YW0SGi5lbmRsZXNzLlRlc3RTdHJlYW1SZXF1ZXN0GhsuZW5kbGVzcy5UZXN0U3RyZWFtUmVzcG'
+    '9uc2UoAQ==');

@@ -8,6 +8,7 @@ package proto
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -89,12 +90,12 @@ type HexServer interface {
 }
 
 // UnimplementedHexServer must be embedded to have forward compatible implementations.
-type UnimplementedHexServer struct {
-}
+type UnimplementedHexServer struct{}
 
 func (UnimplementedHexServer) Info(context.Context, *InfoRequest) (*InfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Info not implemented")
 }
+
 func (UnimplementedHexServer) Game(Hex_GameServer) error {
 	return status.Errorf(codes.Unimplemented, "method Game not implemented")
 }
@@ -237,8 +238,7 @@ type AdminServer interface {
 }
 
 // UnimplementedAdminServer must be embedded to have forward compatible implementations.
-type UnimplementedAdminServer struct {
-}
+type UnimplementedAdminServer struct{}
 
 func (UnimplementedAdminServer) Manage(Admin_ManageServer) error {
 	return status.Errorf(codes.Unimplemented, "method Manage not implemented")
@@ -446,18 +446,20 @@ type TestServer interface {
 }
 
 // UnimplementedTestServer must be embedded to have forward compatible implementations.
-type UnimplementedTestServer struct {
-}
+type UnimplementedTestServer struct{}
 
 func (UnimplementedTestServer) Ping(context.Context, *PingReq) (*PongResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
+
 func (UnimplementedTestServer) ClientStream(Test_ClientStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method ClientStream not implemented")
 }
+
 func (UnimplementedTestServer) ServerStream(*TestRequest, Test_ServerStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method ServerStream not implemented")
 }
+
 func (UnimplementedTestServer) BiDiStream(Test_BiDiStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method BiDiStream not implemented")
 }
@@ -592,6 +594,7 @@ var Test_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "BiDiStream",
 			Handler:       _Test_BiDiStream_Handler,
 			ClientStreams: true,
+			ServerStreams: true,
 		},
 	},
 	Metadata: "proto/hex_service.proto",

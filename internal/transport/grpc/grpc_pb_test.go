@@ -2,6 +2,8 @@ package grpc
 
 import (
 	"context"
+	"errors"
+	"io"
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -17,21 +19,27 @@ func Test_testService_ImplementsGRPCTestServer(t *testing.T) {
 type testService struct {
 	proto.UnimplementedTestServer
 
+	registerCalls  int
+	registeredWith []grpc.ServiceRegistrar
+
+	gatewayRegisterCalls  int
+	gatewayRegisteredWith []*runtime.ServeMux
+
 	pingCalls         int
 	clientStreamCalls int
 	serverStreamCalls int
 	biDiStreamCalls   int
 
-	pingHandler         func(*proto.PingReq) (*proto.PongResp, error)
+	pingHandler         func(context.Context, *proto.PingReq) (*proto.PongResp, error)
 	clientStreamHandler func(proto.Test_ClientStreamServer) error
 	serverStreamHandler func(*proto.TestRequest, proto.Test_ServerStreamServer) error
 	biDiStreamHandler   func(proto.Test_BiDiStreamServer) error
 }
 
 // Ping ...
-func (ts *testService) Ping(_ context.Context, req *proto.PingReq) (*proto.PongResp, error) {
+func (ts *testService) Ping(ctx context.Context, req *proto.PingReq) (*proto.PongResp, error) {
 	ts.pingCalls++
-	return ts.pingHandler(req)
+	return ts.pingHandler(ctx, req)
 }
 
 // ClientStream ...
@@ -57,11 +65,15 @@ func (ts *testService) BiDiStream(srv proto.Test_BiDiStreamServer) error {
 
 // Register ...
 func (ts *testService) Register(srv grpc.ServiceRegistrar) {
+	ts.registerCalls++
+	ts.registeredWith = append(ts.registeredWith, srv)
 	proto.RegisterTestServer(srv, ts)
 }
 
 // RegisterGateway ...
 func (ts *testService) RegisterGateway(ctx context.Context, mux *runtime.ServeMux) {
+	ts.gatewayRegisterCalls++
+	ts.gatewayRegisteredWith = append(ts.gatewayRegisteredWith, mux)
 	proto.RegisterTestHandlerServer(ctx, mux, ts)
 }
 
@@ -70,14 +82,42 @@ type testPingHandler struct {
 }
 
 // PingHandler ...
-func (tph *testPingHandler) PingHandler(pr *proto.PingReq) (*proto.PongResp, error) {
-	msg := pr.GetMsg()
+func (tph *testPingHandler) PingHandler(
+	ctx context.Context,
+	pr *proto.PingReq,
+) (*proto.PongResp, error) {
+	tph.msgs = append(tph.msgs, pr.GetMsg())
+	return &proto.PongResp{Gsm: reverseStr(pr.GetMsg())}, nil
+}
 
-	tph.msgs = append(tph.msgs, msg)
+type testClientStreamHandler struct {
+	closeMsg *proto.TestResponse
+	msgCount int
+	values   map[int]string
+}
 
+// ClientStreamHandler ...
+func (tcsh *testClientStreamHandler) ClientStreamHandler(srv proto.Test_ClientStreamServer) error {
+	for {
+		msg, err := srv.Recv()
+		if errors.Is(err, io.EOF) {
+			break
+		}
+		tcsh.msgCount++
+
+		id := msg.GetChunkId()
+		data := msg.GetMsg()
+
+		tcsh.values[int(id)] = data
+	}
+
+	return srv.SendAndClose(tcsh.closeMsg)
+}
+
+func reverseStr(in string) string {
 	n := 0
-	rune := make([]rune, len(msg))
-	for _, r := range msg {
+	rune := make([]rune, len(in))
+	for _, r := range in {
 		rune[n] = r
 		n++
 	}
@@ -87,7 +127,5 @@ func (tph *testPingHandler) PingHandler(pr *proto.PingReq) (*proto.PongResp, err
 		rune[i], rune[n-1-i] = rune[n-1-i], rune[i]
 	}
 	// Convert back to UTF-8.
-	output := string(rune)
-
-	return &proto.PongResp{Gsm: output}, nil
+	return string(rune)
 }

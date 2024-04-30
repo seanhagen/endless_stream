@@ -21,7 +21,40 @@
   "produces": [
     "application/json"
   ],
-  "paths": {},
+  "paths": {
+    "/v1/ping": {
+      "post": {
+        "operationId": "Test_Ping",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/endlessPongResp"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/endlessPingReq"
+            }
+          }
+        ],
+        "tags": [
+          "Test"
+        ]
+      }
+    }
+  },
   "definitions": {
     "endlessAddTile": {
       "type": "object",
@@ -160,6 +193,15 @@
         "Game"
       ],
       "default": "Server"
+    },
+    "endlessPingReq": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string"
+        }
+      },
+      "title": "these types are just for testing, they shouldn't be used in the actual game client"
     },
     "endlessPongResp": {
       "type": "object",

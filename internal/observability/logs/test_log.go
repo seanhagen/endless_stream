@@ -1,6 +1,7 @@
 package logs
 
 import (
+	"io"
 	"log/slog"
 	"testing"
 
@@ -13,7 +14,7 @@ func NewTestLog(t *testing.T, conf *Config) observability.TestLogger {
 
 	if conf == nil {
 		conf = &Config{
-			Out:       &testLogOutput{t: t, logs: []string{}},
+			Out:       NewTestLogOutput(t, false),
 			LogType:   LogTypeText,
 			Level:     slog.LevelInfo,
 			AddSource: true,
@@ -28,14 +29,25 @@ func NewTestLog(t *testing.T, conf *Config) observability.TestLogger {
 	return tl
 }
 
+func NewTestLogOutput(t *testing.T, outputTestLogs bool) io.Writer {
+	t.Helper()
+
+	return &testLogOutput{t: t, outputTestLogs: outputTestLogs, logs: []string{}}
+}
+
 type testLogOutput struct {
 	t *testing.T
 
-	logs []string
+	outputTestLogs bool
+	logs           []string
 }
 
 // Write ...
-func (tlo *testLogOutput) Write(b []byte) (int, error) {
-	tlo.logs = append(tlo.logs, string(b))
-	return len(b), nil
+func (tlo *testLogOutput) Write(data []byte) (int, error) {
+	tlo.t.Helper()
+	tlo.logs = append(tlo.logs, string(data))
+	if tlo.outputTestLogs {
+		tlo.t.Log(string(data))
+	}
+	return len(data), nil
 }

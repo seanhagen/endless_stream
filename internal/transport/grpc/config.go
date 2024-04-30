@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net"
@@ -8,7 +9,9 @@ import (
 
 	"github.com/seanhagen/endless_stream/internal/observability"
 	"github.com/seanhagen/endless_stream/internal/observability/logs"
+	"github.com/soheilhy/cmux"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/stats"
 )
 
 type Config struct {
@@ -37,15 +40,15 @@ type Config struct {
 	Services []Service
 
 	// StreamInterceptors ...
-	StreamInterceptors []StreamInterceptorFn
+	StreamInterceptors []grpc.StreamServerInterceptor
 
 	// UnaryInterceptors ...
-	UnaryInterceptors []UnaryInterceptorFn
+	UnaryInterceptors []grpc.UnaryServerInterceptor
 
 	// DialOpts ...
 	DialOpts []grpc.DialOption
 
-	// StatsHandler *stats.Handler
+	StatsHandler stats.Handler
 
 	// KeepAlive KeepAliveConfig
 
@@ -57,10 +60,20 @@ type Config struct {
 }
 
 type internalConfig struct {
-	listener      net.Listener
+	tcpMux          cmux.CMux
+	listener        net.Listener
+	gatewayListener net.Listener
+	useGateway      bool
+	separatePorts   bool
+
+	shutdown func(context.Context)
+
 	logger        observability.Logger
 	serverOptions serverOpts
 	services      []Service
+
+	unary  []grpc.UnaryServerInterceptor
+	stream []grpc.StreamServerInterceptor
 }
 
 // toInternal ...
@@ -69,6 +82,8 @@ func (conf Config) toInternal() (internalConfig, error) {
 		serverOptions: serverOpts{},
 		services:      conf.Services,
 		logger:        conf.Logger,
+		unary:         conf.UnaryInterceptors,
+		stream:        conf.StreamInterceptors,
 	}
 
 	var err error
@@ -77,9 +92,17 @@ func (conf Config) toInternal() (internalConfig, error) {
 	} else {
 		err = WithGrpcOnly(DefaultGRPCPort).apply(&ic)
 	}
-
 	if err != nil {
 		return ic, fmt.Errorf("unable to configure network: %w", err)
+	}
+
+	if conf.TLS != nil {
+		err = conf.TLS.apply(&ic)
+	} else {
+		err = WithInsecureTLS().apply(&ic)
+	}
+	if err != nil {
+		return ic, fmt.Errorf("unable to apply TLS configuration: %w", err)
 	}
 
 	if ic.logger == nil {
@@ -91,7 +114,14 @@ func (conf Config) toInternal() (internalConfig, error) {
 
 // options ...
 func (iConf internalConfig) options() []grpc.ServerOption {
-	opts := []grpc.ServerOption{}
+	opts := []grpc.ServerOption{
+		grpc.ChainUnaryInterceptor(
+			iConf.unary...,
+		),
+		grpc.ChainStreamInterceptor(
+			iConf.stream...,
+		),
+	}
 
 	for _, v := range iConf.serverOptions {
 		opts = append(opts, v)

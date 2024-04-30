@@ -24,23 +24,24 @@ namespace Endless {
     static HexServiceReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Chdwcm90by9oZXhfc2VydmljZS5wcm90bxIHZW5kbGVzcxoPcHJvdG8vaGV4",
-            "LnByb3RvMnMKA0hleBIzCgRJbmZvEhQuZW5kbGVzcy5JbmZvUmVxdWVzdBoV",
-            "LmVuZGxlc3MuSW5mb1Jlc3BvbnNlEjcKBEdhbWUSFC5lbmRsZXNzLkdhbWVS",
-            "ZXF1ZXN0GhUuZW5kbGVzcy5HYW1lUmVzcG9uc2UoATABMkQKBUFkbWluEjsK",
-            "Bk1hbmFnZRIVLmVuZGxlc3MuQWRtaW5SZXF1ZXN0GhYuZW5kbGVzcy5BZG1p",
-            "blJlc3BvbnNlKAEwATKGAgoEVGVzdBIrCgRQaW5nEhAuZW5kbGVzcy5QaW5n",
-            "UmVxGhEuZW5kbGVzcy5Qb25nUmVzcBJDCgxDbGllbnRTdHJlYW0SGi5lbmRs",
-            "ZXNzLlRlc3RTdHJlYW1SZXF1ZXN0GhUuZW5kbGVzcy5UZXN0UmVzcG9uc2Uo",
-            "ARJDCgxTZXJ2ZXJTdHJlYW0SFC5lbmRsZXNzLlRlc3RSZXF1ZXN0GhsuZW5k",
-            "bGVzcy5UZXN0U3RyZWFtUmVzcG9uc2UwARJHCgpCaURpU3RyZWFtEhouZW5k",
-            "bGVzcy5UZXN0U3RyZWFtUmVxdWVzdBobLmVuZGxlc3MuVGVzdFN0cmVhbVJl",
-            "c3BvbnNlKAFClAEKC2NvbS5lbmRsZXNzQg9IZXhTZXJ2aWNlUHJvdG9QAVo4",
-            "Z2l0aHViLmNvbS9zZWFuaGFnZW4vZW5kbGVzc19zdHJlYW0vaW50ZXJuYWwv",
-            "cHJvdG8vcHJvdG+iAgNFWFiqAgdFbmRsZXNzygIHRW5kbGVzc+ICE0VuZGxl",
-            "c3NcR1BCTWV0YWRhdGHqAgdFbmRsZXNzYgZwcm90bzM="));
+            "Chdwcm90by9oZXhfc2VydmljZS5wcm90bxIHZW5kbGVzcxocZ29vZ2xlL2Fw",
+            "aS9hbm5vdGF0aW9ucy5wcm90bxoPcHJvdG8vaGV4LnByb3RvMnMKA0hleBIz",
+            "CgRJbmZvEhQuZW5kbGVzcy5JbmZvUmVxdWVzdBoVLmVuZGxlc3MuSW5mb1Jl",
+            "c3BvbnNlEjcKBEdhbWUSFC5lbmRsZXNzLkdhbWVSZXF1ZXN0GhUuZW5kbGVz",
+            "cy5HYW1lUmVzcG9uc2UoATABMkQKBUFkbWluEjsKBk1hbmFnZRIVLmVuZGxl",
+            "c3MuQWRtaW5SZXF1ZXN0GhYuZW5kbGVzcy5BZG1pblJlc3BvbnNlKAEwATKb",
+            "AgoEVGVzdBJACgRQaW5nEhAuZW5kbGVzcy5QaW5nUmVxGhEuZW5kbGVzcy5Q",
+            "b25nUmVzcCITgtPkkwINIggvdjEvcGluZzoBKhJDCgxDbGllbnRTdHJlYW0S",
+            "Gi5lbmRsZXNzLlRlc3RTdHJlYW1SZXF1ZXN0GhUuZW5kbGVzcy5UZXN0UmVz",
+            "cG9uc2UoARJDCgxTZXJ2ZXJTdHJlYW0SFC5lbmRsZXNzLlRlc3RSZXF1ZXN0",
+            "GhsuZW5kbGVzcy5UZXN0U3RyZWFtUmVzcG9uc2UwARJHCgpCaURpU3RyZWFt",
+            "EhouZW5kbGVzcy5UZXN0U3RyZWFtUmVxdWVzdBobLmVuZGxlc3MuVGVzdFN0",
+            "cmVhbVJlc3BvbnNlKAFClAEKC2NvbS5lbmRsZXNzQg9IZXhTZXJ2aWNlUHJv",
+            "dG9QAVo4Z2l0aHViLmNvbS9zZWFuaGFnZW4vZW5kbGVzc19zdHJlYW0vaW50",
+            "ZXJuYWwvcHJvdG8vcHJvdG+iAgNFWFiqAgdFbmRsZXNzygIHRW5kbGVzc+IC",
+            "E0VuZGxlc3NcR1BCTWV0YWRhdGHqAgdFbmRsZXNzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Endless.HexReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Api.AnnotationsReflection.Descriptor, global::Endless.HexReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, null));
     }
     #endregion
