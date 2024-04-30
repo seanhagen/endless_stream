@@ -2,13 +2,13 @@ package grpc
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"sync"
 	"testing"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/seanhagen/endless_stream/internal/observability/logs"
 	"github.com/seanhagen/endless_stream/internal/proto"
 	"github.com/stretchr/testify/assert"
@@ -121,15 +121,16 @@ func TestTransportGRPC_StreamInterceptor(t *testing.T) {
 }
 
 func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
-	testWait := sync.WaitGroup{}
-
 	toSend := map[int]string{
 		3: "third",
 		1: "should be first",
 		2: "middle",
 	}
 
-	testWait.Add(len(toSend) * 2)
+	expectResponses := map[int]string{}
+	for k, v := range toSend {
+		expectResponses[k] = reverseStr(v)
+	}
 
 	return grpcStreamInterceptorTestCase{
 		name: "testing stream interceptor with bi-directional stream",
@@ -138,21 +139,14 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 
 			svc := &testService{
 				biDiStreamHandler: func(srv proto.Test_BiDiStreamServer) error {
-					fmt.Printf("- bidi request arrived!\n")
-
 					for {
 						msg, err := srv.Recv()
-						if err == io.EOF {
-							fmt.Printf("**** server received EOF from client\n")
-							return nil
+						if errors.Is(err, io.EOF) {
+							break
 						}
 						if err != nil {
 							return err
 						}
-						fmt.Printf("== received message from client!\n")
-						// require.NoError(
-						// 	t, err, "unexpected error from bi-directional server Recv() call",
-						// )
 						require.NotNil(
 							t, msg,
 							"expected non-nil message from bi-directional server Recv() call",
@@ -166,11 +160,8 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 						if err := srv.SendMsg(resp); err != nil {
 							return err
 						}
-						fmt.Printf("=== sent response!\n")
-
-						fmt.Printf("########## - done\n")
-						testWait.Done()
 					}
+
 					return nil
 				},
 			}
@@ -213,9 +204,8 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 			strm, err := client.BiDiStream(ctx)
 			require.NoError(t, err, "unable to open bi-directional stream")
 
-			// received := map[int]string{}
-			// lock := sync.Mutex{}
-
+			received := map[int]string{}
+			lock := sync.Mutex{}
 			waitc := make(chan struct{})
 
 			for idx, val := range toSend {
@@ -224,46 +214,38 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 					Msg:     val,
 				}
 
-				fmt.Printf("= sending request to server!\n")
 				err := strm.Send(msg)
 				assert.NoError(
-					t,
-					err,
+					t, err,
 					"unexpected error from bi-directional stream client send",
 				)
 			}
 
 			go func() {
-				var msg proto.TestStreamRequest
+				msg := &proto.TestStreamRequest{}
 				for {
-
-					err := strm.RecvMsg(&msg)
-					if err == io.EOF {
+					err := strm.RecvMsg(msg)
+					if errors.Is(err, io.EOF) {
 						close(waitc)
 						break
 					}
-
-					fmt.Printf("==== received data from server!\n")
-					spew.Dump(err, msg)
-					fmt.Printf("########## - done\n")
-					testWait.Done()
 					assert.NoError(t, err, "unexpected error calling strm.RecvMsg")
+
+					lock.Lock()
+					received[int(msg.GetChunkId())] = msg.GetMsg()
+					lock.Unlock()
 				}
 			}()
 
-			<-waitc
-			fmt.Printf("===== waiting for client to be done!\n")
-			testWait.Wait()
-
-			err = strm.CloseSend()
-			require.NoError(t, err, "unable to close client send")
-
-			fmt.Printf("====== all done!\n")
 			resp, err := strm.CloseAndRecv()
-
-			spew.Dump(resp, err)
-			// err = strm.CloseSend()
 			require.NoError(t, err)
+			require.NotNil(t, resp)
+
+			lock.Lock()
+			received[int(resp.GetRespId())] = resp.GetGsm()
+			lock.Unlock()
+
+			assert.Equal(t, expectResponses, received)
 		},
 	}
 }
