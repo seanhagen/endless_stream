@@ -32,6 +32,13 @@ jobs:
           go-version-file: "go.mod"
           cache-dependency-path: "go.sum"
 
+      - uses: engineerd/configurator@v0.0.9
+        with:
+          name: go-enum
+          fromGitHubReleases: true
+          repo: github.com/abice/go-enum
+          version: v0.6.0
+
       - uses: actions/setup-python@v5
         name: Setup Python
 
