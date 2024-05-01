@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"testing"
 	"time"
@@ -182,15 +183,10 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 			),
 			func(t *testing.T) {
 				logger := logs.NewTestLog(
-					t,
-					&logs.Config{
-						Out:   logs.NewTestLogOutput(t, true),
-						Level: logs.LevelDebug,
-					},
+					t, &logs.Config{Out: io.Discard},
 				)
 
 				// configure the NetworkConfig & proto.TestClient
-				t.Log("setting up network configuration & test client")
 				netConf, client := tt.setup(t, ctx)
 
 				testPing := &testPingHandler{}

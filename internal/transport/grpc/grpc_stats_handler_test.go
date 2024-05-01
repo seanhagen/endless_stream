@@ -54,12 +54,10 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 	ctx := context.TODO()
 
 	logger := logs.NewTestLog(
-		t,
-		&logs.Config{Out: io.Discard},
+		t, &logs.Config{Out: io.Discard},
 	)
 
 	// configure the NetworkConfig & proto.TestClient
-	t.Log("setting up network configuration & test client")
 	netConf, client := buildBufferListener(t, ctx)
 
 	testPing := func(_ context.Context, _ *proto.PingReq) (*proto.PongResp, error) {
@@ -142,7 +140,6 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 	}
 
 	// create the transport
-	t.Log("creating transport")
 	config := Config{
 		Logger:       logger,
 		Network:      netConf,
@@ -155,7 +152,6 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 	require.NotNil(t, transport, "expected non-nil transport")
 
 	// start the transport
-	t.Log("starting transport")
 	ctxWithCancel, cancelFn := context.WithCancel(ctx)
 	t.Cleanup(cancelFn)
 	err = transport.Start(ctxWithCancel)
@@ -164,13 +160,9 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 	assert.NotZero(t, svc.registerCalls)
 
 	// make a request
-	t.Log("creating request")
-	req := &proto.PingReq{
-		Msg: "hello world",
-	}
+	req := &proto.PingReq{Msg: "hello world"}
 
 	ctxWithTimeout, cancelTimeoutFn := context.WithTimeout(ctx, time.Second*5)
-	t.Log("sending ping request via GRPC client")
 	resp, err := client.Ping(ctxWithTimeout, req)
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)
