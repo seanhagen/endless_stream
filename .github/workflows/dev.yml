@@ -32,14 +32,11 @@ jobs:
           go-version-file: "go.mod"
           cache-dependency-path: "go.sum"
 
-      - uses: engineerd/configurator@v0.0.9
-        with:
-          name: go-enum
-          token: ${{ github.token }}
-          fromGitHubReleases: true
-          urlTemplate: https://github.com/abice/go-enum/releases/download/{{version}}/go-enum_Linux_arm64
-          repo: github.com/abice/go-enum
-          version: v0.6.0
+      - name: Install go-enum
+        run: 'curl -fsSL "https://github.com/abice/go-enum/releases/download/v0.6.0/go-enum_$(uname -s)_$(uname -m)" -o $GOBIN/go-enum'
+
+      - name: Make go-enum executable
+        run: chmod +x $GOBIN/go-enum
 
       - uses: actions/setup-python@v5
         name: Setup Python
