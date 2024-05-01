@@ -8,7 +8,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/hashicorp/go-envparse v0.1.0
 	github.com/magefile/mage v1.15.0
-	github.com/motemen/go-loghttp v0.0.0-20231107055348-29ae44b293f4
 	github.com/pterm/pterm v0.12.79
 	github.com/rs/cors v1.11.0
 	github.com/soheilhy/cmux v0.1.5
@@ -33,7 +32,6 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
-	github.com/motemen/go-nuts v0.0.0-20220604134737-2658d0104f31 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect

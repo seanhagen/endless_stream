@@ -111,6 +111,7 @@ func (sp separatePorts) apply(conf *internalConfig) error {
 	conf.listener = grpcListener
 	conf.gatewayListener = httpListener
 	conf.useGateway = true
+	conf.separatePorts = true
 
 	conf.shutdown = func(ctx context.Context) {
 		if err := grpcListener.Close(); err != nil {

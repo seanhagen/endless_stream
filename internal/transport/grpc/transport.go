@@ -168,7 +168,11 @@ func (tspt *Transport) ctxStop(ctx context.Context, srv *grpc.Server) {
 
 // startTCPMux ...
 func (tspt *Transport) startTCPMux(ctx context.Context, errChan chan error) {
-	if !tspt.conf.separatePorts {
+	if tspt.conf.separatePorts {
+		return
+	}
+
+	if tspt.conf.tcpMux == nil {
 		return
 	}
 

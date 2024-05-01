@@ -10,44 +10,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/motemen/go-loghttp"
 	"github.com/seanhagen/endless_stream/internal/observability/logs"
 	"github.com/seanhagen/endless_stream/internal/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
 )
-
-func buildPortListener(t *testing.T, ctx context.Context) (NetworkConfig, proto.TestClient) {
-	conf := WithGrpcOnly(DefaultGRPCPort)
-
-	uri := fmt.Sprintf("localhost:%d", DefaultGRPCPort)
-	conn, err := grpc.Dial(uri, grpc.WithInsecure())
-	require.NoError(t, err, "unable to dial %q", uri)
-
-	client := proto.NewTestClient(conn)
-
-	return conf, client
-}
-
-func buildBufferListener(t *testing.T, ctx context.Context) (NetworkConfig, proto.TestClient) {
-	bufferSize := 101024 * 1024
-	lis := bufconn.Listen(bufferSize)
-
-	conf := WithCustomListener(lis)
-	require.NotNil(t, conf, "expected non-nil NetworkConfig from WithCustomListener")
-
-	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(
-			insecure.NewCredentials(),
-		),
-	}
-
-	client := buildTestClient(t, ctx, lis, opts...)
-	return conf, client
-}
 
 func TestTransportGRPC_NetworkOptions(t *testing.T) {
 	ctx := context.TODO()
@@ -59,112 +27,22 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 		buildHTTPRequest func(*testing.T, context.Context) *http.Request
 	}{
 		{
-			name: "grpc-only listener",
-			setup: func(t *testing.T, _ context.Context) (NetworkConfig, proto.TestClient) {
-				t.Helper()
-
-				conf := WithGrpcOnly(DefaultGRPCPort)
-				require.NotNil(t, conf, "expected non-nil NetworkConfig from WithGrpcOnly")
-
-				serviceURI := fmt.Sprintf("localhost:%d", DefaultGRPCPort)
-				conn, err := grpc.Dial(serviceURI, grpc.WithInsecure())
-				require.NoError(t, err, "unable to dial %s", serviceURI)
-
-				client := proto.NewTestClient(conn)
-
-				return conf, client
-			},
+			name:  "grpc-only listener",
+			setup: setupForGrpcOnly,
 		},
 
 		{
-			name:          "grpc with gateway on same port as http",
-			enableGateway: true,
-			setup: func(t *testing.T, ctx context.Context) (NetworkConfig, proto.TestClient) {
-				t.Helper()
-
-				conf := WithSharedGrpcGatewayPort(DefaultGRPCPort)
-				require.NotNil(
-					t,
-					conf,
-					"expected non-nil NetworkConfig from WithSharedGrpcGatewayPort",
-				)
-
-				serviceURI := fmt.Sprintf("127.0.0.1:%d", DefaultGRPCPort)
-				conn, err := grpc.DialContext(
-					ctx,
-					serviceURI,
-					grpc.WithInsecure(),
-				)
-				require.NoError(t, err, "unable to dial %s", serviceURI)
-
-				client := proto.NewTestClient(conn)
-
-				return conf, client
-			},
-			buildHTTPRequest: func(t *testing.T, ctx context.Context) *http.Request {
-				t.Helper()
-
-				buf := bytes.NewBuffer(nil)
-				req := proto.PingReq{
-					Msg: "hello world",
-				}
-
-				err := json.NewEncoder(buf).Encode(req)
-				require.NoError(t, err, "unable to JSON encode proto.PingReq into buffer")
-
-				hr, err := http.NewRequestWithContext(
-					ctx,
-					http.MethodPost,
-					fmt.Sprintf("http://127.0.0.1:%d/v1/ping", DefaultGRPCPort),
-					buf,
-				)
-				require.NoError(t, err, "unable to build HTTP request")
-				// spew.Dump(hr)
-
-				return hr
-			},
+			name:             "grpc with gateway on same port as http",
+			enableGateway:    true,
+			setup:            setupForGrpcGatewaySamePort,
+			buildHTTPRequest: buildGrpcGatewaySamePort,
 		},
 
 		{
-			name:          "grpc gateway on separate port from grpc",
-			enableGateway: true,
-			setup: func(t *testing.T, ctx context.Context) (NetworkConfig, proto.TestClient) {
-				t.Helper()
-
-				conf := WithSeparateGrpcGatewayPort(8888, 9999)
-				require.NotNil(
-					t,
-					conf,
-					"expected non-nil NetworkConfig from WithSeparateGrpcGatewayPort",
-				)
-
-				serviceURI := "127.0.0.1:8888"
-				conn, err := grpc.DialContext(ctx, serviceURI, grpc.WithInsecure())
-				require.NoError(t, err, "unable to dial %s", serviceURI)
-
-				client := proto.NewTestClient(conn)
-
-				return conf, client
-			},
-			buildHTTPRequest: func(t *testing.T, ctx context.Context) *http.Request {
-				t.Helper()
-
-				buf := bytes.NewBuffer(nil)
-				req := proto.PingReq{Msg: "hello world"}
-
-				err := json.NewEncoder(buf).Encode(req)
-				require.NoError(t, err, "uanble to JSON encode proto.PingReq as JSON into buffer")
-
-				hr, err := http.NewRequestWithContext(
-					ctx,
-					http.MethodPost,
-					"http://127.0.0.1:9999/v1/ping",
-					buf,
-				)
-				require.NoError(t, err, "unable to build HTTP request")
-
-				return hr
-			},
+			name:             "grpc gateway on separate port from grpc",
+			enableGateway:    true,
+			setup:            setupForGrpcGatewaySeparatePort,
+			buildHTTPRequest: buildGrpcGatewaySeparatePortHttpRequest,
 		},
 
 		{
@@ -195,7 +73,6 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 				}
 
 				// create the transport
-				t.Log("creating transport")
 				config := Config{
 					Logger:   logger,
 					Network:  netConf,
@@ -207,7 +84,6 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 				require.NotNil(t, transport, "expected non-nil transport")
 
 				// start the transport
-				t.Log("starting transport")
 				ctxWithCancel, cancelFn := context.WithCancel(ctx)
 				t.Cleanup(cancelFn)
 				err = transport.Start(ctxWithCancel)
@@ -216,12 +92,10 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 				assert.NotZero(t, svc.registerCalls)
 
 				// make a request
-				t.Log("creating request")
 				req := &proto.PingReq{
 					Msg: "hello world",
 				}
 				ctxWithTimeout, cancelTimeoutFn := context.WithTimeout(ctx, time.Second*5)
-				t.Log("sending ping request via GRPC client")
 				resp, err := client.Ping(ctxWithTimeout, req)
 				t.Cleanup(cancelTimeoutFn)
 
@@ -232,17 +106,14 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 				assert.Contains(t, testPing.msgs, "hello world")
 
 				if tt.enableGateway {
-					t.Log("testing GRPC gateway")
 					require.NotZero(t, svc.gatewayRegisterCalls)
 
 					// make an HTTP request
-					t.Log("building HTTP request")
 					ctxWithTimeout, cancelHTTPTimeoutFn := context.WithTimeout(ctx, time.Second*5)
 					req := tt.buildHTTPRequest(t, ctxWithTimeout)
 					t.Cleanup(cancelHTTPTimeoutFn)
 
-					t.Log("sending HTTP request")
-					client := &http.Client{Transport: &loghttp.Transport{}}
+					client := &http.Client{} // Transport: &loghttp.Transport{}
 					httpResp, err := client.Do(req)
 					// spew.Dump(httpResp.Body, err)
 
@@ -271,4 +142,110 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 			},
 		)
 	}
+}
+
+func setupForGrpcOnly(t *testing.T, _ context.Context) (NetworkConfig, proto.TestClient) {
+	t.Helper()
+
+	conf := WithGrpcOnly(DefaultGRPCPort)
+	require.NotNil(t, conf, "expected non-nil NetworkConfig from WithGrpcOnly")
+
+	serviceURI := fmt.Sprintf("localhost:%d", DefaultGRPCPort)
+	conn, err := grpc.Dial(serviceURI, grpc.WithInsecure())
+	require.NoError(t, err, "unable to dial %s", serviceURI)
+
+	client := proto.NewTestClient(conn)
+
+	return conf, client
+}
+
+func setupForGrpcGatewaySamePort(
+	t *testing.T,
+	ctx context.Context,
+) (NetworkConfig, proto.TestClient) {
+	t.Helper()
+
+	conf := WithSharedGrpcGatewayPort(DefaultGRPCPort)
+	require.NotNil(
+		t,
+		conf,
+		"expected non-nil NetworkConfig from WithSharedGrpcGatewayPort",
+	)
+
+	serviceURI := fmt.Sprintf("127.0.0.1:%d", DefaultGRPCPort)
+	conn, err := grpc.DialContext(
+		ctx,
+		serviceURI,
+		grpc.WithInsecure(),
+	)
+	require.NoError(t, err, "unable to dial %s", serviceURI)
+
+	client := proto.NewTestClient(conn)
+
+	return conf, client
+}
+
+func buildGrpcGatewaySamePort(t *testing.T, ctx context.Context) *http.Request {
+	t.Helper()
+
+	buf := bytes.NewBuffer(nil)
+	req := proto.PingReq{
+		Msg: "hello world",
+	}
+
+	err := json.NewEncoder(buf).Encode(req)
+	require.NoError(t, err, "unable to JSON encode proto.PingReq into buffer")
+
+	hr, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodPost,
+		fmt.Sprintf("http://127.0.0.1:%d/v1/ping", DefaultGRPCPort),
+		buf,
+	)
+	require.NoError(t, err, "unable to build HTTP request")
+	// spew.Dump(hr)
+
+	return hr
+}
+
+func setupForGrpcGatewaySeparatePort(
+	t *testing.T,
+	ctx context.Context,
+) (NetworkConfig, proto.TestClient) {
+	t.Helper()
+
+	conf := WithSeparateGrpcGatewayPort(8888, 9999)
+	require.NotNil(
+		t,
+		conf,
+		"expected non-nil NetworkConfig from WithSeparateGrpcGatewayPort",
+	)
+
+	serviceURI := "127.0.0.1:8888"
+	conn, err := grpc.DialContext(ctx, serviceURI, grpc.WithInsecure())
+	require.NoError(t, err, "unable to dial %s", serviceURI)
+
+	client := proto.NewTestClient(conn)
+
+	return conf, client
+}
+
+func buildGrpcGatewaySeparatePortHttpRequest(t *testing.T, ctx context.Context) *http.Request {
+	t.Helper()
+
+	buf := bytes.NewBuffer(nil)
+	req := proto.PingReq{Msg: "hello world"}
+
+	err := json.NewEncoder(buf).Encode(req)
+	require.NoError(t, err, "uanble to JSON encode proto.PingReq as JSON into buffer")
+
+	hr, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodPost,
+		"http://127.0.0.1:9999/v1/ping",
+		buf,
+	)
+	require.NoError(t, err, "unable to build HTTP request")
+
+	return hr
 }

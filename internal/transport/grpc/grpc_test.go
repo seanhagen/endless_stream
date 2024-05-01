@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"testing"
 	"time"
@@ -183,4 +184,33 @@ func buildTestServer(
 	client := proto.NewTestClient(conn)
 
 	return client, closer
+}
+
+func buildPortListener(t *testing.T, ctx context.Context) (NetworkConfig, proto.TestClient) {
+	conf := WithGrpcOnly(DefaultGRPCPort)
+
+	uri := fmt.Sprintf("localhost:%d", DefaultGRPCPort)
+	conn, err := grpc.Dial(uri, grpc.WithInsecure())
+	require.NoError(t, err, "unable to dial %q", uri)
+
+	client := proto.NewTestClient(conn)
+
+	return conf, client
+}
+
+func buildBufferListener(t *testing.T, ctx context.Context) (NetworkConfig, proto.TestClient) {
+	bufferSize := 101024 * 1024
+	lis := bufconn.Listen(bufferSize)
+
+	conf := WithCustomListener(lis)
+	require.NotNil(t, conf, "expected non-nil NetworkConfig from WithCustomListener")
+
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(
+			insecure.NewCredentials(),
+		),
+	}
+
+	client := buildTestClient(t, ctx, lis, opts...)
+	return conf, client
 }
