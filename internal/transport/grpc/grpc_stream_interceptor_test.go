@@ -183,8 +183,6 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 					ssi.IsServerStream = true
 					ssi.IsClientStream = true
 
-					// assert.True(t, ssi.IsServerStream, "expected IsServerStream to be true")
-					// assert.True(t, ssi.IsClientStream, "expected IsClientStream to be true")
 					assert.Equal(t, "/endless.Test/BiDiStream", ssi.FullMethod)
 				},
 			}
