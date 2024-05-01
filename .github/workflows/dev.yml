@@ -35,6 +35,7 @@ jobs:
       - uses: engineerd/configurator@v0.0.9
         with:
           name: go-enum
+          token: ${{ github.token }}
           fromGitHubReleases: true
           urlTemplate: https://github.com/abice/go-enum/releases/download/{{version}}/go-enum_Linux_arm64
           repo: github.com/abice/go-enum
