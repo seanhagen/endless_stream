@@ -36,7 +36,7 @@ jobs:
         run: 'mkdir -p ~/.local/bin && curl -fsSL "https://github.com/abice/go-enum/releases/download/v0.6.0/go-enum_Linux_x86_64" -o ~/.local/bin/go-enum'
 
       - name: Make go-enum executable
-        run: chmod +x .local/bin//go-enum
+        run: chmod +x ~/.local/bin//go-enum
 
       - uses: actions/setup-python@v5
         name: Setup Python
@@ -44,7 +44,7 @@ jobs:
       - uses: pre-commit/action@v3.0.1
         name: Run pre-commit
         env:
-          PATH: "$PATH:.local/bin"
+          PATH: "$PATH:~/.local/bin"
 
       - name: Run Mage
         uses: magefile/mage-action@v3
