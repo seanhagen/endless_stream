@@ -237,9 +237,8 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 
 			lock.Lock()
 			received[int(resp.GetRespId())] = resp.GetGsm()
-			lock.Unlock()
-
 			assert.Equal(t, expectResponses, received)
+			lock.Unlock()
 		},
 	}
 }
