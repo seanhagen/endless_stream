@@ -268,7 +268,7 @@ func buildServerStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 						Gsm:    "two",
 					})
 
-					return io.EOF
+					return nil
 				},
 			}
 
@@ -318,12 +318,12 @@ func buildServerStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 
 			for {
 				msg, err := strm.Recv()
-				if err == io.EOF {
+				if errors.Is(err, io.EOF) {
 					break
 				}
+
 				require.NoError(t, err, "expected no error from client.ServerStream().Recv()")
 				require.NotNil(t, msg, "expected non-nil message from client.ServerStream().Recv()")
-
 				responses[int(msg.GetRespId())] = msg.GetGsm()
 			}
 
