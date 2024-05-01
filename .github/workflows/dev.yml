@@ -36,6 +36,7 @@ jobs:
         with:
           name: go-enum
           fromGitHubReleases: true
+          urlTemplate: https://github.com/abice/go-enum/releases/download/{{version}}/go-enum_Linux_arm64
           repo: github.com/abice/go-enum
           version: v0.6.0
 
