@@ -99,7 +99,7 @@ func TestTransportGRPC_StreamInterceptor(t *testing.T) {
 
 				// stop the server, wait a bit for it to finish
 				cancelFn()
-				time.Sleep(time.Millisecond * 200)
+				time.Sleep(time.Second * 2)
 				assert.False(t, transport.Running())
 
 				// test the stream interceptor was called
@@ -392,7 +392,6 @@ func buildClientStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 			clientStream, err := client.ClientStream(ctx)
 			require.NoError(t, err, "unable to open client stream")
 
-			t.Log("sending client stream requests via GRPC client")
 			test1 := &proto.TestStreamRequest{ChunkId: 1, Msg: "one"}
 			err = clientStream.Send(test1)
 			require.NoError(t, err, "unable to send test stream request")

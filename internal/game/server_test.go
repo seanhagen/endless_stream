@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"testing"
 	"time"
@@ -36,7 +37,7 @@ func TestServer_Constructor_RequiredOptions(t *testing.T) {
 					MaxFailed:         3,
 					TimeBetweenChecks: time.Second,
 				},
-				Logger: logs.NewTestLog(t, &logs.Config{}),
+				Logger: logs.NewTestLog(t, &logs.Config{Out: io.Discard}),
 			},
 			valid: true,
 		},
@@ -128,8 +129,6 @@ func TestServer_StartsAndLifecycleProgression(t *testing.T) {
 	assert.Contains(t, buf.String(), "heartbeat notify")
 	assert.Contains(t, buf.String(), "health check manager shutting down")
 	assert.Contains(t, buf.String(), "heartbeat loop")
-
-	t.Logf("logger output: \n%s", buf.String())
 }
 
 var errNotImplementedYet = errors.New("not implemented yet")

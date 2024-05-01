@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"io"
 	"os"
 	"testing"
 	"time"
@@ -104,10 +105,7 @@ func TestTransportGRPC_TLSConfiguration(t *testing.T) {
 		t.Run(
 			fmt.Sprintf("test %d %s", i+1, tt.name),
 			func(t *testing.T) {
-				logger := logs.NewTestLog(
-					t,
-					&logs.Config{Out: logs.NewTestLogOutput(t, true), Level: logs.LevelDebug},
-				)
+				logger := logs.NewTestLog(t, &logs.Config{Out: io.Discard})
 
 				tlsConf, clientOpt := tt.setup(t, ctx)
 
@@ -136,7 +134,6 @@ func TestTransportGRPC_TLSConfiguration(t *testing.T) {
 				require.NoError(t, err, "unable to build transport from config")
 				require.NotNil(t, transport, "expected non-nil transport")
 
-				t.Log("starting transport")
 				ctxWithCancel, cancelFn := context.WithCancel(ctx)
 				t.Cleanup(cancelFn)
 				err = transport.Start(ctxWithCancel)
@@ -156,7 +153,6 @@ func TestTransportGRPC_TLSConfiguration(t *testing.T) {
 					Msg: "hello world",
 				}
 				ctxWithTimeout, cancelTimeoutFn := context.WithTimeout(ctx, time.Second*5)
-				t.Log("sending ping request via GRPC client")
 				resp, err := client.Ping(ctxWithTimeout, req)
 				t.Cleanup(cancelTimeoutFn)
 				require.NoError(t, err)

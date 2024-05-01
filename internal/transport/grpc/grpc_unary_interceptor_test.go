@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"io"
 	"testing"
 	"time"
 
@@ -35,15 +36,10 @@ func TestTransportGRPC_UnaryInterceptor(t *testing.T) {
 	ctx := context.TODO()
 
 	logger := logs.NewTestLog(
-		t,
-		&logs.Config{
-			Out:   logs.NewTestLogOutput(t, true),
-			Level: logs.LevelDebug,
-		},
+		t, &logs.Config{Out: io.Discard},
 	)
 
 	// configure the NetworkConfig & proto.TestClient
-	t.Log("setting up network configuration & test client")
 	netConf, client := buildBufferListener(t, ctx)
 
 	testPing := &testPingHandler{}
@@ -71,7 +67,6 @@ func TestTransportGRPC_UnaryInterceptor(t *testing.T) {
 	}
 
 	// create the transport
-	t.Log("creating transport")
 	config := Config{
 		Logger:   logger,
 		Network:  netConf,
@@ -86,7 +81,6 @@ func TestTransportGRPC_UnaryInterceptor(t *testing.T) {
 	require.NotNil(t, transport, "expected non-nil transport")
 
 	// start the transport
-	t.Log("starting transport")
 	ctxWithCancel, cancelFn := context.WithCancel(ctx)
 	t.Cleanup(cancelFn)
 	err = transport.Start(ctxWithCancel)
@@ -95,7 +89,6 @@ func TestTransportGRPC_UnaryInterceptor(t *testing.T) {
 	assert.NotZero(t, svc.registerCalls)
 
 	// make a request
-	t.Log("creating request")
 	req := &proto.PingReq{
 		Msg: "hello world",
 	}
@@ -104,7 +97,6 @@ func TestTransportGRPC_UnaryInterceptor(t *testing.T) {
 	md := metadata.New(expectMetadata)
 	outgoingCtx := metadata.NewOutgoingContext(ctxWithTimeout, md)
 
-	t.Log("sending ping request via GRPC client")
 	resp, err := client.Ping(outgoingCtx, req)
 	t.Cleanup(cancelTimeoutFn)
 
