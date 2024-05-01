@@ -57,11 +57,7 @@ func TestTransportGRPC_StreamInterceptor(t *testing.T) {
 			fmt.Sprintf("test %d %s", i+1, tt.name),
 			func(t *testing.T) {
 				logger := logs.NewTestLog(
-					t,
-					&logs.Config{
-						Out:   logs.NewTestLogOutput(t, true),
-						Level: logs.LevelDebug,
-					},
+					t, &logs.Config{Out: io.Discard},
 				)
 
 				netConf, client := buildPortListener(t, ctx)
