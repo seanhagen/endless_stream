@@ -13,43 +13,6 @@ import (
 	"google.golang.org/grpc/stats"
 )
 
-type testStatsHandler struct {
-	t *testing.T
-
-	tagRpc    func(context.Context, *stats.RPCTagInfo) context.Context
-	handleRpc func(context.Context, stats.RPCStats)
-
-	tagConn    func(context.Context, *stats.ConnTagInfo) context.Context
-	handleConn func(context.Context, stats.ConnStats)
-}
-
-// TagRPC ...
-func (tsh testStatsHandler) TagRPC(ctx context.Context, tagInfo *stats.RPCTagInfo) context.Context {
-	return tsh.tagRpc(ctx, tagInfo)
-}
-
-// HandleRPC ...
-func (tsh testStatsHandler) HandleRPC(ctx context.Context, stats stats.RPCStats) {
-	tsh.handleRpc(ctx, stats)
-}
-
-// TagConn ...
-func (tsh testStatsHandler) TagConn(
-	ctx context.Context,
-	connInfo *stats.ConnTagInfo,
-) context.Context {
-	return tsh.tagConn(ctx, connInfo)
-}
-
-// HandleConn ...
-func (tsh testStatsHandler) HandleConn(ctx context.Context, connStats stats.ConnStats) {
-	tsh.handleConn(ctx, connStats)
-}
-
-func TestTransportGRPC_testStatsHandler(t *testing.T) {
-	assert.Implements(t, (*stats.Handler)(nil), (*testStatsHandler)(nil))
-}
-
 func TestTransportGRPC_StatsHandler(t *testing.T) {
 	ctx := context.TODO()
 
@@ -79,63 +42,20 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 		t: t,
 		tagRpc: func(ctx context.Context, tagInfo *stats.RPCTagInfo) context.Context {
 			tagRPCCalled = true
-			// fmt.Printf("==============================\ntag rpc -- ")
-			// fmt.Printf("method: %q, fail fast: %v\n", tagInfo.FullMethodName, tagInfo.FailFast)
-			// fmt.Printf("==============================\n")
 			return ctx
 		},
 
 		handleRpc: func(ctx context.Context, data stats.RPCStats) {
 			handleRPCCalled++
-
-			// fmt.Printf("******************************\nhandle rpc -- ")
-			// switch data.(type) {
-			// case *stats.InHeader:
-			// 	fmt.Printf("in header!\n")
-			// case *stats.Begin:
-			// 	fmt.Printf("begin!\n")
-			// case *stats.InPayload:
-			// 	fmt.Printf("in payload!\n")
-			// case *stats.OutHeader:
-			// 	fmt.Printf("out header!\n")
-			// case *stats.OutPayload:
-			// 	fmt.Printf("out payload!\n")
-			// case *stats.OutTrailer:
-			// 	fmt.Printf("out trailer!\n")
-			// case *stats.End:
-			// 	fmt.Printf("end!\n")
-			// default:
-			// 	spew.Dump(data)
-			// }
-
-			// // spew.Dump(ctx, stats)
-			// fmt.Printf("******************************\n")
 		},
 
 		tagConn: func(ctx context.Context, tagInfo *stats.ConnTagInfo) context.Context {
 			tagConnCalled = true
-			// fmt.Printf("##############################\ntag conn -- ")
-			// fmt.Printf(
-			// 	"tagging connection, local: %q, remote: %q\n",
-			// 	tagInfo.LocalAddr.String(),
-			// 	tagInfo.RemoteAddr.String(),
-			// )
-			// fmt.Printf("##############################\n")
 			return ctx
 		},
 
 		handleConn: func(ctx context.Context, data stats.ConnStats) {
 			handleConnCalled++
-			// fmt.Printf("------------------------------\nhandle conn -- ")
-			// switch data.(type) {
-			// case *stats.ConnBegin:
-			// 	fmt.Printf("conn begin!\n")
-			// case *stats.ConnEnd:
-			// 	fmt.Printf("conn end!\n")
-			// default:
-			// 	spew.Dump(data)
-			// }
-			// fmt.Printf("------------------------------\n")
 		},
 	}
 
@@ -182,4 +102,41 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 		t, expectHandleRPC, handleRPCCalled,
 		"expected 'handle rpc' to be called certain number of times",
 	)
+}
+
+func TestTransportGRPC_testStatsHandler(t *testing.T) {
+	assert.Implements(t, (*stats.Handler)(nil), (*testStatsHandler)(nil))
+}
+
+type testStatsHandler struct {
+	t *testing.T
+
+	tagRpc    func(context.Context, *stats.RPCTagInfo) context.Context
+	handleRpc func(context.Context, stats.RPCStats)
+
+	tagConn    func(context.Context, *stats.ConnTagInfo) context.Context
+	handleConn func(context.Context, stats.ConnStats)
+}
+
+// TagRPC ...
+func (tsh testStatsHandler) TagRPC(ctx context.Context, tagInfo *stats.RPCTagInfo) context.Context {
+	return tsh.tagRpc(ctx, tagInfo)
+}
+
+// HandleRPC ...
+func (tsh testStatsHandler) HandleRPC(ctx context.Context, stats stats.RPCStats) {
+	tsh.handleRpc(ctx, stats)
+}
+
+// TagConn ...
+func (tsh testStatsHandler) TagConn(
+	ctx context.Context,
+	connInfo *stats.ConnTagInfo,
+) context.Context {
+	return tsh.tagConn(ctx, connInfo)
+}
+
+// HandleConn ...
+func (tsh testStatsHandler) HandleConn(ctx context.Context, connStats stats.ConnStats) {
+	tsh.handleConn(ctx, connStats)
 }
