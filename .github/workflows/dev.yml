@@ -40,9 +40,6 @@ jobs:
       - name: Make go-enum executable
         run: chmod +x ~/.local/bin/go-enum
 
-      - name: Test thing
-        run: echo $PATH
-
       - uses: actions/setup-python@v5
         name: Setup Python
 
