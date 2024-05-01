@@ -48,8 +48,6 @@ jobs:
 
       - uses: pre-commit/action@v3.0.1
         name: Run pre-commit
-        env:
-          PATH: "$PATH:~/.local/bin"
 
       - name: Run Mage
         uses: magefile/mage-action@v3
