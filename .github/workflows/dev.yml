@@ -33,7 +33,7 @@ jobs:
           cache-dependency-path: "go.sum"
 
       - name: Install go-enum
-        run: 'curl -fsSL "https://github.com/abice/go-enum/releases/download/v0.6.0/go-enum_Linux_amd64" -o $GOBIN/go-enum'
+        run: 'curl -fsSL "https://github.com/abice/go-enum/releases/download/v0.6.0/go-enum_Linux_x86_64" -o $GOBIN/go-enum'
 
       - name: Make go-enum executable
         run: chmod +x $GOBIN/go-enum
