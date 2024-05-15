@@ -1,0 +1,26 @@
+syntax = "proto3";
+package endless;
+option go_package = "github.com/seanhagen/endless_stream/internal/proto/common";
+
+import "google/protobuf/timestamp.proto";
+
+enum LogLevel {
+  Info = 0;
+  Debug = -1;
+  Warn = 2;
+  Error = 3;
+  Fatal = 4;
+};
+
+enum LogSource {
+  Server = 0;
+  Player = 100;
+  Game = 200;
+};
+
+message Log {
+  string msg = 1;
+  google.protobuf.Timestamp at = 2;
+  LogLevel level = 3;
+  LogSource source = 4;
+};

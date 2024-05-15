@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/seanhagen/endless_stream/internal/observability/logs"
-	"github.com/seanhagen/endless_stream/internal/proto"
+	"github.com/seanhagen/endless_stream/internal/proto/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/stats"
@@ -23,8 +23,8 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 	// configure the NetworkConfig & proto.TestClient
 	netConf, client := buildBufferListener(t, ctx)
 
-	testPing := func(_ context.Context, _ *proto.PingReq) (*proto.PongResp, error) {
-		return &proto.PongResp{}, nil
+	testPing := func(_ context.Context, _ *test.PingReq) (*test.PongResp, error) {
+		return &test.PongResp{}, nil
 	}
 	svc := &testService{
 		pingHandler: testPing,
@@ -80,7 +80,7 @@ func TestTransportGRPC_StatsHandler(t *testing.T) {
 	assert.NotZero(t, svc.registerCalls)
 
 	// make a request
-	req := &proto.PingReq{Msg: "hello world"}
+	req := &test.PingReq{Msg: "hello world"}
 
 	ctxWithTimeout, cancelTimeoutFn := context.WithTimeout(ctx, time.Second*5)
 	resp, err := client.Ping(ctxWithTimeout, req)

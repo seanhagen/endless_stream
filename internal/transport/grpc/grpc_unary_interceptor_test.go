@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/seanhagen/endless_stream/internal/observability/logs"
-	"github.com/seanhagen/endless_stream/internal/proto"
+	"github.com/seanhagen/endless_stream/internal/proto/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -52,7 +52,7 @@ func TestTransportGRPC_UnaryInterceptor(t *testing.T) {
 	unaryTester := &testUnaryInterceptor{
 		t: t,
 		assertFn: func(t *testing.T, ctx context.Context, req any, info *grpc.UnaryServerInfo) {
-			assert.IsType(t, (*proto.PingReq)(nil), req)
+			assert.IsType(t, (*test.PingReq)(nil), req)
 			require.NotNil(t, info)
 
 			assert.Equal(t, "/endless.Test/Ping", info.FullMethod)
@@ -89,7 +89,7 @@ func TestTransportGRPC_UnaryInterceptor(t *testing.T) {
 	assert.NotZero(t, svc.registerCalls)
 
 	// make a request
-	req := &proto.PingReq{
+	req := &test.PingReq{
 		Msg: "hello world",
 	}
 

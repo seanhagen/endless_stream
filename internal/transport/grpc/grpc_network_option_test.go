@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/seanhagen/endless_stream/internal/observability/logs"
-	"github.com/seanhagen/endless_stream/internal/proto"
+	"github.com/seanhagen/endless_stream/internal/proto/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -23,7 +23,7 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 	tests := []struct {
 		name             string
 		enableGateway    bool
-		setup            func(*testing.T, context.Context) (NetworkConfig, proto.TestClient)
+		setup            func(*testing.T, context.Context) (NetworkConfig, test.TestClient)
 		buildHTTPRequest func(*testing.T, context.Context) *http.Request
 	}{
 		{
@@ -92,7 +92,7 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 				assert.NotZero(t, svc.registerCalls)
 
 				// make a request
-				req := &proto.PingReq{
+				req := &test.PingReq{
 					Msg: "hello world",
 				}
 				ctxWithTimeout, cancelTimeoutFn := context.WithTimeout(ctx, time.Second*5)
@@ -127,7 +127,7 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 					require.NoError(
 						t,
 						err,
-						"expected no error when unmarshaling JSON response body to proto.PongResp",
+						"expected no error when unmarshaling JSON response body to test.PongResp",
 					)
 
 					assert.Equal(t, "dlrow olleh", resp.GetGsm())
@@ -144,7 +144,7 @@ func TestTransportGRPC_NetworkOptions(t *testing.T) {
 	}
 }
 
-func setupForGrpcOnly(t *testing.T, _ context.Context) (NetworkConfig, proto.TestClient) {
+func setupForGrpcOnly(t *testing.T, _ context.Context) (NetworkConfig, test.TestClient) {
 	t.Helper()
 
 	conf := WithGrpcOnly(DefaultGRPCPort)
@@ -154,7 +154,7 @@ func setupForGrpcOnly(t *testing.T, _ context.Context) (NetworkConfig, proto.Tes
 	conn, err := grpc.Dial(serviceURI, grpc.WithInsecure())
 	require.NoError(t, err, "unable to dial %s", serviceURI)
 
-	client := proto.NewTestClient(conn)
+	client := test.NewTestClient(conn)
 
 	return conf, client
 }
@@ -162,7 +162,7 @@ func setupForGrpcOnly(t *testing.T, _ context.Context) (NetworkConfig, proto.Tes
 func setupForGrpcGatewaySamePort(
 	t *testing.T,
 	ctx context.Context,
-) (NetworkConfig, proto.TestClient) {
+) (NetworkConfig, test.TestClient) {
 	t.Helper()
 
 	conf := WithSharedGrpcGatewayPort(DefaultGRPCPort)
@@ -180,7 +180,7 @@ func setupForGrpcGatewaySamePort(
 	)
 	require.NoError(t, err, "unable to dial %s", serviceURI)
 
-	client := proto.NewTestClient(conn)
+	client := test.NewTestClient(conn)
 
 	return conf, client
 }
@@ -189,7 +189,7 @@ func buildGrpcGatewaySamePort(t *testing.T, ctx context.Context) *http.Request {
 	t.Helper()
 
 	buf := bytes.NewBuffer(nil)
-	req := proto.PingReq{
+	req := test.PingReq{
 		Msg: "hello world",
 	}
 
@@ -211,7 +211,7 @@ func buildGrpcGatewaySamePort(t *testing.T, ctx context.Context) *http.Request {
 func setupForGrpcGatewaySeparatePort(
 	t *testing.T,
 	ctx context.Context,
-) (NetworkConfig, proto.TestClient) {
+) (NetworkConfig, test.TestClient) {
 	t.Helper()
 
 	conf := WithSeparateGrpcGatewayPort(8888, 9999)
@@ -225,7 +225,7 @@ func setupForGrpcGatewaySeparatePort(
 	conn, err := grpc.DialContext(ctx, serviceURI, grpc.WithInsecure())
 	require.NoError(t, err, "unable to dial %s", serviceURI)
 
-	client := proto.NewTestClient(conn)
+	client := test.NewTestClient(conn)
 
 	return conf, client
 }
@@ -234,7 +234,7 @@ func buildGrpcGatewaySeparatePortHttpRequest(t *testing.T, ctx context.Context) 
 	t.Helper()
 
 	buf := bytes.NewBuffer(nil)
-	req := proto.PingReq{Msg: "hello world"}
+	req := test.PingReq{Msg: "hello world"}
 
 	err := json.NewEncoder(buf).Encode(req)
 	require.NoError(t, err, "uanble to JSON encode proto.PingReq as JSON into buffer")

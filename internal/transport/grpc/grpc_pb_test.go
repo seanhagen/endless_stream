@@ -7,17 +7,17 @@ import (
 	"testing"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/seanhagen/endless_stream/internal/proto"
+	"github.com/seanhagen/endless_stream/internal/proto/test"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
 )
 
 func Test_testService_ImplementsGRPCTestServer(t *testing.T) {
-	assert.Implements(t, (*proto.TestServer)(nil), &testService{})
+	assert.Implements(t, (*test.TestServer)(nil), &testService{})
 }
 
 type testService struct {
-	proto.UnimplementedTestServer
+	test.UnimplementedTestServer
 
 	registerCalls  int
 	registeredWith []grpc.ServiceRegistrar
@@ -30,35 +30,35 @@ type testService struct {
 	serverStreamCalls int
 	biDiStreamCalls   int
 
-	pingHandler         func(context.Context, *proto.PingReq) (*proto.PongResp, error)
-	clientStreamHandler func(proto.Test_ClientStreamServer) error
-	serverStreamHandler func(*proto.TestRequest, proto.Test_ServerStreamServer) error
-	biDiStreamHandler   func(proto.Test_BiDiStreamServer) error
+	pingHandler         func(context.Context, *test.PingReq) (*test.PongResp, error)
+	clientStreamHandler func(test.Test_ClientStreamServer) error
+	serverStreamHandler func(*test.TestRequest, test.Test_ServerStreamServer) error
+	biDiStreamHandler   func(test.Test_BiDiStreamServer) error
 }
 
 // Ping ...
-func (ts *testService) Ping(ctx context.Context, req *proto.PingReq) (*proto.PongResp, error) {
+func (ts *testService) Ping(ctx context.Context, req *test.PingReq) (*test.PongResp, error) {
 	ts.pingCalls++
 	return ts.pingHandler(ctx, req)
 }
 
 // ClientStream ...
-func (ts *testService) ClientStream(srv proto.Test_ClientStreamServer) error {
+func (ts *testService) ClientStream(srv test.Test_ClientStreamServer) error {
 	ts.clientStreamCalls++
 	return ts.clientStreamHandler(srv)
 }
 
 // ServerStream ...
 func (ts *testService) ServerStream(
-	req *proto.TestRequest,
-	srv proto.Test_ServerStreamServer,
+	req *test.TestRequest,
+	srv test.Test_ServerStreamServer,
 ) error {
 	ts.serverStreamCalls++
 	return ts.serverStreamHandler(req, srv)
 }
 
 // BiDiStream ...
-func (ts *testService) BiDiStream(srv proto.Test_BiDiStreamServer) error {
+func (ts *testService) BiDiStream(srv test.Test_BiDiStreamServer) error {
 	ts.biDiStreamCalls++
 	return ts.biDiStreamHandler(srv)
 }
@@ -67,14 +67,14 @@ func (ts *testService) BiDiStream(srv proto.Test_BiDiStreamServer) error {
 func (ts *testService) Register(srv grpc.ServiceRegistrar) {
 	ts.registerCalls++
 	ts.registeredWith = append(ts.registeredWith, srv)
-	proto.RegisterTestServer(srv, ts)
+	test.RegisterTestServer(srv, ts)
 }
 
 // RegisterGateway ...
 func (ts *testService) RegisterGateway(ctx context.Context, mux *runtime.ServeMux) {
 	ts.gatewayRegisterCalls++
 	ts.gatewayRegisteredWith = append(ts.gatewayRegisteredWith, mux)
-	proto.RegisterTestHandlerServer(ctx, mux, ts)
+	test.RegisterTestHandlerServer(ctx, mux, ts)
 }
 
 type testPingHandler struct {
@@ -84,20 +84,20 @@ type testPingHandler struct {
 // PingHandler ...
 func (tph *testPingHandler) PingHandler(
 	ctx context.Context,
-	pr *proto.PingReq,
-) (*proto.PongResp, error) {
+	pr *test.PingReq,
+) (*test.PongResp, error) {
 	tph.msgs = append(tph.msgs, pr.GetMsg())
-	return &proto.PongResp{Gsm: reverseStr(pr.GetMsg())}, nil
+	return &test.PongResp{Gsm: reverseStr(pr.GetMsg())}, nil
 }
 
 type testClientStreamHandler struct {
-	closeMsg *proto.TestResponse
+	closeMsg *test.TestResponse
 	msgCount int
 	values   map[int]string
 }
 
 // ClientStreamHandler ...
-func (tcsh *testClientStreamHandler) ClientStreamHandler(srv proto.Test_ClientStreamServer) error {
+func (tcsh *testClientStreamHandler) ClientStreamHandler(srv test.Test_ClientStreamServer) error {
 	for {
 		msg, err := srv.Recv()
 		if errors.Is(err, io.EOF) {

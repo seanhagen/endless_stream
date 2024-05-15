@@ -2,23 +2,23 @@ version: v1
 plugins:
   # generate Go
   - plugin: buf.build/protocolbuffers/go:v1.31.0
-    out: internal
+    out: internal/proto
     opt: paths=source_relative
   - plugin: buf.build/grpc/go:v1.3.0
-    out: internal
+    out: internal/proto
     opt: paths=source_relative
   - plugin: buf.build/grpc-ecosystem/gateway:v2.16.2
-    out: internal
+    out: internal/proto
     opt:
       - paths=source_relative
       - generate_unbound_methods=true
       - logtostderr=true
   - plugin: buf.build/community/mfridman-go-json:v1.4.0
-    out: internal
+    out: internal/proto
     opt:
       - paths=source_relative
   - plugin: buf.build/bufbuild/validate-go:v1.0.4
-    out: internal
+    out: internal/proto
     opt:
       - paths=source_relative
   # - plugin: go-grpc-mock
@@ -28,9 +28,9 @@ plugins:
 
   # generate C#
   - plugin: buf.build/protocolbuffers/csharp:v26.1
-    out: EndlessStreamData
+    out: EndlessStreamData/proto
   - plugin: buf.build/grpc/csharp:v1.62.2
-    out: EndlessStreamData
+    out: EndlessStreamData/grpc
 
   # generate JSON schema
   - plugin: buf.build/bufbuild/protoschema-jsonschema

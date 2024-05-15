@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/seanhagen/endless_stream/internal/proto"
+	"github.com/seanhagen/endless_stream/internal/proto/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -52,7 +52,7 @@ func TestTransportGRPC_Setup(t *testing.T) {
 
 	client := buildTestClient(t, ctx, lis, opts...)
 
-	req := &proto.PingReq{
+	req := &test.PingReq{
 		Msg: "hello world",
 	}
 
@@ -123,7 +123,7 @@ func buildTestClient(
 	ctx context.Context,
 	listener *bufconn.Listener,
 	opts ...grpc.DialOption,
-) proto.TestClient {
+) test.TestClient {
 	t.Helper()
 
 	opts = append(
@@ -143,7 +143,7 @@ func buildTestClient(
 	)
 	require.NoError(t, err, "unable to dial listener for test client")
 
-	return proto.NewTestClient(conn)
+	return test.NewTestClient(conn)
 }
 
 // this function should really be used for testing clients, not server stuff
@@ -154,9 +154,9 @@ func buildTestServer(
 	ctx context.Context,
 	testSvc *testService,
 	listener *bufconn.Listener,
-) (proto.TestClient, func()) {
+) (test.TestClient, func()) {
 	baseServer := grpc.NewServer()
-	proto.RegisterTestServer(baseServer, testSvc)
+	test.RegisterTestServer(baseServer, testSvc)
 
 	go func() {
 		err := baseServer.Serve(listener)
@@ -181,24 +181,24 @@ func buildTestServer(
 		baseServer.Stop()
 	}
 
-	client := proto.NewTestClient(conn)
+	client := test.NewTestClient(conn)
 
 	return client, closer
 }
 
-func buildPortListener(t *testing.T, ctx context.Context) (NetworkConfig, proto.TestClient) {
+func buildPortListener(t *testing.T, ctx context.Context) (NetworkConfig, test.TestClient) {
 	conf := WithGrpcOnly(DefaultGRPCPort)
 
 	uri := fmt.Sprintf("localhost:%d", DefaultGRPCPort)
 	conn, err := grpc.Dial(uri, grpc.WithInsecure())
 	require.NoError(t, err, "unable to dial %q", uri)
 
-	client := proto.NewTestClient(conn)
+	client := test.NewTestClient(conn)
 
 	return conf, client
 }
 
-func buildBufferListener(t *testing.T, ctx context.Context) (NetworkConfig, proto.TestClient) {
+func buildBufferListener(t *testing.T, ctx context.Context) (NetworkConfig, test.TestClient) {
 	bufferSize := 101024 * 1024
 	lis := bufconn.Listen(bufferSize)
 

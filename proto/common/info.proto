@@ -1,0 +1,10 @@
+syntax = "proto3";
+package endless;
+option go_package = "github.com/seanhagen/endless_stream/protos/common";
+
+message InfoRequest {};
+
+message InfoResponse {
+  string version = 1;
+  string build_date = 2;
+};

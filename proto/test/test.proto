@@ -1,0 +1,19 @@
+syntax = "proto3";
+package endless;
+option go_package = "github.com/seanhagen/endless_stream/protos/test";
+
+import "google/api/annotations.proto";
+
+import "test/test_types.proto";
+
+service Test {
+  rpc Ping(PingReq) returns (PongResp) {
+    option (google.api.http) = {
+      post: "/v1/ping"
+      body: "*"
+    };
+  }
+  rpc ClientStream(stream TestStreamRequest) returns (TestResponse);
+  rpc ServerStream(TestRequest) returns (stream TestStreamResponse);
+  rpc BiDiStream(stream TestStreamRequest) returns (TestStreamResponse);
+}

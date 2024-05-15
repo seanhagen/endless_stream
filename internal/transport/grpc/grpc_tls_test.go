@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/seanhagen/endless_stream/internal/observability/logs"
-	"github.com/seanhagen/endless_stream/internal/proto"
+	"github.com/seanhagen/endless_stream/internal/proto/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -109,9 +109,9 @@ func TestTransportGRPC_TLSConfiguration(t *testing.T) {
 
 				tlsConf, clientOpt := tt.setup(t, ctx)
 
-				expectResp := &proto.PongResp{Gsm: "boop"}
+				expectResp := &test.PongResp{Gsm: "boop"}
 
-				handler := func(ctx context.Context, pr *proto.PingReq) (*proto.PongResp, error) {
+				handler := func(ctx context.Context, pr *test.PingReq) (*test.PongResp, error) {
 					values := metadata.ValueFromIncomingContext(ctx, ":authority")
 					require.Len(t, values, 1, "expect only one value for ':authority' in metadata")
 					expect := []string{fmt.Sprintf("127.0.0.1:%d", DefaultGRPCPort)}
@@ -147,9 +147,9 @@ func TestTransportGRPC_TLSConfiguration(t *testing.T) {
 					assert.NoError(t, conn.Close())
 				})
 
-				client := proto.NewTestClient(conn)
+				client := test.NewTestClient(conn)
 
-				req := &proto.PingReq{
+				req := &test.PingReq{
 					Msg: "hello world",
 				}
 				ctxWithTimeout, cancelTimeoutFn := context.WithTimeout(ctx, time.Second*5)

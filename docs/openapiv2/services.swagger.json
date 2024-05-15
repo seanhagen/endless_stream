@@ -1,15 +1,15 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/hex.proto",
+    "title": "common/tile.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "Hex"
+      "name": "Admin"
     },
     {
-      "name": "Admin"
+      "name": "Proxy"
     },
     {
       "name": "Test"
@@ -104,16 +104,13 @@
         "log": {
           "$ref": "#/definitions/endlessLog"
         },
-        "info": {
-          "$ref": "#/definitions/endlessInfoResponse"
-        },
         "level": {
           "$ref": "#/definitions/endlessLevel"
+        },
+        "pong": {
+          "$ref": "#/definitions/endlessPong"
         }
       }
-    },
-    "endlessGetLevel": {
-      "type": "object"
     },
     "endlessHeartbeat": {
       "type": "object",
@@ -121,20 +118,6 @@
         "beat": {
           "type": "string",
           "format": "date-time"
-        }
-      }
-    },
-    "endlessInfoRequest": {
-      "type": "object"
-    },
-    "endlessInfoResponse": {
-      "type": "object",
-      "properties": {
-        "version": {
-          "type": "string"
-        },
-        "buildDate": {
-          "type": "string"
         }
       }
     },
@@ -194,6 +177,9 @@
       ],
       "default": "Server"
     },
+    "endlessPing": {
+      "type": "object"
+    },
     "endlessPingReq": {
       "type": "object",
       "properties": {
@@ -202,6 +188,9 @@
         }
       },
       "title": "these types are just for testing, they shouldn't be used in the actual game client"
+    },
+    "endlessPong": {
+      "type": "object"
     },
     "endlessPongResp": {
       "type": "object",

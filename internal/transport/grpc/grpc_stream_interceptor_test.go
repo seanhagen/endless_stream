@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/seanhagen/endless_stream/internal/observability/logs"
-	"github.com/seanhagen/endless_stream/internal/proto"
+	"github.com/seanhagen/endless_stream/internal/proto/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
@@ -38,7 +38,7 @@ type grpcStreamInterceptorTestCase struct {
 	name                   string
 	buildServiceTester     func(*testing.T) (*testService, func(*testing.T))
 	buildInterceptorTester func(*testing.T, *bool) (*testStreamInterceptor, func(*testing.T))
-	runClient              func(*testing.T, context.Context, proto.TestClient)
+	runClient              func(*testing.T, context.Context, test.TestClient)
 }
 
 func TestTransportGRPC_StreamInterceptor(t *testing.T) {
@@ -128,7 +128,7 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 			t.Helper()
 
 			svc := &testService{
-				biDiStreamHandler: func(srv proto.Test_BiDiStreamServer) error {
+				biDiStreamHandler: func(srv test.Test_BiDiStreamServer) error {
 					for {
 						msg, err := srv.Recv()
 						if errors.Is(err, io.EOF) {
@@ -142,7 +142,7 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 							"expected non-nil message from bi-directional server Recv() call",
 						)
 
-						resp := &proto.TestStreamResponse{
+						resp := &test.TestStreamResponse{
 							RespId: msg.GetChunkId(),
 							Gsm:    reverseStr(msg.GetMsg()),
 						}
@@ -188,14 +188,14 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 
 			return tsi, validate
 		},
-		runClient: func(t *testing.T, ctx context.Context, client proto.TestClient) {
+		runClient: func(t *testing.T, ctx context.Context, client test.TestClient) {
 			strm, err := client.BiDiStream(ctx)
 			require.NoError(t, err, "unable to open bi-directional stream")
 
 			waitc := make(chan struct{})
 
 			for idx, val := range toSend {
-				msg := &proto.TestStreamRequest{
+				msg := &test.TestStreamRequest{
 					ChunkId: int32(idx),
 					Msg:     val,
 				}
@@ -208,7 +208,7 @@ func buildBiDiStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 			}
 
 			go func() {
-				msg := &proto.TestStreamRequest{}
+				msg := &test.TestStreamRequest{}
 				for {
 					err := strm.RecvMsg(msg)
 					if errors.Is(err, io.EOF) {
@@ -234,19 +234,19 @@ func buildServerStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 			t.Helper()
 
 			svc := &testService{
-				serverStreamHandler: func(req *proto.TestRequest, srv proto.Test_ServerStreamServer) error {
+				serverStreamHandler: func(req *test.TestRequest, srv test.Test_ServerStreamServer) error {
 					require.NotNil(t, req, "expected non-nil request")
 					assert.Equal(t, "testing", req.GetName())
 
-					srv.Send(&proto.TestStreamResponse{
+					srv.Send(&test.TestStreamResponse{
 						RespId: 3,
 						Gsm:    "three",
 					})
-					srv.Send(&proto.TestStreamResponse{
+					srv.Send(&test.TestStreamResponse{
 						RespId: 1,
 						Gsm:    "one",
 					})
-					srv.Send(&proto.TestStreamResponse{
+					srv.Send(&test.TestStreamResponse{
 						RespId: 2,
 						Gsm:    "two",
 					})
@@ -284,8 +284,8 @@ func buildServerStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 
 			return tsi, validate
 		},
-		runClient: func(t *testing.T, ctx context.Context, client proto.TestClient) {
-			req := &proto.TestRequest{
+		runClient: func(t *testing.T, ctx context.Context, client test.TestClient) {
+			req := &test.TestRequest{
 				Name: "testing",
 			}
 
@@ -324,7 +324,7 @@ func buildClientStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 			clientStreamCalls := 0
 
 			svc := &testService{
-				clientStreamHandler: func(css proto.Test_ClientStreamServer) error {
+				clientStreamHandler: func(css test.Test_ClientStreamServer) error {
 					for {
 						msg, err := css.Recv()
 						if err == io.EOF {
@@ -338,7 +338,7 @@ func buildClientStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 						require.NotNil(t, msg, "expected non-nil request in client stream test")
 						clientStreamCalls++
 					}
-					return css.SendAndClose(&proto.TestResponse{Resp: "goodbye"})
+					return css.SendAndClose(&test.TestResponse{Resp: "goodbye"})
 				},
 			}
 
@@ -372,15 +372,15 @@ func buildClientStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 
 			return tsi, validate
 		},
-		runClient: func(t *testing.T, ctx context.Context, client proto.TestClient) {
+		runClient: func(t *testing.T, ctx context.Context, client test.TestClient) {
 			clientStream, err := client.ClientStream(ctx)
 			require.NoError(t, err, "unable to open client stream")
 
-			test1 := &proto.TestStreamRequest{ChunkId: 1, Msg: "one"}
+			test1 := &test.TestStreamRequest{ChunkId: 1, Msg: "one"}
 			err = clientStream.Send(test1)
 			require.NoError(t, err, "unable to send test stream request")
 
-			test2 := &proto.TestStreamRequest{ChunkId: 2, Msg: "two"}
+			test2 := &test.TestStreamRequest{ChunkId: 2, Msg: "two"}
 			err = clientStream.Send(test2)
 
 			// close the stream client
@@ -389,7 +389,7 @@ func buildClientStreamTestCase(t *testing.T) grpcStreamInterceptorTestCase {
 			require.NotNil(t, resp, "expected non-nil response from CloseAndRecv")
 
 			// check we get the expected close message
-			expectCloseMsg := &proto.TestResponse{
+			expectCloseMsg := &test.TestResponse{
 				Resp: "goodbye",
 			}
 			assert.Equal(t, expectCloseMsg.GetResp(), resp.GetResp())

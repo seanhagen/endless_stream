@@ -6,11 +6,8 @@
     "client_id": {
       "type": "string"
     },
-    "get_level": {
-      "$ref": "endless.GetLevel.schema.json"
-    },
-    "info": {
-      "$ref": "endless.InfoRequest.schema.json"
+    "ping": {
+      "$ref": "endless.Ping.schema.json"
     }
   },
   "title": "Game Request",
