@@ -4,7 +4,7 @@ go 1.22.2
 
 require (
 	agones.dev/agones v1.40.0
-	github.com/fatih/color v1.16.0
+	github.com/fatih/color v1.17.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/hashicorp/go-envparse v0.1.0
 	github.com/magefile/mage v1.15.0
