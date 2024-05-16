@@ -1,0 +1,13 @@
+{
+  "$id": "endless.PongResp.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "gsm": {
+      "description": "gsm is the Ping.msg msg backwards",
+      "type": "string"
+    }
+  },
+  "title": "Pong Resp",
+  "type": "object"
+}

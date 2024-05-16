@@ -1,0 +1,13 @@
+{
+  "$id": "endless.PingReq.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "these types are just for testing, they shouldn't be used in the actual game client",
+  "properties": {
+    "msg": {
+      "type": "string"
+    }
+  },
+  "title": "Ping Req",
+  "type": "object"
+}

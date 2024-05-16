@@ -32,6 +32,14 @@ jobs:
           go-version-file: "go.mod"
           cache-dependency-path: "go.sum"
 
+      - name: Install go-enum
+        run:  |
+          mkdir -p ~/.local/bin
+          curl -fsSL "https://github.com/abice/go-enum/releases/download/v0.6.0/go-enum_Linux_x86_64" -o ~/.local/bin/go-enum
+
+      - name: Make go-enum executable
+        run: chmod +x ~/.local/bin/go-enum
+
       - uses: actions/setup-python@v5
         name: Setup Python
 
@@ -69,8 +77,8 @@ jobs:
     steps:
       - uses: fgrosse/go-coverage-report@v1.0.1 # Consider using a Git revision for maximum security
         with:
-          coverage-artifact-name: "go-test-coverage-txt"
-          coverage-file-name: "coverage.txt"
+          coverage-artifact-name: "go-test-coverage"
+          coverage-file-name: "coverage.out"
 
   dependency_checks:
     name: "Run dependency checks"
@@ -90,12 +98,6 @@ jobs:
         uses: actions/go-dependency-submission@v2
         with:
             go-mod-path: go.mod
-            #
-            # Optional: Define the path of a build target (a file with a
-            # `main()` function) If not defined, this Action will collect all
-            # dependencies used by all build targets for the module, which may
-            # include Go dependencies used by tests and tooling.
-            # go-build-target: go-example/cmd/octocat.go
 
   static_checks:
     name: "Run static checks"

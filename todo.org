@@ -14,17 +14,53 @@ clients are connected and marks itself for shutdown/destruction some time after
 the last client disconnects.
 **** Some architecture stuf
  - folders ( from repo root ) :
-   - [ ] /protos => all protobuf definitions
-   - [ ] /protos/go => all protobuf generated Go code
-   - [ ] /internal/server => defines server, without transport mechanism
-   - [ ] /internal/transport/grpc => defines GRPC server that handles GRPC <->
+   - [X] =/protos= => all protobuf definitions
+   - [X] =/internal/proto= => all protobuf generated Go code
+   - [X] =/internal/game= => defines server, without transport mechanism
+   - [X] =/internal/transport/grpc= => defines GRPC server that handles GRPC <->
      Game server translation ( hex architecture )
-   - [ ] /cmd/overlord => main server binary
-
-**** BACKLOG set up internal server skeleton
+   - [ ] =/cmd/overlord= => main server binary
+**** DONE set up GRPC server wrapper
+CLOSED: [2024-04-30 Tue 16:45]
+**** STARTED set up game server skeleton
 Package that defines a basic server, handles connections, messages, etc. The
-Agones SDK should be passed in to the constructor ( via config ).
+Agones SDK should be passed in to the constructor ( via config, and should
+expect an interface, not actual Agones SDK client thing ).
+***** TODO add API for player connecting
+No authentication, that should be handled by the GRPC service. Instead, should
+just need to be passed a player [[https://github.com/rs/xid][XID]] to know who the player is.
 
+***** TODO add API for player disconnecting
+For when players intentionally leave the game ( ie, quit ).
+
+***** TODO add handling of player unintentional disconnect
+With a grace period, so that players who disconnect have some time to get
+re-connected before they're booted from the game world.
+
+***** TODO sort out server <-> player state handling
+What is sent to the player by the server? What is sent to the server by the
+player? How much is kept in the server?
+
+***** TODO build package for handling hex maps
+For now, just manual map creation.
+
+Only need these types of tiles:
+ - wall
+ - door
+ - floor
+
+***** TODO add hex map message types to protobuf schema
+***** TODO implement tile rendering in game client
+Start with just one tilemap; a dungeon tile map. Make sure to update the
+protobuf schema so that names/ids match.
+
+***** TODO add 'admin' methods
+Should require the user be identified as an admin.
+
+For now, just need a few commands:
+ - add hex tile
+ - remove hex tile
+ - change hex tile
 **** BACKLOG set up server command
 Binary that sets up dependencies and injects them as part of setting up the
 server.
@@ -174,6 +210,62 @@ in the test implementation of the game server.
 That would also let me set up tests for middleware; validate that things like
 rate limiting, authentication, etc are all working properly.
 
+**** Transport Layer
+ - handles setting up GRPC server ( not each service! )
+ - when created, needs to be passed a configuration that includes
+   - a way to specify servers to register during startup
+   - including grpc-gateway or others
+ - this handles setting up the =grpc.NewServer=, the listener, all that stuff
+ - launches own goroutine for listening on the socket when started
+
+ for testing:
+  - how to inject a [[https://pkg.go.dev/net#Listener][net.Listener]] so that a mock or stub can be passed in for tests?
+
+ other concerns;
+  - how to pass in middleware/interceptors?
+  - how to configure grpc-gateway
+  - how to configure the dialer needed for grpc-gateway, that works with the
+    listener injected during tests?
+
+***** Testing The Transport Layer
+Need to do at least two things to test:
+ - create a service and pass in the net.Listener as part of the config. use that
+   listener to configure a client, use that to test.
+ - create a service, use default net.Listener to test. create a client,
+
+Also need to test:
+ - SSL configuration ( normal TLS & mTLS )
+ - GRPC Only
+ - GRPC with Gateway
+ - GRPC with Gateway on different port
+ - Custom listener ( will be used by all the other tests )
+ - timeouts
+ - interceptors
+ - dial options
+ - stats handlers
+ - keepalive options
+ - configured maximums ( recv msg size, send msg size, concurrent streams, etc )
+ - custom unknown service handler
+ - transport credentials configuration
+
+**** Services
+ - need an 'application' framework similar to Biba for holding things like
+   config, service clients, etc
+ - each service should at least match an interface used by the transport layer
+   to handle registration & startup stuff
+
+**** Game Server
+ - passed into services as a dependency ( at least the Hex & Admin services )
+   - Hex & Admin should define a limited interface that defines the API they
+     need to be able to work with the game server
+   - ie, Hex service defines an interface for doing things like handling player
+     requests, logs, etc
+   - while Admin service defines an interface for doing things like kicking
+     players, modifying the game world, etc
+ - would be launched in it's own goroutine separate from the GRPC/HTTP/etc
+   transport layer
+   - should probably manage it's own goroutine?
+
 *** Thing To Remember
 The GRPC Handler is basically the container for things like authentication,
 validation, rate limiting, etc. The game server shouldn't care about any of
@@ -217,3 +309,44 @@ type HexClient interface {
 
 So anything expecting a HexClient can just be passed a type that implements the
 correct methods.
+** Server Roles
+Big architecture question: how to handle players connecting & what are they
+connecting to?
+
+There are four types of areas; the overworld, towns, dungeons, & special areas.
+
+I don't think it makes sense to have players connect directly to the overworld
+server, or the town or dungeon servers. Rather, they should be connecting to a
+kind of "proxy" server, that handles communication with the other servers on the
+player's behalf.
+
+This is because the server doesn't know what a player wants to do until they,
+you know, start doing it.
+
+*** Known Server Types
+Before I start going down rabbit holes trying to figure this out, let's lay out
+what server types I know I'm going to end up needing:
+
+ - overworld
+ - dungeon/town/special areas ( they're all basically the same thing; player +
+   other players + hex map )
+ - player ( inventory, levelling up, etc )
+
+Additionally, I can see there being a few other types of servers with special
+roles:
+
+ - dungeon keeper -- handles dungeon life cycles, generating dungeons,
+   populating, etc
+ - quest manager -- handles generating new quests, the quest log, telling the
+   dungeon keeper to create/prepare an instance of a dungeon (not sure about
+   that last one though)
+ - monster wrangler -- for when a monster levels up due to finding some gear,
+   when they leave their dungeon to become a wandering monster, etc
+ - wall street -- handles tracking prices, supply & demand, etc for all
+   merchants to better simulate a real economy
+ - meeple handler -- handles conversations with NPCs ( excluding merchants ),
+   tracking how each faction views a player ( like, neutral, dislike, etc )
+
+*** Architecture
+Player connects to a proxy; proxy has live streaming connections to each of the
+other types of server.

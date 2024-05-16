@@ -1,0 +1,33 @@
+syntax = "proto3";
+package endless;
+option go_package = "github.com/seanhagen/endless_stream/internal/proto/common";
+
+// Type defines whether the tile is empty, a floor tile, or a wall tile.
+enum Type {
+  // Empty is a tile without anything in it.
+  Empty = 0;
+  // Floor is a tile that can be walked on.
+  Floor = 1;
+  // Wall is a tile that blocks movement and line-of-sight.
+  Wall = 2;
+};
+
+// Coordinate is the x,y location in the world for a tile.
+message Coordinate {
+  int32 x = 1;
+  int32 y = 2;
+};
+
+// Tile is a single tile within the world.
+message Tile {
+  // Type defines whether the tile is empty, a floor, or a wall.
+  Type type = 1;
+  // Coords defines the position of the tile within the world.
+  Coordinate coords = 2;
+};
+
+// Tileset defines what tileset to use in Godot.
+enum Tileset {
+  Dungeon = 0;
+  Woods = 1;
+};

@@ -1,0 +1,3 @@
+internal/transport/grpc/testdata/client-key.pem:private-key:1
+internal/transport/grpc/testdata/root-key.pem:private-key:1
+internal/transport/grpc/testdata/server-key.pem:private-key:1

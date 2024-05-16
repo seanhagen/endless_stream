@@ -1,0 +1,17 @@
+{
+  "$id": "endless.TestStreamRequest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "chunk_id": {
+      "exclusiveMaximum": 2147483648,
+      "minimum": -2147483648,
+      "type": "integer"
+    },
+    "msg": {
+      "type": "string"
+    }
+  },
+  "title": "Test Stream Request",
+  "type": "object"
+}

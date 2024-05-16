@@ -1,0 +1,46 @@
+syntax = "proto3";
+package endless;
+option go_package = "github.com/seanhagen/endless_stream/internal/protos/common";
+
+import "google/protobuf/timestamp.proto";
+
+import "common/tile.proto";
+import "common/logs.proto";
+import "common/info.proto";
+
+message Ping {};
+
+message Pong {};
+
+// Level is a single layer of tiles laid out to create a level.
+message Level {
+  // Tiles is an array of all the tiles laid out on a level.
+  repeated Tile tiles = 1;
+
+  // Tileset tells Godot what tileset to use.
+  Tileset tileset = 2;
+};
+
+message Heartbeat {
+  google.protobuf.Timestamp beat = 1;
+};
+
+message GameRequest {
+  string client_id = 1;
+
+  oneof request {
+    Ping ping = 100;
+  }
+};
+
+message GameResponse {
+  string server_id = 1;
+
+  oneof message {
+    Heartbeat heartbeat = 2;
+    Log log = 3;
+    Level level = 5;
+
+    Pong pong = 100;
+  }
+};

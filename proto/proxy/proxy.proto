@@ -1,0 +1,9 @@
+syntax = "proto3";
+package endless;
+option go_package = "github.com/seanhagen/endless_stream/internal/protos/proxy";
+
+import "common/game.proto";
+
+service Proxy {
+  rpc Game(stream GameRequest) returns (stream GameResponse);
+}

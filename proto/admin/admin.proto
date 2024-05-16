@@ -1,0 +1,39 @@
+syntax = "proto3";
+package endless;
+option go_package = "github.com/seanhagen/endless_stream/internal/protos/admin";
+
+import "common/tile.proto";
+import "common/logs.proto";
+
+message AddTile {
+  Tile tile = 1;
+};
+
+message RemoveTile {
+  Coordinate coords = 1;
+};
+
+message AdminRequest {
+  string client_id = 1;
+
+  oneof request {
+    AddTile add_tile = 2;
+    RemoveTile remove_tile = 3;
+  }
+};
+
+enum Result {
+  Unknown = 0;
+  Failure = 1;
+  Success = 2;
+};
+
+message AdminResponse {
+  string server_id = 1;
+  Log log = 2;
+  Result result = 3;
+};
+
+service Admin {
+  rpc Manage(stream AdminRequest) returns (stream AdminResponse);
+}

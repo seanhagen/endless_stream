@@ -1,2 +1,2 @@
 [codespell]
-skip = pb/dart/proto/hex.pb.dart,./pb/dart/proto/hex.pb.dart
+skip = pb/dart/common/tile.pb.dart

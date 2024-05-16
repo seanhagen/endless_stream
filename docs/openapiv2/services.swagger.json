@@ -1,15 +1,18 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/hex.proto",
+    "title": "common/tile.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "Hex"
+      "name": "Admin"
     },
     {
-      "name": "Admin"
+      "name": "Proxy"
+    },
+    {
+      "name": "Test"
     }
   ],
   "consumes": [
@@ -18,7 +21,40 @@
   "produces": [
     "application/json"
   ],
-  "paths": {},
+  "paths": {
+    "/v1/ping": {
+      "post": {
+        "operationId": "Test_Ping",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/endlessPongResp"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/endlessPingReq"
+            }
+          }
+        ],
+        "tags": [
+          "Test"
+        ]
+      }
+    }
+  },
   "definitions": {
     "endlessAddTile": {
       "type": "object",
@@ -68,16 +104,13 @@
         "log": {
           "$ref": "#/definitions/endlessLog"
         },
-        "info": {
-          "$ref": "#/definitions/endlessInfoResponse"
-        },
         "level": {
           "$ref": "#/definitions/endlessLevel"
+        },
+        "pong": {
+          "$ref": "#/definitions/endlessPong"
         }
       }
-    },
-    "endlessGetLevel": {
-      "type": "object"
     },
     "endlessHeartbeat": {
       "type": "object",
@@ -85,20 +118,6 @@
         "beat": {
           "type": "string",
           "format": "date-time"
-        }
-      }
-    },
-    "endlessInfoRequest": {
-      "type": "object"
-    },
-    "endlessInfoResponse": {
-      "type": "object",
-      "properties": {
-        "version": {
-          "type": "string"
-        },
-        "buildDate": {
-          "type": "string"
         }
       }
     },
@@ -158,6 +177,30 @@
       ],
       "default": "Server"
     },
+    "endlessPing": {
+      "type": "object"
+    },
+    "endlessPingReq": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string"
+        }
+      },
+      "title": "these types are just for testing, they shouldn't be used in the actual game client"
+    },
+    "endlessPong": {
+      "type": "object"
+    },
+    "endlessPongResp": {
+      "type": "object",
+      "properties": {
+        "gsm": {
+          "type": "string",
+          "title": "gsm is the Ping.msg msg backwards"
+        }
+      }
+    },
     "endlessRemoveTile": {
       "type": "object",
       "properties": {
@@ -174,6 +217,26 @@
         "Success"
       ],
       "default": "Unknown"
+    },
+    "endlessTestResponse": {
+      "type": "object",
+      "properties": {
+        "resp": {
+          "type": "string"
+        }
+      }
+    },
+    "endlessTestStreamResponse": {
+      "type": "object",
+      "properties": {
+        "respId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "gsm": {
+          "type": "string"
+        }
+      }
     },
     "endlessTile": {
       "type": "object",
