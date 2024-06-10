@@ -3,7 +3,7 @@ module github.com/seanhagen/endless_stream
 go 1.22.2
 
 require (
-	agones.dev/agones v1.40.0
+	agones.dev/agones v1.41.0
 	github.com/fatih/color v1.17.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1
 	github.com/hashicorp/go-envparse v0.1.0
