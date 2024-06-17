@@ -9,7 +9,7 @@ require (
 	github.com/hashicorp/go-envparse v0.1.0
 	github.com/magefile/mage v1.15.0
 	github.com/pterm/pterm v0.12.79
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/mock v0.4.0
 	google.golang.org/grpc v1.63.2
